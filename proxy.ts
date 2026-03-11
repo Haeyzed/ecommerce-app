@@ -10,7 +10,7 @@ const publicAuthRoutes = [
   '/lock',
 ]
 
-export default auth((req) => {
+export const proxy = auth((req) => {
   const { nextUrl } = req
   const isLoggedIn = !!req.auth
 
@@ -47,5 +47,7 @@ export default auth((req) => {
 })
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
 }
