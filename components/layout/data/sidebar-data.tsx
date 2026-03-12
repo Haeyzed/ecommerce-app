@@ -45,6 +45,7 @@ export const sidebarData: Omit<SidebarData, "user"> = {
           icon: ProductsIcon,
           items: [
             { title: "All products", url: "/dashboard/products" },
+            { title: "Brands", url: "/dashboard/products/brands" },
             { title: "Add product", url: "/dashboard/products/new" },
           ],
         },
