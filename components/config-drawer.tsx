@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { type SVGProps } from "react"
-import { RadioGroup as RadioGroupPrimitive } from "radix-ui"
+import { Item, Root as Radio } from "@radix-ui/react-radio-group"
 import {
   CheckmarkCircle02Icon,
   Rotate01Icon,
@@ -26,7 +26,6 @@ import { IconThemeDark } from "@/assets/custom/icon-theme-dark"
 import { IconThemeLight } from "@/assets/custom/icon-theme-light"
 import { IconThemeSystem } from "@/assets/custom/icon-theme-system"
 import { Button } from "@/components/ui/button"
-import { RadioGroup } from "@/components/ui/radio-group"
 import {
   Sheet,
   SheetContent,
@@ -87,7 +86,7 @@ function ConfigRadioItem({
   isTheme?: boolean
 }) {
   return (
-    <RadioGroupPrimitive.Item
+    <Item
       value={item.value}
       className={cn("group outline-none", "transition duration-200 ease-in")}
       aria-label={`Select ${item.label.toLowerCase()}`}
@@ -129,7 +128,7 @@ function ConfigRadioItem({
       >
         {item.label}
       </div>
-    </RadioGroupPrimitive.Item>
+    </Item>
   )
 }
 
@@ -240,7 +239,7 @@ function ThemeConfig() {
         onClick={(e) => setClickEvent(e)}
         onMouseDown={(e) => setClickEvent(e)}
       >
-        <RadioGroup
+        <Radio
           value={theme ?? defaultTheme}
           onValueChange={handleThemeChange}
           className="grid w-full max-w-md grid-cols-3 gap-4"
@@ -254,7 +253,7 @@ function ThemeConfig() {
           ].map((item) => (
             <ConfigRadioItem key={item.value} item={item} isTheme />
           ))}
-        </RadioGroup>
+        </Radio>
       </div>
       <div id="theme-description" className="sr-only">
         Choose between system preference, light mode, or dark mode
@@ -284,7 +283,7 @@ function SidebarConfig() {
         showReset={defaultVariant !== variant}
         onReset={() => setVariant(defaultVariant)}
       />
-      <RadioGroup
+      <Radio
         value={variant}
         onValueChange={(v) => setVariant(v as "inset" | "sidebar" | "floating")}
         className="grid w-full max-w-md grid-cols-3 gap-4"
@@ -298,7 +297,7 @@ function SidebarConfig() {
         ].map((item) => (
           <ConfigRadioItem key={item.value} item={item} />
         ))}
-      </RadioGroup>
+      </Radio>
       <div id="sidebar-description" className="sr-only">
         Choose between inset, floating, or standard sidebar layout
       </div>
@@ -321,7 +320,7 @@ function LayoutConfig() {
           setCollapsible(defaultCollapsible)
         }}
       />
-      <RadioGroup
+      <Radio
         value={radioState}
         onValueChange={(v) => {
           if (v === "default") {
@@ -342,7 +341,7 @@ function LayoutConfig() {
         ].map((item) => (
           <ConfigRadioItem key={item.value} item={item} />
         ))}
-      </RadioGroup>
+      </Radio>
       <div id="layout-description" className="sr-only">
         Choose between default expanded, compact icon-only, or full layout mode
       </div>
@@ -359,7 +358,7 @@ function DirConfig() {
         showReset={defaultDir !== dir}
         onReset={() => setDir(defaultDir)}
       />
-      <RadioGroup
+      <Radio
         value={dir}
         onValueChange={(v) => setDir(v as "ltr" | "rtl")}
         className="grid w-full max-w-md grid-cols-2 gap-4"
@@ -372,7 +371,7 @@ function DirConfig() {
         ].map((item) => (
           <ConfigRadioItem key={item.value} item={item} />
         ))}
-      </RadioGroup>
+      </Radio>
       <div id="direction-description" className="sr-only">
         Choose between left-to-right or right-to-left site direction
       </div>
