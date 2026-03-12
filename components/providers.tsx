@@ -4,6 +4,7 @@ import * as React from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { SessionProvider } from 'next-auth/react'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
+import { DirectionProvider } from "@/components/ui/direction"
 
 import { ThemeProvider } from '@/components/theme-provider'
 import { TooltipProvider } from '@/components/ui/tooltip'
@@ -27,10 +28,12 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
           <NuqsAdapter>
-            <TooltipProvider>
-              {children}
-              <Toaster position="top-right" richColors />
-            </TooltipProvider>
+            <DirectionProvider dir="rtl">
+              <TooltipProvider>
+                {children}
+                <Toaster position="top-right" richColors />
+              </TooltipProvider>
+            </DirectionProvider>
           </NuqsAdapter>
         </ThemeProvider>
       </QueryClientProvider>
