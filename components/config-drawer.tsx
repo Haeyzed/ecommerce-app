@@ -14,6 +14,16 @@ import { useDirection } from "@/lib/providers/direction-provider"
 import { useFont } from "@/lib/providers/font-provider"
 import { type Collapsible, useLayout } from "@/lib/providers/layout-provider"
 import { cn } from "@/lib/utils"
+import { IconDir } from "@/assets/custom/icon-dir"
+import { IconLayoutCompact } from "@/assets/custom/icon-layout-compact"
+import { IconLayoutDefault } from "@/assets/custom/icon-layout-default"
+import { IconLayoutFull } from "@/assets/custom/icon-layout-full"
+import { IconSidebarFloating } from "@/assets/custom/icon-sidebar-floating"
+import { IconSidebarInset } from "@/assets/custom/icon-sidebar-inset"
+import { IconSidebarSidebar } from "@/assets/custom/icon-sidebar-sidebar"
+import { IconThemeDark } from "@/assets/custom/icon-theme-dark"
+import { IconThemeLight } from "@/assets/custom/icon-theme-light"
+import { IconThemeSystem } from "@/assets/custom/icon-theme-system"
 import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
@@ -113,20 +123,11 @@ function ConfigRadioItem({
   )
 }
 
-// Simple LTR/RTL icons (arrows)
-function IconLtr(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
-      <path d="M4 6h16M4 12h10M4 18h16" />
-    </svg>
-  )
+function IconDirLtr(props: SVGProps<SVGSVGElement>) {
+  return <IconDir dir="ltr" {...props} />
 }
-function IconRtl(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
-      <path d="M20 6H4M14 12H4M20 18H4" />
-    </svg>
-  )
+function IconDirRtl(props: SVGProps<SVGSVGElement>) {
+  return <IconDir dir="rtl" {...props} />
 }
 
 export function ConfigDrawer() {
@@ -205,38 +206,14 @@ function ThemeConfig() {
         aria-label="Select theme"
       >
         {[
-          { value: "system", label: "System", icon: LaptopIcon },
-          { value: "light", label: "Light", icon: SunIcon },
-          { value: "dark", label: "Dark", icon: MoonIcon },
+          { value: "system", label: "System", icon: IconThemeSystem },
+          { value: "light", label: "Light", icon: IconThemeLight },
+          { value: "dark", label: "Dark", icon: IconThemeDark },
         ].map((item) => (
           <ConfigRadioItem key={item.value} item={item} isTheme currentValue={theme ?? defaultTheme} />
         ))}
       </RadioGroup>
     </div>
-  )
-}
-
-function LaptopIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
-      <rect x="2" y="4" width="20" height="14" rx="2" />
-      <path d="M2 18h20" />
-    </svg>
-  )
-}
-function SunIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
-      <circle cx="12" cy="12" r="4" />
-      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-    </svg>
-  )
-}
-function MoonIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-    </svg>
   )
 }
 
@@ -268,39 +245,14 @@ function SidebarConfig() {
         aria-label="Select sidebar style"
       >
         {[
-          { value: "inset", label: "Inset", icon: PanelInsetIcon },
-          { value: "floating", label: "Floating", icon: PanelFloatingIcon },
-          { value: "sidebar", label: "Sidebar", icon: PanelSidebarIcon },
+          { value: "inset", label: "Inset", icon: IconSidebarInset },
+          { value: "floating", label: "Floating", icon: IconSidebarFloating },
+          { value: "sidebar", label: "Sidebar", icon: IconSidebarSidebar },
         ].map((item) => (
           <ConfigRadioItem key={item.value} item={item} currentValue={variant} />
         ))}
       </RadioGroup>
     </div>
-  )
-}
-
-function PanelInsetIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
-      <rect x="2" y="2" width="20" height="20" rx="2" />
-      <path d="M8 2v20M16 2v20" />
-    </svg>
-  )
-}
-function PanelFloatingIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
-      <rect x="2" y="4" width="8" height="16" rx="1" />
-      <rect x="14" y="4" width="8" height="16" rx="1" />
-    </svg>
-  )
-}
-function PanelSidebarIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
-      <rect x="2" y="2" width="8" height="20" rx="1" />
-      <rect x="12" y="2" width="10" height="20" rx="1" />
-    </svg>
   )
 }
 
@@ -333,38 +285,14 @@ function LayoutConfig() {
         aria-label="Select layout"
       >
         {[
-          { value: "default", label: "Default", icon: LayoutDefaultIcon },
-          { value: "icon", label: "Compact", icon: LayoutCompactIcon },
-          { value: "offcanvas", label: "Overlay", icon: LayoutOverlayIcon },
+          { value: "default", label: "Default", icon: IconLayoutDefault },
+          { value: "icon", label: "Compact", icon: IconLayoutCompact },
+          { value: "offcanvas", label: "Overlay", icon: IconLayoutFull },
         ].map((item) => (
           <ConfigRadioItem key={item.value} item={item} currentValue={radioState} />
         ))}
       </RadioGroup>
     </div>
-  )
-}
-
-function LayoutDefaultIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
-      <rect x="2" y="2" width="7" height="20" rx="1" />
-      <rect x="11" y="2" width="11" height="20" rx="1" />
-    </svg>
-  )
-}
-function LayoutCompactIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
-      <rect x="2" y="2" width="5" height="20" rx="1" />
-      <rect x="9" y="2" width="13" height="20" rx="1" />
-    </svg>
-  )
-}
-function LayoutOverlayIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
-      <rect x="2" y="2" width="20" height="20" rx="1" />
-    </svg>
   )
 }
 
@@ -384,8 +312,8 @@ function DirConfig() {
         aria-label="Select direction"
       >
         {[
-          { value: "ltr", label: "LTR", icon: IconLtr },
-          { value: "rtl", label: "RTL", icon: IconRtl },
+          { value: "ltr", label: "LTR", icon: IconDirLtr },
+          { value: "rtl", label: "RTL", icon: IconDirRtl },
         ].map((item) => (
           <ConfigRadioItem key={item.value} item={item} currentValue={dir} />
         ))}

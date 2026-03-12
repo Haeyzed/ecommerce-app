@@ -7,6 +7,8 @@
 
 /* Neutral (Default Base Theme) */
 :root {
+  --font-sans: var(--font-geist);
+  --font-mono: var(--font-geist-mono);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -121,15 +123,95 @@
   * {
     @apply border-border outline-ring/50;
   }
+  /* Default: use geist when no font-* class yet (hydration) */
   body {
     @apply min-h-svh w-full bg-background text-foreground;
-    font-family: var(--font-sans), sans-serif;
+    font-family: var(--font-geist), var(--font-sans), sans-serif;
   }
-  html {
-    @apply font-sans;
+  /* Font selector: apply font based on class set by FontProvider on html */
+  html.font-geist body {
+    font-family: var(--font-geist), sans-serif;
+  }
+  html.font-inter body {
+    font-family: var(--font-inter), sans-serif;
+  }
+  html.font-noto-sans body {
+    font-family: var(--font-noto-sans), sans-serif;
+  }
+  html.font-nunito-sans body {
+    font-family: var(--font-nunito-sans), sans-serif;
+  }
+  html.font-figtree body {
+    font-family: var(--font-figtree), sans-serif;
+  }
+  html.font-roboto body {
+    font-family: var(--font-roboto), sans-serif;
+  }
+  html.font-raleway body {
+    font-family: var(--font-raleway), sans-serif;
+  }
+  html.font-dm-sans body {
+    font-family: var(--font-dm-sans), sans-serif;
+  }
+  html.font-public-sans body {
+    font-family: var(--font-public-sans), sans-serif;
+  }
+  html.font-outfit body {
+    font-family: var(--font-outfit), sans-serif;
+  }
+  html.font-geist-mono body {
+    font-family: var(--font-geist-mono), var(--font-mono), monospace;
+  }
+  html.font-jetbrains-mono body {
+    font-family: var(--font-jetbrains-mono), monospace;
+  }
+  html.font-noto-serif body {
+    font-family: var(--font-noto-serif), serif;
+  }
+  html.font-roboto-slab body {
+    font-family: var(--font-roboto-slab), serif;
+  }
+  html.font-merriweather body {
+    font-family: var(--font-merriweather), serif;
+  }
+  html.font-lora body {
+    font-family: var(--font-lora), serif;
+  }
+  html.font-playfair-display body {
+    font-family: var(--font-playfair-display), serif;
   }
   /* Sidebar inset variant background */
   body:has([data-variant="inset"]) {
     @apply bg-sidebar;
   }
+}
+
+/* View transition for theme switching (circular reveal from click) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 0;
+}
+
+::view-transition-new(root) {
+  z-index: 1;
+}
+
+@keyframes reveal {
+  from {
+    clip-path: circle(0% at var(--x, 50%) var(--y, 50%));
+    opacity: 0.7;
+  }
+  to {
+    clip-path: circle(150% at var(--x, 50%) var(--y, 50%));
+    opacity: 1;
+  }
+}
+
+::view-transition-new(root) {
+  animation: reveal 0.4s ease-in-out forwards;
 }
