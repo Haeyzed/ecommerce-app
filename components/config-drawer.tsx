@@ -172,9 +172,9 @@ export function ConfigDrawer() {
       </SheetTrigger>
       <SheetContent className="flex flex-col">
         <SheetHeader className="pb-0 text-start">
-          <SheetTitle>Theme settings</SheetTitle>
+          <SheetTitle>Theme Settings</SheetTitle>
           <SheetDescription id="config-drawer-description">
-            Adjust appearance and layout.
+            Adjust the appearance and layout to suit your preferences.
           </SheetDescription>
         </SheetHeader>
         <div className="space-y-6 overflow-y-auto px-4">
@@ -188,7 +188,7 @@ export function ConfigDrawer() {
           <Button
             variant="destructive"
             onClick={handleReset}
-            aria-label="Reset all settings"
+            aria-label="Reset all settings to default values"
           >
             Reset
           </Button>
@@ -201,28 +201,64 @@ export function ConfigDrawer() {
 function ThemeConfig() {
   const { theme, setTheme } = useTheme()
   const defaultTheme = "system"
+  const [clickEvent, setClickEvent] = React.useState<React.MouseEvent | null>(null)
+
+  const handleThemeChange = (newTheme: string) => {
+    const root = document.documentElement
+
+    if (typeof document.startViewTransition !== "function") {
+      setTheme(newTheme as "light" | "dark" | "system")
+      return
+    }
+
+    if (clickEvent) {
+      root.style.setProperty("--x", `${clickEvent.clientX}px`)
+      root.style.setProperty("--y", `${clickEvent.clientY}px`)
+    }
+
+    document.startViewTransition(() => {
+      setTheme(newTheme as "light" | "dark" | "system")
+    })
+
+    setClickEvent(null)
+  }
 
   return (
     <div>
       <SectionTitle
-        title="Appearance"
+        title="Theme"
         showReset={theme !== defaultTheme}
-        onReset={() => setTheme(defaultTheme)}
+        onReset={() => {
+          if (typeof document.startViewTransition === "function") {
+            document.startViewTransition(() => setTheme(defaultTheme))
+          } else {
+            setTheme(defaultTheme)
+          }
+        }}
       />
-      <RadioGroup
-        value={theme ?? defaultTheme}
-        onValueChange={(v) => setTheme(v as "light" | "dark" | "system")}
-        className="grid w-full max-w-md grid-cols-3 gap-4"
-        aria-label="Select theme"
+      <div
+        onClick={(e) => setClickEvent(e)}
+        onMouseDown={(e) => setClickEvent(e)}
       >
-        {[
-          { value: "system", label: "System", icon: IconThemeSystem },
-          { value: "light", label: "Light", icon: IconThemeLight },
-          { value: "dark", label: "Dark", icon: IconThemeDark },
-        ].map((item) => (
-          <ConfigRadioItem key={item.value} item={item} isTheme />
-        ))}
-      </RadioGroup>
+        <RadioGroup
+          value={theme ?? defaultTheme}
+          onValueChange={handleThemeChange}
+          className="grid w-full max-w-md grid-cols-3 gap-4"
+          aria-label="Select theme preference"
+          aria-describedby="theme-description"
+        >
+          {[
+            { value: "system", label: "System", icon: IconThemeSystem },
+            { value: "light", label: "Light", icon: IconThemeLight },
+            { value: "dark", label: "Dark", icon: IconThemeDark },
+          ].map((item) => (
+            <ConfigRadioItem key={item.value} item={item} isTheme />
+          ))}
+        </RadioGroup>
+      </div>
+      <div id="theme-description" className="sr-only">
+        Choose between system preference, light mode, or dark mode
+      </div>
     </div>
   )
 }
@@ -230,7 +266,7 @@ function ThemeConfig() {
 function ColorThemeConfig() {
   return (
     <div>
-      <SectionTitle title="Color theme" />
+      <SectionTitle title="Color Theme" />
       <div className="grid grid-cols-2 gap-3">
         <ThemeSelector />
         <FontSelector />
@@ -253,6 +289,7 @@ function SidebarConfig() {
         onValueChange={(v) => setVariant(v as "inset" | "sidebar" | "floating")}
         className="grid w-full max-w-md grid-cols-3 gap-4"
         aria-label="Select sidebar style"
+        aria-describedby="sidebar-description"
       >
         {[
           { value: "inset", label: "Inset", icon: IconSidebarInset },
@@ -262,6 +299,9 @@ function SidebarConfig() {
           <ConfigRadioItem key={item.value} item={item} />
         ))}
       </RadioGroup>
+      <div id="sidebar-description" className="sr-only">
+        Choose between inset, floating, or standard sidebar layout
+      </div>
     </div>
   )
 }
@@ -292,16 +332,20 @@ function LayoutConfig() {
           setCollapsible(v as Collapsible)
         }}
         className="grid w-full max-w-md grid-cols-3 gap-4"
-        aria-label="Select layout"
+        aria-label="Select layout style"
+        aria-describedby="layout-description"
       >
         {[
           { value: "default", label: "Default", icon: IconLayoutDefault },
           { value: "icon", label: "Compact", icon: IconLayoutCompact },
-          { value: "offcanvas", label: "Overlay", icon: IconLayoutFull },
+          { value: "offcanvas", label: "Full layout", icon: IconLayoutFull },
         ].map((item) => (
           <ConfigRadioItem key={item.value} item={item} />
         ))}
       </RadioGroup>
+      <div id="layout-description" className="sr-only">
+        Choose between default expanded, compact icon-only, or full layout mode
+      </div>
     </div>
   )
 }
@@ -319,15 +363,19 @@ function DirConfig() {
         value={dir}
         onValueChange={(v) => setDir(v as "ltr" | "rtl")}
         className="grid w-full max-w-md grid-cols-2 gap-4"
-        aria-label="Select direction"
+        aria-label="Select site direction"
+        aria-describedby="direction-description"
       >
         {[
-          { value: "ltr", label: "LTR", icon: IconDirLtr },
-          { value: "rtl", label: "RTL", icon: IconDirRtl },
+          { value: "ltr", label: "Left to Right", icon: IconDirLtr },
+          { value: "rtl", label: "Right to Left", icon: IconDirRtl },
         ].map((item) => (
           <ConfigRadioItem key={item.value} item={item} />
         ))}
       </RadioGroup>
+      <div id="direction-description" className="sr-only">
+        Choose between left-to-right or right-to-left site direction
+      </div>
     </div>
   )
 }
