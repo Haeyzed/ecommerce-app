@@ -1,9 +1,10 @@
 "use client"
 
-import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs"
+import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryState } from "nuqs"
 import * as React from "react"
 
 import { DataTable } from "@/components/data-table/data-table"
+import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 import { useDataTable } from "@/hooks/use-data-table"
 
@@ -11,6 +12,7 @@ import { useBrands } from "../api"
 import type { Brand, BrandApi } from "../types"
 
 import { brandsColumns } from "./brands-columns"
+import { BrandsDateRangeFilter } from "./brands-date-range-filter"
 
 function mapApiToBrand(b: BrandApi): Brand {
   return {
@@ -20,38 +22,55 @@ function mapApiToBrand(b: BrandApi): Brand {
     short_description: b.short_description,
     is_active: b.is_active,
     active_status: b.active_status,
+    created_at: b.created_at ?? null,
   }
 }
 
 export function BrandsTable() {
+  const [page] = useQueryState("page", parseAsInteger.withDefault(1))
+  const [perPage] = useQueryState("perPage", parseAsInteger.withDefault(10))
   const [name] = useQueryState("name", parseAsString.withDefault(""))
   const [status] = useQueryState(
     "status",
     parseAsArrayOf(parseAsString).withDefault([])
   )
+  const [startDate, setStartDate] = useQueryState(
+    "start_date",
+    parseAsString.withDefault("")
+  )
+  const [endDate, setEndDate] = useQueryState(
+    "end_date",
+    parseAsString.withDefault("")
+  )
 
-  const { data: apiData, isLoading, isError, error } = useBrands()
+  const apiParams = React.useMemo(
+    () => ({
+      page,
+      per_page: perPage,
+      search: name === "" ? undefined : name,
+      status: status.length === 1 ? status[0] : undefined,
+      start_date: startDate === "" ? undefined : startDate,
+      end_date: endDate === "" ? undefined : endDate,
+    }),
+    [page, perPage, name, status, startDate, endDate]
+  )
+
+  const { data: apiData, meta, isLoading, isError, error } = useBrands(apiParams)
 
   const brands: Brand[] = React.useMemo(() => {
     const list = apiData ?? []
     return list.map(mapApiToBrand)
   }, [apiData])
 
-  const filteredData = React.useMemo(() => {
-    return brands.filter((brand) => {
-      const matchesName =
-        name === "" ||
-        brand.name.toLowerCase().includes(name.toLowerCase())
-      const matchesStatus =
-        status.length === 0 || status.includes(brand.active_status)
-      return matchesName && matchesStatus
-    })
-  }, [brands, name, status])
+  const pageCount = React.useMemo(() => {
+    if (!meta) return 0
+    return meta.last_page
+  }, [meta])
 
   const { table } = useDataTable<Brand>({
-    data: filteredData,
+    data: brands,
     columns: brandsColumns,
-    pageCount: 1,
+    pageCount,
     initialState: {
       sorting: [{ id: "name", desc: false }],
       columnPinning: { right: ["actions"] },
@@ -61,8 +80,13 @@ export function BrandsTable() {
 
   if (isLoading) {
     return (
-      <div className="data-table-container flex min-h-[200px] items-center justify-center rounded-md border border-dashed">
-        <p className="text-sm text-muted-foreground">Loading brands…</p>
+      <div className="data-table-container">
+        <DataTableSkeleton
+          columnCount={brandsColumns.length}
+          rowCount={10}
+          filterCount={4}
+          cellWidths={["2rem", "auto", "8rem", "12rem", "6rem", "7rem", "2rem"]}
+        />
       </div>
     )
   }
@@ -81,7 +105,14 @@ export function BrandsTable() {
   return (
     <div className="data-table-container">
       <DataTable table={table}>
-        <DataTableToolbar table={table} />
+        <DataTableToolbar table={table}>
+          <BrandsDateRangeFilter
+            startDate={startDate}
+            endDate={endDate}
+            setStartDate={setStartDate}
+            setEndDate={setEndDate}
+          />
+        </DataTableToolbar>
       </DataTable>
     </div>
   )

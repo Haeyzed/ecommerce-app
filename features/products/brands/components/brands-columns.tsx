@@ -13,6 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { cn } from "@/lib/utils"
 
 import { statusOptions } from "../constants"
 import type { Brand } from "../types"
@@ -40,6 +41,11 @@ export const brandsColumns: ColumnDef<Brand>[] = [
     size: 32,
     enableSorting: false,
     enableHiding: false,
+    meta: {
+      className: cn(
+        "bg-background max-md:sticky start-0 z-10 rounded-tl-[inherit]"
+      ),
+    },
   },
   {
     id: "name",
@@ -55,6 +61,10 @@ export const brandsColumns: ColumnDef<Brand>[] = [
       placeholder: "Search names...",
       variant: "text",
       icon: Text,
+      className: cn(
+        "bg-background drop-shadow-[0_1px_2px_rgb(0_0_0_/_0.1)] dark:drop-shadow-[0_1px_2px_rgb(255_255_255_/_0.1)]",
+        "ps-0.5 max-md:sticky start-10 @4xl/content:table-cell @4xl/content:drop-shadow-none"
+      ),
     },
     enableColumnFilter: true,
   },
@@ -110,6 +120,24 @@ export const brandsColumns: ColumnDef<Brand>[] = [
     enableColumnFilter: true,
   },
   {
+    id: "created_at",
+    accessorKey: "created_at",
+    header: ({ column }: { column: Column<Brand, unknown> }) => (
+      <DataTableColumnHeader column={column} label="Created" />
+    ),
+    cell: ({ cell }) => {
+      const raw = cell.getValue<Brand["created_at"]>()
+      if (!raw) return <span className="text-muted-foreground">—</span>
+      const d = new Date(raw)
+      return (
+        <span className="text-muted-foreground">
+          {Number.isNaN(d.getTime()) ? "—" : d.toLocaleDateString()}
+        </span>
+      )
+    },
+    meta: { className: "w-28" },
+  },
+  {
     id: "actions",
     cell: function Cell() {
       return (
@@ -128,5 +156,10 @@ export const brandsColumns: ColumnDef<Brand>[] = [
       )
     },
     size: 32,
+    meta: {
+      className: cn(
+        "bg-background max-md:sticky end-0 z-10 rounded-tr-[inherit]"
+      ),
+    },
   },
 ]

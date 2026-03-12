@@ -5,6 +5,7 @@ export interface Brand {
   short_description: string | null
   is_active: boolean
   active_status: "active" | "inactive"
+  created_at?: string | null
 }
 
 /** API response shape (id as number from backend) */

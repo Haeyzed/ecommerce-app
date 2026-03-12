@@ -17,6 +17,12 @@ declare module "@tanstack/react-table" {
     range?: [number, number]
     unit?: string
     icon?: React.FC<React.SVGProps<SVGSVGElement>>
+    /** Applied to both header and cell when present */
+    className?: string
+    /** Applied only to header cell */
+    thClassName?: string
+    /** Applied only to body cell */
+    tdClassName?: string
   }
 }
 

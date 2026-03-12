@@ -25,13 +25,27 @@ export const brandKeys = {
 
 const BASE_PATH = "/brands"
 
+function toApiParams(params?: BrandListParams): Record<string, string | number | boolean | null | undefined> {
+  if (!params) return {}
+  const out: Record<string, string | number | boolean | null | undefined> = {}
+  if (params.page != null) out.page = params.page
+  if (params.per_page != null) out.per_page = params.per_page
+  if (params.search != null && params.search !== "") out.search = params.search
+  if (params.status != null && params.status !== "") {
+    out.is_active = params.status === "active"
+  }
+  if (params.start_date != null && params.start_date !== "") out.start_date = params.start_date
+  if (params.end_date != null && params.end_date !== "") out.end_date = params.end_date
+  return out
+}
+
 export function useBrands(params?: BrandListParams) {
   const { api, sessionStatus } = useApiClient()
   const query = useQuery({
     queryKey: brandKeys.list(params),
     queryFn: async () => {
       const response = await api.get<BrandApi[]>(BASE_PATH, {
-        params: params as Record<string, string | number | boolean | null | undefined>,
+        params: toApiParams(params),
       })
       return response
     },
@@ -40,6 +54,7 @@ export function useBrands(params?: BrandListParams) {
   return {
     ...query,
     data: query.data?.data ?? null,
+    meta: query.data?.meta,
     isSessionLoading: sessionStatus === "loading",
   }
 }
