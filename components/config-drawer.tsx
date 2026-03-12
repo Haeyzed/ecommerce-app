@@ -74,7 +74,7 @@ function SectionTitle({
 }
 
 /** Config option row: Radix Item with bordered box and icon, matching ecommerce-frontend config-drawer UI */
-function ConfigRadioItem({
+function RadioGroupItem({
   item,
   isTheme = false,
 }: {
@@ -251,7 +251,7 @@ function ThemeConfig() {
             { value: "light", label: "Light", icon: IconThemeLight },
             { value: "dark", label: "Dark", icon: IconThemeDark },
           ].map((item) => (
-            <ConfigRadioItem key={item.value} item={item} isTheme />
+            <RadioGroupItem key={item.value} item={item} isTheme />
           ))}
         </Radio>
       </div>
@@ -295,7 +295,7 @@ function SidebarConfig() {
           { value: "floating", label: "Floating", icon: IconSidebarFloating },
           { value: "sidebar", label: "Sidebar", icon: IconSidebarSidebar },
         ].map((item) => (
-          <ConfigRadioItem key={item.value} item={item} />
+          <RadioGroupItem key={item.value} item={item} />
         ))}
       </Radio>
       <div id="sidebar-description" className="sr-only">
@@ -339,7 +339,7 @@ function LayoutConfig() {
           { value: "icon", label: "Compact", icon: IconLayoutCompact },
           { value: "offcanvas", label: "Full layout", icon: IconLayoutFull },
         ].map((item) => (
-          <ConfigRadioItem key={item.value} item={item} />
+          <RadioGroupItem key={item.value} item={item} />
         ))}
       </Radio>
       <div id="layout-description" className="sr-only">
@@ -369,7 +369,7 @@ function DirConfig() {
           { value: "ltr", label: "Left to Right", icon: IconDirLtr },
           { value: "rtl", label: "Right to Left", icon: IconDirRtl },
         ].map((item) => (
-          <ConfigRadioItem key={item.value} item={item} />
+          <RadioGroupItem key={item.value} item={item} />
         ))}
       </Radio>
       <div id="direction-description" className="sr-only">
