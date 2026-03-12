@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { type SVGProps } from "react"
+import { RadioGroup as RadioGroupPrimitive } from "radix-ui"
 import {
   CheckmarkCircle02Icon,
   Rotate01Icon,
@@ -25,7 +26,7 @@ import { IconThemeDark } from "@/assets/custom/icon-theme-dark"
 import { IconThemeLight } from "@/assets/custom/icon-theme-light"
 import { IconThemeSystem } from "@/assets/custom/icon-theme-system"
 import { Button } from "@/components/ui/button"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { RadioGroup } from "@/components/ui/radio-group"
 import {
   Sheet,
   SheetContent,
@@ -73,10 +74,10 @@ function SectionTitle({
   )
 }
 
+/** Config option row: Radix Item with bordered box and icon, matching ecommerce-frontend config-drawer UI */
 function ConfigRadioItem({
   item,
   isTheme = false,
-  currentValue,
 }: {
   item: {
     value: string
@@ -84,42 +85,51 @@ function ConfigRadioItem({
     icon: (props: SVGProps<SVGSVGElement>) => React.ReactElement
   }
   isTheme?: boolean
-  currentValue?: string
 }) {
-  const checked = currentValue === item.value
   return (
-    <label className="flex cursor-pointer flex-col items-center gap-1 focus-within:ring-2 focus-within:ring-ring rounded-[6px]">
+    <RadioGroupPrimitive.Item
+      value={item.value}
+      className={cn("group outline-none", "transition duration-200 ease-in")}
+      aria-label={`Select ${item.label.toLowerCase()}`}
+      aria-describedby={`${item.value}-description`}
+    >
       <div
         className={cn(
-          "relative rounded-[6px] ring-[1px] ring-border transition duration-200 ease-in",
-          checked && "shadow-2xl ring-primary"
+          "relative rounded-[6px] ring-[1px] ring-border",
+          "group-data-[state=checked]:shadow-2xl group-data-[state=checked]:ring-primary",
+          "group-focus-visible:ring-2 group-focus-visible:ring-ring"
         )}
+        role="img"
+        aria-hidden
+        aria-label={`${item.label} option preview`}
       >
-        <RadioGroupItem
-          value={item.value}
-          aria-label={`Select ${item.label.toLowerCase()}`}
-          className="absolute inset-0 z-10 opacity-0"
+        <HugeiconsIcon
+          icon={CheckmarkCircle02Icon}
+          className={cn(
+            "size-6 fill-primary stroke-white",
+            "group-data-[state=unchecked]:hidden",
+            "absolute top-0 right-0 translate-x-1/2 -translate-y-1/2"
+          )}
+          aria-hidden
         />
-        {checked && (
-          <HugeiconsIcon
-            icon={CheckmarkCircle02Icon}
-            className="absolute top-0 right-0 size-6 translate-x-1/2 -translate-y-1/2 fill-primary stroke-white"
-          />
-        )}
         <div className="p-2">
           <item.icon
             className={cn(
               "size-8",
               !isTheme &&
-                (checked
-                  ? "fill-primary stroke-primary text-primary"
-                  : "fill-muted-foreground stroke-muted-foreground text-muted-foreground")
+                "fill-primary stroke-primary group-data-[state=unchecked]:fill-muted-foreground group-data-[state=unchecked]:stroke-muted-foreground"
             )}
           />
         </div>
       </div>
-      <span className="text-xs">{item.label}</span>
-    </label>
+      <div
+        className="mt-1 text-xs"
+        id={`${item.value}-description`}
+        aria-live="polite"
+      >
+        {item.label}
+      </div>
+    </RadioGroupPrimitive.Item>
   )
 }
 
@@ -210,7 +220,7 @@ function ThemeConfig() {
           { value: "light", label: "Light", icon: IconThemeLight },
           { value: "dark", label: "Dark", icon: IconThemeDark },
         ].map((item) => (
-          <ConfigRadioItem key={item.value} item={item} isTheme currentValue={theme ?? defaultTheme} />
+          <ConfigRadioItem key={item.value} item={item} isTheme />
         ))}
       </RadioGroup>
     </div>
@@ -249,7 +259,7 @@ function SidebarConfig() {
           { value: "floating", label: "Floating", icon: IconSidebarFloating },
           { value: "sidebar", label: "Sidebar", icon: IconSidebarSidebar },
         ].map((item) => (
-          <ConfigRadioItem key={item.value} item={item} currentValue={variant} />
+          <ConfigRadioItem key={item.value} item={item} />
         ))}
       </RadioGroup>
     </div>
@@ -289,7 +299,7 @@ function LayoutConfig() {
           { value: "icon", label: "Compact", icon: IconLayoutCompact },
           { value: "offcanvas", label: "Overlay", icon: IconLayoutFull },
         ].map((item) => (
-          <ConfigRadioItem key={item.value} item={item} currentValue={radioState} />
+          <ConfigRadioItem key={item.value} item={item} />
         ))}
       </RadioGroup>
     </div>
@@ -315,7 +325,7 @@ function DirConfig() {
           { value: "ltr", label: "LTR", icon: IconDirLtr },
           { value: "rtl", label: "RTL", icon: IconDirRtl },
         ].map((item) => (
-          <ConfigRadioItem key={item.value} item={item} currentValue={dir} />
+          <ConfigRadioItem key={item.value} item={item} />
         ))}
       </RadioGroup>
     </div>
