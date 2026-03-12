@@ -31,8 +31,8 @@ function toApiParams(params?: BrandListParams): Record<string, string | number |
   if (params.page != null) out.page = params.page
   if (params.per_page != null) out.per_page = params.per_page
   if (params.search != null && params.search !== "") out.search = params.search
-  if (params.status != null && params.status !== "") {
-    out.is_active = params.status === "active"
+  if (params.is_active !== undefined && params.is_active !== null) {
+    out.is_active = params.is_active
   }
   if (params.start_date != null && params.start_date !== "") out.start_date = params.start_date
   if (params.end_date != null && params.end_date !== "") out.end_date = params.end_date

@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 
-import { statusOptions } from "../constants"
+import { isActiveOptions } from "../constants"
 import type { Brand } from "../types"
 
 export const brandsColumns: ColumnDef<Brand>[] = [
@@ -93,25 +93,25 @@ export const brandsColumns: ColumnDef<Brand>[] = [
     ),
   },
   {
-    id: "status",
-    accessorKey: "active_status",
+    id: "is_active",
+    accessorKey: "is_active",
     header: ({ column }: { column: Column<Brand, unknown> }) => (
       <DataTableColumnHeader column={column} label="Status" />
     ),
     cell: ({ cell }) => {
-      const activeStatus = cell.getValue<Brand["active_status"]>()
-      const Icon = activeStatus === "active" ? CheckCircle2 : XCircle
+      const isActive = cell.getValue<Brand["is_active"]>()
+      const Icon = isActive ? CheckCircle2 : XCircle
       return (
         <Badge variant="outline" className="capitalize">
           <Icon className="size-3.5" />
-          {activeStatus}
+          {isActive ? "Active" : "Inactive"}
         </Badge>
       )
     },
     meta: {
       label: "Status",
       variant: "multiSelect",
-      options: statusOptions.map((o) => ({
+      options: isActiveOptions.map((o) => ({
         label: o.label,
         value: o.value,
         icon: o.icon,
@@ -135,7 +135,12 @@ export const brandsColumns: ColumnDef<Brand>[] = [
         </span>
       )
     },
-    meta: { className: "w-28" },
+    meta: {
+      label: "Created",
+      variant: "dateRange",
+      className: "w-28",
+    },
+    enableColumnFilter: true,
   },
   {
     id: "actions",

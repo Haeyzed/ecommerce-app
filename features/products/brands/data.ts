@@ -7,7 +7,6 @@ export const brandsData: Brand[] = [
     slug: "acme",
     short_description: "Quality products for everyone.",
     is_active: true,
-    active_status: "active",
   },
   {
     id: "2",
@@ -15,7 +14,6 @@ export const brandsData: Brand[] = [
     slug: "beta-brands",
     short_description: "Innovation in every item.",
     is_active: false,
-    active_status: "inactive",
   },
   {
     id: "3",
@@ -23,7 +21,6 @@ export const brandsData: Brand[] = [
     slug: "gamma-co",
     short_description: "Premium selection.",
     is_active: true,
-    active_status: "active",
   },
   {
     id: "4",
@@ -31,6 +28,5 @@ export const brandsData: Brand[] = [
     slug: "delta-goods",
     short_description: null,
     is_active: true,
-    active_status: "active",
   },
 ]

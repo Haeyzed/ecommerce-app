@@ -4,7 +4,6 @@ export interface Brand {
   slug: string | null
   short_description: string | null
   is_active: boolean
-  active_status: "active" | "inactive"
   created_at?: string | null
 }
 
@@ -15,7 +14,6 @@ export interface BrandApi {
   slug: string | null
   short_description: string | null
   is_active: boolean
-  active_status: "active" | "inactive"
   image?: string | null
   image_url?: string | null
   page_title?: string | null
@@ -36,7 +34,7 @@ export type BrandListParams = {
   page?: number
   per_page?: number
   search?: string
-  status?: string
+  is_active?: boolean
   start_date?: string
   end_date?: string
 }

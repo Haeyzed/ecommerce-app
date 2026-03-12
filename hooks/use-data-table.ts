@@ -39,6 +39,19 @@ const JOIN_OPERATOR_KEY = "joinOperator"
 const ARRAY_SEPARATOR = ","
 const DEBOUNCE_MS = 300
 const THROTTLE_MS = 50
+const DATE_RANGE_START_KEY = "start_date"
+const DATE_RANGE_END_KEY = "end_date"
+
+function dateRangeValueToYYYYMMDD(value: unknown): [string | null, string | null] {
+  if (!value || !Array.isArray(value)) return [null, null]
+  const from = value[0] != null ? new Date(Number(value[0])) : null
+  const to = value[1] != null ? new Date(Number(value[1])) : null
+  if (!from?.getTime() || !to?.getTime()) return [null, null]
+  return [
+    from.toISOString().slice(0, 10),
+    to.toISOString().slice(0, 10),
+  ]
+}
 
 interface UseDataTableProps<TData>
   extends
@@ -180,12 +193,28 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     return columns.filter((column) => column.enableColumnFilter)
   }, [columns, enableAdvancedFilter])
 
+  const dateRangeColumnId = React.useMemo(
+    () =>
+      filterableColumns.find(
+        (col) => (col.meta as { variant?: string } | undefined)?.variant === "dateRange"
+      )?.id ?? null,
+    [filterableColumns]
+  )
+
   const filterParsers = React.useMemo(() => {
     if (enableAdvancedFilter) return {}
 
-    return filterableColumns.reduce<
+    const acc = filterableColumns.reduce<
       Record<string, SingleParser<string> | SingleParser<string[]>>
     >((acc, column) => {
+      const variant = (column.meta as { variant?: string } | undefined)?.variant
+      if (variant === "dateRange") {
+        if (!acc[DATE_RANGE_START_KEY]) {
+          acc[DATE_RANGE_START_KEY] = parseAsString.withOptions(queryStateOptions)
+          acc[DATE_RANGE_END_KEY] = parseAsString.withOptions(queryStateOptions)
+        }
+        return acc
+      }
       if (column.meta?.options) {
         acc[column.id ?? ""] = parseAsArrayOf(
           parseAsString,
@@ -196,6 +225,7 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
       }
       return acc
     }, {})
+    return acc
   }, [filterableColumns, queryStateOptions, enableAdvancedFilter])
 
   const [filterValues, setFilterValues] = useQueryStates(filterParsers)
@@ -211,25 +241,41 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
   const initialColumnFilters: ColumnFiltersState = React.useMemo(() => {
     if (enableAdvancedFilter) return []
 
-    return Object.entries(filterValues).reduce<ColumnFiltersState>(
-      (filters, [key, value]) => {
-        if (value !== null) {
-          const processedValue = Array.isArray(value)
-            ? value
-            : typeof value === "string" && /[^a-zA-Z0-9]/.test(value)
-              ? value.split(/[^a-zA-Z0-9]+/).filter(Boolean)
-              : [value]
+    const filters: ColumnFiltersState = []
+    const startDate = filterValues[DATE_RANGE_START_KEY]
+    const endDate = filterValues[DATE_RANGE_END_KEY]
 
-          filters.push({
-            id: key,
-            value: processedValue,
-          })
-        }
-        return filters
-      },
-      []
-    )
-  }, [filterValues, enableAdvancedFilter])
+    for (const [key, value] of Object.entries(filterValues)) {
+      if (key === DATE_RANGE_START_KEY || key === DATE_RANGE_END_KEY) continue
+      if (value !== null) {
+        const processedValue = Array.isArray(value)
+          ? value
+          : typeof value === "string" && /[^a-zA-Z0-9]/.test(value)
+            ? value.split(/[^a-zA-Z0-9]+/).filter(Boolean)
+            : [value]
+        filters.push({ id: key, value: processedValue })
+      }
+    }
+
+    if (
+      dateRangeColumnId &&
+      typeof startDate === "string" &&
+      startDate !== "" &&
+      typeof endDate === "string" &&
+      endDate !== ""
+    ) {
+      const from = new Date(startDate).getTime()
+      const to = new Date(endDate).getTime()
+      if (!Number.isNaN(from) && !Number.isNaN(to)) {
+        filters.push({
+          id: dateRangeColumnId,
+          value: [from, to],
+        })
+      }
+    }
+
+    return filters
+  }, [filterValues, enableAdvancedFilter, dateRangeColumnId])
 
   const [columnFilters, setColumnFilters] =
     React.useState<ColumnFiltersState>(initialColumnFilters)
@@ -244,18 +290,28 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
             ? updaterOrValue(prev)
             : updaterOrValue
 
-        const filterUpdates = next.reduce<
-          Record<string, string | string[] | null>
-        >((acc, filter) => {
-          if (filterableColumns.find((column) => column.id === filter.id)) {
-            acc[filter.id] = filter.value as string | string[]
+        const filterUpdates: Record<string, string | string[] | null> = {}
+
+        for (const filter of next) {
+          if (filter.id === dateRangeColumnId) {
+            const [start, end] = dateRangeValueToYYYYMMDD(filter.value)
+            filterUpdates[DATE_RANGE_START_KEY] = start
+            filterUpdates[DATE_RANGE_END_KEY] = end
+          } else if (
+            filterableColumns.some((column) => column.id === filter.id)
+          ) {
+            filterUpdates[filter.id] = filter.value as string | string[]
           }
-          return acc
-        }, {})
+        }
 
         for (const prevFilter of prev) {
-          if (!next.some((filter) => filter.id === prevFilter.id)) {
-            filterUpdates[prevFilter.id] = null
+          if (!next.some((f) => f.id === prevFilter.id)) {
+            if (prevFilter.id === dateRangeColumnId) {
+              filterUpdates[DATE_RANGE_START_KEY] = null
+              filterUpdates[DATE_RANGE_END_KEY] = null
+            } else {
+              filterUpdates[prevFilter.id] = null
+            }
           }
         }
 
@@ -263,7 +319,12 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
         return next
       })
     },
-    [debouncedSetFilterValues, filterableColumns, enableAdvancedFilter]
+    [
+      debouncedSetFilterValues,
+      filterableColumns,
+      enableAdvancedFilter,
+      dateRangeColumnId,
+    ]
   )
 
   const table = useReactTable({
