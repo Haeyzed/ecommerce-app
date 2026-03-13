@@ -11,12 +11,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { formatDate } from "@/lib/format"
+import { formatDate, toLocalYYYYMMDD } from "@/lib/format"
 import { cn } from "@/lib/utils"
-
-function toYYYYMMDD(d: Date): string {
-  return d.toISOString().slice(0, 10)
-}
 
 export interface BrandsDateRangeFilterProps {
   startDate: string
@@ -52,8 +48,8 @@ export function BrandsDateRangeFilter({
         setEndDate(null)
         return
       }
-      setStartDate(toYYYYMMDD(range.from))
-      setEndDate(range.to ? toYYYYMMDD(range.to) : null)
+      setStartDate(toLocalYYYYMMDD(range.from))
+      setEndDate(range.to ? toLocalYYYYMMDD(range.to) : null)
       if (range.from && range.to) setOpen(false)
     },
     [setStartDate, setEndDate]

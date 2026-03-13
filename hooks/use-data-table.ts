@@ -28,6 +28,7 @@ import {
 import * as React from "react"
 
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback"
+import { toLocalYYYYMMDD } from "@/lib/format"
 import { getSortingStateParser } from "@/lib/parsers"
 import type { ExtendedColumnSort, QueryKeys } from "@/types/data-table"
 
@@ -47,10 +48,7 @@ function dateRangeValueToYYYYMMDD(value: unknown): [string | null, string | null
   const from = value[0] != null ? new Date(Number(value[0])) : null
   const to = value[1] != null ? new Date(Number(value[1])) : null
   if (!from?.getTime() || !to?.getTime()) return [null, null]
-  return [
-    from.toISOString().slice(0, 10),
-    to.toISOString().slice(0, 10),
-  ]
+  return [toLocalYYYYMMDD(from), toLocalYYYYMMDD(to)]
 }
 
 interface UseDataTableProps<TData>
