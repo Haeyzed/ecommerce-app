@@ -40,6 +40,7 @@ export function DataTable<TData>({
                   const meta = header.column.columnDef.meta as
                     | { className?: string; thClassName?: string }
                     | undefined
+                  const isPinned = header.column.getIsPinned()
                   return (
                     <TableHead
                       key={header.id}
@@ -49,9 +50,11 @@ export function DataTable<TData>({
                         meta?.className,
                         meta?.thClassName
                       )}
-                      style={{
-                        ...getColumnPinningStyle({ column: header.column }),
-                      }}
+                      style={
+                        isPinned
+                          ? getColumnPinningStyle({ column: header.column })
+                          : undefined
+                      }
                     >
                       {header.isPlaceholder
                         ? null
@@ -77,6 +80,7 @@ export function DataTable<TData>({
                     const meta = cell.column.columnDef.meta as
                       | { className?: string; tdClassName?: string }
                       | undefined
+                    const isPinned = cell.column.getIsPinned()
                     return (
                       <TableCell
                         key={cell.id}
@@ -85,9 +89,11 @@ export function DataTable<TData>({
                           meta?.className,
                           meta?.tdClassName
                         )}
-                        style={{
-                          ...getColumnPinningStyle({ column: cell.column }),
-                        }}
+                        style={
+                          isPinned
+                            ? getColumnPinningStyle({ column: cell.column })
+                            : undefined
+                        }
                       >
                         {flexRender(
                           cell.column.columnDef.cell,

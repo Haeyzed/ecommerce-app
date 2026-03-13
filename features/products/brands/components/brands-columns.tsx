@@ -35,7 +35,9 @@ export const brandsColumns: ColumnDef<Brand>[] = [
       />
     ),
     meta: {
-      className: cn('max-md:sticky start-0 z-10 rounded-tl-[inherit]'),
+      className: cn(
+        "w-10 min-w-10 max-w-10 bg-background max-md:sticky start-0 z-10 rounded-tl-[inherit]"
+      ),
     },
     cell: ({ row }) => (
       <Checkbox
@@ -45,6 +47,7 @@ export const brandsColumns: ColumnDef<Brand>[] = [
         className="translate-y-[2px]"
       />
     ),
+    size: 40,
     enableSorting: false,
     enableHiding: false,
   },
@@ -75,7 +78,7 @@ export const brandsColumns: ColumnDef<Brand>[] = [
       icon: Text,
       className: cn(
         "bg-background drop-shadow-[0_1px_2px_rgb(0_0_0_/_0.1)] dark:drop-shadow-[0_1px_2px_rgb(255_255_255_/_0.1)]",
-        "ps-0.5 max-md:sticky start-10 @4xl/content:table-cell @4xl/content:drop-shadow-none"
+        "ps-0.5 max-md:sticky max-md:start-10 @4xl/content:table-cell @4xl/content:drop-shadow-none"
       ),
     },
     enableColumnFilter: true,
