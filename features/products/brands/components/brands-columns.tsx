@@ -35,9 +35,7 @@ export const brandsColumns: ColumnDef<Brand>[] = [
       />
     ),
     meta: {
-      className: cn(
-        "bg-background max-md:sticky start-0 z-10 rounded-tl-[inherit]"
-      ),
+      className: cn('max-md:sticky start-0 z-10 rounded-tl-[inherit]'),
     },
     cell: ({ row }) => (
       <Checkbox
@@ -47,7 +45,6 @@ export const brandsColumns: ColumnDef<Brand>[] = [
         className="translate-y-[2px]"
       />
     ),
-    size: 32,
     enableSorting: false,
     enableHiding: false,
   },
