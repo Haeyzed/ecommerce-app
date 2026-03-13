@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { SessionProvider } from "next-auth/react"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 
-import { ThemeProvider } from "@/components/theme-provider"
+import { ThemeProvider } from "@/lib/providers/theme-provider"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Toaster } from "@/components/ui/sonner"
 import { ActiveThemeProvider } from "@/lib/providers/active-theme-provider"

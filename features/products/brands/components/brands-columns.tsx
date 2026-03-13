@@ -17,6 +17,8 @@ import { cn } from "@/lib/utils"
 
 import { isActiveOptions } from "../constants"
 import type { Brand } from "../types"
+import { LongText } from "@/components/long-text"
+import { ImageZoomCell } from "@/components/image-zoom"
 
 export const brandsColumns: ColumnDef<Brand>[] = [
   {
@@ -53,8 +55,19 @@ export const brandsColumns: ColumnDef<Brand>[] = [
     header: ({ column }: { column: Column<Brand, unknown> }) => (
       <DataTableColumnHeader column={column} label="Name" />
     ),
-    cell: ({ cell }) => (
-      <div className="font-medium">{cell.getValue<Brand["name"]>()}</div>
+    cell: ({ row }) => (
+      <div className='flex items-center gap-3 ps-3'>
+        {row.original.image_url ? (
+          <ImageZoomCell src={row.original.image_url} alt={row.original.name} />
+        ) : (
+          <div className='flex size-10 items-center justify-center rounded-md bg-muted'>
+            <span className='text-xs font-medium'>
+              {row.original.name.charAt(0).toUpperCase()}
+            </span>
+          </div>
+        )}
+        <LongText className='max-w-36'>{row.original.name}</LongText>
+      </div>
     ),
     meta: {
       label: "Name",
