@@ -9,21 +9,10 @@ import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 import { useDataTable } from "@/hooks/use-data-table"
 
 import { useBrands } from "../api"
-import type { Brand, BrandApi } from "../types"
+import type { Brand } from "../types"
 
 import { brandsColumns } from "./brands-columns"
-import { BrandsDateRangeFilter } from "./brands-date-range-filter"
-
-function mapApiToBrand(b: BrandApi): Brand {
-  return {
-    id: String(b.id),
-    name: b.name,
-    slug: b.slug,
-    short_description: b.short_description,
-    is_active: b.is_active,
-    created_at: b.created_at ?? null,
-  }
-}
+import { BrandsDataTableBulkActions } from "./brands-data-table-bulk-actions"
 
 export function BrandsTable() {
   const [page] = useQueryState("page", parseAsInteger.withDefault(1))
@@ -53,10 +42,7 @@ export function BrandsTable() {
 
   const { data: apiData, meta, isLoading, isError, error } = useBrands(apiParams)
 
-  const brands: Brand[] = React.useMemo(() => {
-    const list = apiData ?? []
-    return list.map(mapApiToBrand)
-  }, [apiData])
+  const brands: Brand[] = apiData ?? []
 
   const pageCount = React.useMemo(() => {
     if (!meta) return 0
@@ -71,7 +57,7 @@ export function BrandsTable() {
       sorting: [{ id: "name", desc: false }],
       columnPinning: { right: ["actions"] },
     },
-    getRowId: (row) => row.id,
+    getRowId: (row) => String(row.id),
   })
 
   if (isLoading) {
@@ -99,8 +85,8 @@ export function BrandsTable() {
   }
 
   return (
-    <div className="data-table-container">
-      <DataTable table={table}>
+    <div className="data-table-container flex flex-1 flex-col gap-4 max-sm:has-[div[role='toolbar']]:mb-16">
+      <DataTable table={table} actionBar={<BrandsDataTableBulkActions table={table} />}>
         <DataTableToolbar table={table} />
       </DataTable>
     </div>

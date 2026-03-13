@@ -7,7 +7,7 @@ import { useApiClient } from "@/lib/api/use-api-client"
 import { ValidationError } from "@/lib/api/errors"
 
 import type {
-  BrandApi,
+  Brand,
   BrandFormData,
   BrandListParams,
   BrandOption,
@@ -44,7 +44,7 @@ export function useBrands(params?: BrandListParams) {
   const query = useQuery({
     queryKey: brandKeys.list(params),
     queryFn: async () => {
-      const response = await api.get<BrandApi[]>(BASE_PATH, {
+      const response = await api.get<Brand[]>(BASE_PATH, {
         params: toApiParams(params),
       })
       return response
@@ -77,7 +77,7 @@ export function useBrand(id: number | null) {
     queryKey: brandKeys.detail(id ?? 0),
     queryFn: async () => {
       if (!id) return null
-      const response = await api.get<BrandApi>(`${BASE_PATH}/${id}`)
+      const response = await api.get<Brand>(`${BASE_PATH}/${id}`)
       return response.data ?? null
     },
     enabled: !!id && sessionStatus !== "loading",
@@ -104,7 +104,7 @@ export function useCreateBrand() {
       if (data.is_active !== undefined)
         formData.append("is_active", data.is_active ? "1" : "0")
 
-      const response = await api.post<{ data: BrandApi }>(BASE_PATH, formData)
+      const response = await api.post<{ data: Brand }>(BASE_PATH, formData)
       if (!response.success) {
         if (response.errors) {
           throw new ValidationError(response.message, response.errors)
@@ -144,7 +144,7 @@ export function useUpdateBrand() {
       if (data.is_active !== undefined)
         formData.append("is_active", data.is_active ? "1" : "0")
 
-      const response = await api.post<{ data: BrandApi }>(
+      const response = await api.post<{ data: Brand }>(
         `${BASE_PATH}/${id}`,
         formData
       )
@@ -174,6 +174,72 @@ export function useDeleteBrand() {
   return useMutation({
     mutationFn: async (id: number) => {
       const response = await api.delete<unknown>(`${BASE_PATH}/${id}`)
+      if (!response.success) throw new Error(response.message)
+      return response
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: brandKeys.lists() })
+      toast.success(response.message)
+    },
+    onError: (error: Error) => {
+      toast.error(error.message)
+    },
+  })
+}
+
+export function useBulkActivateBrands() {
+  const { api } = useApiClient()
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (ids: number[]) => {
+      const response = await api.post<{ activated_count: number }>(
+        `${BASE_PATH}/bulk-activate`,
+        { ids }
+      )
+      if (!response.success) throw new Error(response.message)
+      return response
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: brandKeys.lists() })
+      toast.success(response.message)
+    },
+    onError: (error: Error) => {
+      toast.error(error.message)
+    },
+  })
+}
+
+export function useBulkDeactivateBrands() {
+  const { api } = useApiClient()
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (ids: number[]) => {
+      const response = await api.post<{ deactivated_count: number }>(
+        `${BASE_PATH}/bulk-deactivate`,
+        { ids }
+      )
+      if (!response.success) throw new Error(response.message)
+      return response
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: brandKeys.lists() })
+      toast.success(response.message)
+    },
+    onError: (error: Error) => {
+      toast.error(error.message)
+    },
+  })
+}
+
+export function useBulkDestroyBrands() {
+  const { api } = useApiClient()
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (ids: number[]) => {
+      const response = await api.post<{ deleted_count: number }>(
+        `${BASE_PATH}/bulk-destroy`,
+        { ids }
+      )
       if (!response.success) throw new Error(response.message)
       return response
     },

@@ -44,7 +44,11 @@ export function DataTable<TData>({
                     <TableHead
                       key={header.id}
                       colSpan={header.colSpan}
-                      className={cn(meta?.className, meta?.thClassName)}
+                      className={cn(
+                        "bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted",
+                        meta?.className,
+                        meta?.thClassName
+                      )}
                       style={{
                         ...getColumnPinningStyle({ column: header.column }),
                       }}
@@ -76,7 +80,11 @@ export function DataTable<TData>({
                     return (
                       <TableCell
                         key={cell.id}
-                        className={cn(meta?.className, meta?.tdClassName)}
+                        className={cn(
+                          "bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted",
+                          meta?.className,
+                          meta?.tdClassName
+                        )}
                         style={{
                           ...getColumnPinningStyle({ column: cell.column }),
                         }}

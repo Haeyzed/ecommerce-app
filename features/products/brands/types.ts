@@ -1,15 +1,4 @@
 export interface Brand {
-  id: string
-  name: string
-  slug: string | null
-  short_description: string | null
-  image_url?: string | null
-  is_active: boolean
-  created_at?: string | null
-}
-
-/** API response shape (id as number from backend) */
-export interface BrandApi {
   id: number
   name: string
   slug: string | null
