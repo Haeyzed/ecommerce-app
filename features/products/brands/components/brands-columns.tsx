@@ -29,23 +29,23 @@ export const brandsColumns: ColumnDef<Brand>[] = [
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
+        className="translate-y-[2px]"
       />
     ),
+    meta: {
+      className: cn('max-md:sticky start-0 z-10 rounded-tl-[inherit]'),
+    },
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
+        className="translate-y-[2px]"
       />
     ),
     size: 32,
     enableSorting: false,
     enableHiding: false,
-    meta: {
-      className: cn(
-        "bg-background max-md:sticky start-0 z-10 rounded-tl-[inherit]"
-      ),
-    },
   },
   {
     id: "name",
@@ -62,8 +62,8 @@ export const brandsColumns: ColumnDef<Brand>[] = [
       variant: "text",
       icon: Text,
       className: cn(
-        "bg-background drop-shadow-[0_1px_2px_rgb(0_0_0_/_0.1)] dark:drop-shadow-[0_1px_2px_rgb(255_255_255_/_0.1)]",
-        "ps-0.5 max-md:sticky start-10 @4xl/content:table-cell @4xl/content:drop-shadow-none"
+        'drop-shadow-[0_1px_2px_rgb(0_0_0_/_0.1)] dark:drop-shadow-[0_1px_2px_rgb(255_255_255_/_0.1)]',
+        'ps-0.5 max-md:sticky start-6 @4xl/content:table-cell @4xl/content:drop-shadow-none'
       ),
     },
     enableColumnFilter: true,
