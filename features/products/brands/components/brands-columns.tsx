@@ -5,18 +5,12 @@ import { CheckCircle2, MoreHorizontal, Text, XCircle } from "lucide-react"
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 
 import { isActiveOptions } from "../constants"
 import type { Brand } from "../types"
+import { BrandsDataTableRowActions } from "./brands-data-table-row-actions"
 import { LongText } from "@/components/long-text"
 import { ImageZoomCell } from "@/components/image-zoom"
 
@@ -159,22 +153,9 @@ export const brandsColumns: ColumnDef<Brand>[] = [
   },
   {
     id: "actions",
-    cell: function Cell() {
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <MoreHorizontal className="h-4 w-4" />
-              <span className="sr-only">Open menu</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    },
+    cell: ({ row }) => (
+      <BrandsDataTableRowActions row={row} />
+    ),
     size: 32,
     meta: {
       className: cn(

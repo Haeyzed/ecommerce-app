@@ -4,52 +4,41 @@ import { useState } from "react"
 import type { Table } from "@tanstack/react-table"
 import { CheckCircle2, CircleSlash, Loader2, Trash2 } from "lucide-react"
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { DataTableBulkActions } from "@/components/data-table/data-table-bulk-actions"
 
-import { useBulkActivateBrands, useBulkDeactivateBrands, useBulkDestroyBrands } from "../api"
+import { useBulkActivateBrands, useBulkDeactivateBrands } from "../api"
 import type { Brand } from "../types"
+import { BrandsMultiDeleteDialog } from "./brands-multi-delete-dialog"
 
 export interface BrandsDataTableBulkActionsProps {
   table: Table<Brand>
 }
 
-export function BrandsDataTableBulkActions({ table }: BrandsDataTableBulkActionsProps) {
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
-  const selectedRows = table.getFilteredSelectedRowModel().rows
-  const selectedIds = selectedRows.map((row) => row.original.id)
+export function BrandsDataTableBulkActions({
+  table,
+}: BrandsDataTableBulkActionsProps) {
+  const [showMultiDelete, setShowMultiDelete] = useState(false)
 
-  const { mutate: activateBrands, isPending: isActivating } = useBulkActivateBrands()
-  const { mutate: deactivateBrands, isPending: isDeactivating } = useBulkDeactivateBrands()
-  const { mutate: destroyBrands, isPending: isDeleting } = useBulkDestroyBrands()
+  const { mutate: activateBrands, isPending: isActivating } =
+    useBulkActivateBrands()
+  const { mutate: deactivateBrands, isPending: isDeactivating } =
+    useBulkDeactivateBrands()
 
-  const isBusy = isActivating || isDeactivating || isDeleting
+  const isBusy = isActivating || isDeactivating
 
   const handleBulkActivate = () => {
+    const selectedIds = table
+      .getFilteredSelectedRowModel()
+      .rows.map((row) => row.original.id)
     activateBrands(selectedIds, { onSuccess: () => table.resetRowSelection() })
   }
 
   const handleBulkDeactivate = () => {
+    const selectedIds = table
+      .getFilteredSelectedRowModel()
+      .rows.map((row) => row.original.id)
     deactivateBrands(selectedIds, { onSuccess: () => table.resetRowSelection() })
-  }
-
-  const handleBulkDelete = () => {
-    destroyBrands(selectedIds, {
-      onSuccess: () => {
-        table.resetRowSelection()
-        setShowDeleteConfirm(false)
-      },
-    })
   }
 
   return (
@@ -86,7 +75,7 @@ export function BrandsDataTableBulkActions({ table }: BrandsDataTableBulkActions
         <Button
           variant="destructive"
           size="icon"
-          onClick={() => setShowDeleteConfirm(true)}
+          onClick={() => setShowMultiDelete(true)}
           disabled={isBusy}
           className="size-8"
           aria-label="Delete selected brands"
@@ -95,37 +84,11 @@ export function BrandsDataTableBulkActions({ table }: BrandsDataTableBulkActions
         </Button>
       </DataTableBulkActions>
 
-      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete selected brands?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will permanently delete {selectedIds.length} brand
-              {selectedIds.length > 1 ? "s" : ""}. This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={(e) => {
-                e.preventDefault()
-                handleBulkDelete()
-              }}
-              disabled={isDeleting}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              {isDeleting ? (
-                <>
-                  <Loader2 className="mr-2 size-4 animate-spin" />
-                  Deleting…
-                </>
-              ) : (
-                "Delete"
-              )}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <BrandsMultiDeleteDialog
+        open={showMultiDelete}
+        onOpenChange={setShowMultiDelete}
+        table={table}
+      />
     </>
   )
 }
