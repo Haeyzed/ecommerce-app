@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/table"
 import { Spinner } from "@/components/ui/spinner"
 
-interface BrandsCsvPreviewDialogProps {
+interface BrandsImportPreviewDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   data: Record<string, string>[]
@@ -27,13 +27,13 @@ interface BrandsCsvPreviewDialogProps {
   isPending: boolean
 }
 
-export function BrandsCsvPreviewDialog({
+export function BrandsImportPreviewDialog({
   open,
   onOpenChange,
   data,
   onConfirm,
   isPending,
-}: BrandsCsvPreviewDialogProps) {
+}: BrandsImportPreviewDialogProps) {
   const headers = data.length > 0 ? Object.keys(data[0]) : []
 
   return (

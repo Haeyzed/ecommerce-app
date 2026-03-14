@@ -1,5 +1,6 @@
 "use client"
 
+import { format } from "date-fns"
 import * as React from "react"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -15,7 +16,6 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
   ResponsiveDialog,
@@ -41,6 +41,7 @@ import {
   brandExportSchema,
   type BrandExportFormData,
 } from "../schemas"
+import { DateRangePicker } from "@/components/date-range-picker"
 
 interface BrandsExportDialogProps {
   open: boolean
@@ -120,32 +121,34 @@ export function BrandsExportDialog({
             <Controller
               control={form.control}
               name="start_date"
-              render={({ field }) => (
+              render={({ fieldState }) => (
                 <Field className="grid w-full gap-1.5">
                   <FieldLabel>Date range (optional)</FieldLabel>
-                  <div className="flex gap-2 items-center">
-                    <Input
-                      type="date"
-                      {...field}
-                      value={field.value ?? ""}
-                      onChange={(e) => field.onChange(e.target.value || undefined)}
-                    />
-                    <span className="text-muted-foreground">to</span>
-                    <Controller
-                      control={form.control}
-                      name="end_date"
-                      render={({ field: endField }) => (
-                        <Input
-                          type="date"
-                          {...endField}
-                          value={endField.value ?? ""}
-                          onChange={(e) =>
-                            endField.onChange(e.target.value || undefined)
-                          }
-                        />
-                      )}
-                    />
-                  </div>
+                  <DateRangePicker
+                    value={{
+                      from: form.watch("start_date")
+                        ? new Date(form.watch("start_date")!)
+                        : undefined,
+                      to: form.watch("end_date")
+                        ? new Date(form.watch("end_date")!)
+                        : undefined,
+                    }}
+                    onChange={(range) => {
+                      form.setValue(
+                        "start_date",
+                        range?.from ? format(range.from, "yyyy-MM-dd") : undefined,
+                        { shouldValidate: true, shouldDirty: true }
+                      )
+                      form.setValue(
+                        "end_date",
+                        range?.to ? format(range.to, "yyyy-MM-dd") : undefined,
+                        { shouldValidate: true, shouldDirty: true }
+                      )
+                    }}
+                  />
+                  {fieldState.error && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
                 </Field>
               )}
             />

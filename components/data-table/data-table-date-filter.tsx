@@ -7,6 +7,7 @@ import type { DateRange } from "react-day-picker"
 
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
+import { DateRangePicker } from "@/components/date-range-picker"
 import {
   Popover,
   PopoverContent,
@@ -198,16 +199,13 @@ export function DataTableDateFilter<TData>({
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         {multiple ? (
-          <Calendar
-            autoFocus
-            captionLayout="dropdown"
-            mode="range"
-            selected={
+          <DateRangePicker
+            value={
               getIsDateRange(selectedDates)
                 ? selectedDates
                 : { from: undefined, to: undefined }
             }
-            onSelect={onSelect}
+            onChange={onSelect}
           />
         ) : (
           <Calendar

@@ -41,7 +41,7 @@ import {
   brandImportSchema,
   type BrandImportFormData,
 } from "../schemas"
-import { BrandsCsvPreviewDialog } from "./brands-csv-preview-dialog"
+import { BrandsImportPreviewDialog } from "./brands-import-preview-dialog"
 
 interface BrandsImportDialogProps {
   open: boolean
@@ -245,7 +245,7 @@ export function BrandsImportDialog({
         </ResponsiveDialogContent>
       </ResponsiveDialog>
 
-      <BrandsCsvPreviewDialog
+      <BrandsImportPreviewDialog
         open={previewOpen}
         onOpenChange={setPreviewOpen}
         data={previewData}
