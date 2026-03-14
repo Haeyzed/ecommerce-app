@@ -24,7 +24,6 @@ export type BrandListParams = {
   page?: number
   per_page?: number
   search?: string
-  /** Array of 0 (inactive) and/or 1 (active); API uses whereIn. */
   is_active?: (0 | 1)[]
   start_date?: string
   end_date?: string
@@ -33,4 +32,14 @@ export type BrandListParams = {
 export interface BrandOption {
   value: number
   label: string
+}
+
+export type BrandExportParams = {
+  ids?: number[]
+  format: "excel" | "pdf"
+  method: "download" | "email"
+  columns: string[]
+  user_id?: number
+  start_date?: string
+  end_date?: string
 }

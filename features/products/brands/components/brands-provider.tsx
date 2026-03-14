@@ -4,7 +4,7 @@ import * as React from "react"
 import { useDialogState } from "@/hooks/use-dialog-state"
 import type { Brand } from "../types"
 
-export type BrandsDialogType = "add" | "edit" | "delete"
+export type BrandsDialogType = "add" | "edit" | "delete" | "view" | "import" | "export"
 
 type BrandsContextValue = {
   open: BrandsDialogType | null

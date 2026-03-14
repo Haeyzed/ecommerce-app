@@ -1,18 +1,26 @@
 "use client"
 
 import type { Row } from "@tanstack/react-table"
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react"
+import { MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useAuthSession } from "@/features/auth/api"
 
 import type { Brand } from "../types"
 import { useBrandsContext } from "./brands-provider"
+
+const PERMISSIONS = {
+  view: "view brands",
+  update: "update brands",
+  delete: "delete brands",
+} as const
 
 interface BrandsDataTableRowActionsProps {
   row: Row<Brand>
@@ -22,6 +30,15 @@ export function BrandsDataTableRowActions({
   row,
 }: BrandsDataTableRowActionsProps) {
   const { setOpen, setCurrentRow } = useBrandsContext()
+  const { data: session } = useAuthSession()
+  const userPermissions = (session?.user as { user_permissions?: string[] } | undefined)
+    ?.user_permissions ?? []
+
+  const canView = userPermissions.includes(PERMISSIONS.view)
+  const canUpdate = userPermissions.includes(PERMISSIONS.update)
+  const canDelete = userPermissions.includes(PERMISSIONS.delete)
+
+  if (!canView && !canUpdate && !canDelete) return null
 
   return (
     <DropdownMenu modal={false}>
@@ -35,25 +52,46 @@ export function BrandsDataTableRowActions({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem
-          onClick={() => {
-            setCurrentRow(row.original)
-            setOpen("edit")
-          }}
-        >
-          Edit
-          <Pencil className="ml-auto size-4" />
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => {
-            setCurrentRow(row.original)
-            setOpen("delete")
-          }}
-          className="text-destructive focus:text-destructive"
-        >
-          Delete
-          <Trash2 className="ml-auto size-4" />
-        </DropdownMenuItem>
+        {canView && (
+          <>
+            <DropdownMenuItem
+              onClick={() => {
+                setCurrentRow(row.original)
+                setOpen("view")
+              }}
+            >
+              View
+              <Eye className="ml-auto size-4" />
+            </DropdownMenuItem>
+            {(canUpdate || canDelete) && <DropdownMenuSeparator />}
+          </>
+        )}
+        {canUpdate && (
+          <>
+            <DropdownMenuItem
+              onClick={() => {
+                setCurrentRow(row.original)
+                setOpen("edit")
+              }}
+            >
+              Edit
+              <Pencil className="ml-auto size-4" />
+            </DropdownMenuItem>
+            {canDelete && <DropdownMenuSeparator />}
+          </>
+        )}
+        {canDelete && (
+          <DropdownMenuItem
+            onClick={() => {
+              setCurrentRow(row.original)
+              setOpen("delete")
+            }}
+            className="text-destructive focus:text-destructive"
+          >
+            Delete
+            <Trash2 className="ml-auto size-4" />
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   )

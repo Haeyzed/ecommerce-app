@@ -8,6 +8,7 @@ import { ValidationError } from "@/lib/api/errors"
 
 import type {
   Brand,
+  BrandExportParams,
   BrandFormData,
   BrandListParams,
   BrandOption,
@@ -247,6 +248,82 @@ export function useBulkDestroyBrands() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: brandKeys.lists() })
+      toast.success(response.message)
+    },
+    onError: (error: Error) => {
+      toast.error(error.message)
+    },
+  })
+}
+
+export function useBrandsImport() {
+  const { api } = useApiClient()
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (file: File) => {
+      const form = new FormData()
+      form.append("file", file)
+      const response = await api.post<unknown>(`${BASE_PATH}/import`, form)
+      if (!response.success) throw new Error(response.message)
+      return response
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: brandKeys.lists() })
+      toast.success(response.message)
+    },
+    onError: (error: Error) => {
+      toast.error(error.message)
+    },
+  })
+}
+
+export function useBrandsExport() {
+  const { api } = useApiClient()
+
+  return useMutation({
+    mutationFn: async (params: BrandExportParams) => {
+      if (params.method === "download") {
+        const blob = await api.postBlob(`${BASE_PATH}/export`, params)
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement("a")
+        link.href = url
+        const fileName = `brands-export-${Date.now()}.${params.format === "pdf" ? "pdf" : "xlsx"}`
+        link.download = fileName
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(url)
+        return { message: "Export downloaded successfully" }
+      }
+      const response = await api.post<unknown>(`${BASE_PATH}/export`, params)
+      if (!response.success) throw new Error(response.message)
+      return response
+    },
+    onSuccess: (response) => {
+      toast.success(response.message)
+    },
+    onError: (error: Error) => {
+      toast.error(error.message)
+    },
+  })
+}
+
+export function useBrandsTemplateDownload() {
+  const { api } = useApiClient()
+  return useMutation({
+    mutationFn: async () => {
+      const blob = await api.getBlob(`${BASE_PATH}/download`)
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = url
+      link.download = "brands-sample.csv"
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+      return { message: "Sample template downloaded" }
+    },
+    onSuccess: (response) => {
       toast.success(response.message)
     },
     onError: (error: Error) => {
