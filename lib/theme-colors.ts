@@ -1,6 +1,3 @@
-/**
- * Preview colors for theme selector dropdown. Keys must match THEMES in lib/themes.ts.
- */
 export const themeColors: Record<
   string,
   { color: string; description?: string }

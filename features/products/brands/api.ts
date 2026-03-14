@@ -25,14 +25,16 @@ export const brandKeys = {
 
 const BASE_PATH = "/brands"
 
-function toApiParams(params?: BrandListParams): Record<string, string | number | boolean | null | undefined> {
+function toApiParams(
+  params?: BrandListParams
+): Record<string, string | number | boolean | null | undefined> {
   if (!params) return {}
   const out: Record<string, string | number | boolean | null | undefined> = {}
   if (params.page != null) out.page = params.page
   if (params.per_page != null) out.per_page = params.per_page
   if (params.search != null && params.search !== "") out.search = params.search
-  if (params.is_active !== undefined && params.is_active !== null) {
-    out.is_active = params.is_active
+  if (params.is_active != null && params.is_active.length > 0) {
+    out.is_active = params.is_active.join(",")
   }
   if (params.start_date != null && params.start_date !== "") out.start_date = params.start_date
   if (params.end_date != null && params.end_date !== "") out.end_date = params.end_date

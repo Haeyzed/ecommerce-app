@@ -31,8 +31,8 @@ export function BrandsTable() {
       per_page: perPage,
       search: name === "" ? undefined : name,
       is_active:
-        isActive.length === 1
-          ? isActive[0] === "true"
+        isActive.length > 0
+          ? (isActive.map((v) => (v === "1" ? 1 : 0)) as (0 | 1)[])
           : undefined,
       start_date: startDate === "" ? undefined : startDate,
       end_date: endDate === "" ? undefined : endDate,

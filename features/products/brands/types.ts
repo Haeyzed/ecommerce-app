@@ -24,7 +24,8 @@ export type BrandListParams = {
   page?: number
   per_page?: number
   search?: string
-  is_active?: boolean
+  /** Array of 0 (inactive) and/or 1 (active); API uses whereIn. */
+  is_active?: (0 | 1)[]
   start_date?: string
   end_date?: string
 }

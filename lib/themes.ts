@@ -1,7 +1,3 @@
-/**
- * Color theme names for the theme selector and ActiveThemeProvider.
- * Must match class names in theme.css (e.g. theme-neutral, theme-amber).
- */
 export const THEMES = [
   { name: "neutral", label: "Neutral" },
   { name: "amber", label: "Amber" },
