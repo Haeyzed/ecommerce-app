@@ -11,7 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { ImageZoom } from "@/components/image-zoom"
+import { ImageZoom } from "@/components/ui/image-zoom"
 
 import type { Brand } from "../types"
 
