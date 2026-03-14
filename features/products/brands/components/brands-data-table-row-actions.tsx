@@ -13,14 +13,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useAuthSession } from "@/features/auth/api"
 
+import { PERMISSIONS } from "../constants"
 import type { Brand } from "../types"
 import { useBrandsContext } from "./brands-provider"
-
-const PERMISSIONS = {
-  view: "view brands",
-  update: "update brands",
-  delete: "delete brands",
-} as const
 
 interface BrandsDataTableRowActionsProps {
   row: Row<Brand>

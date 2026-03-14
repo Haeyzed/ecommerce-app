@@ -31,7 +31,7 @@ import {
   ResponsiveDialogTitle,
 } from "@/components/ui/responsive-dialog"
 import { Button } from "@/components/ui/button"
-import { Loader2 } from "lucide-react"
+import { Spinner } from "@/components/ui/spinner"
 
 import {
   useBrandsImport,
@@ -141,7 +141,7 @@ export function BrandsImportDialog({
               >
                 {isDownloading ? (
                   <>
-                    <Loader2 className="mr-2 size-4 animate-spin" />
+                    <Spinner className="mr-2" />
                     Downloading...
                   </>
                 ) : (

@@ -2,21 +2,13 @@
 
 import { useAuthSession } from "@/features/auth/api"
 
+import { PERMISSIONS } from "../constants"
 import { BrandsActionDialog } from "./brands-action-dialog"
 import { BrandsDeleteDialog } from "./brands-delete-dialog"
 import { BrandsExportDialog } from "./brands-export-dialog"
 import { BrandsImportDialog } from "./brands-import-dialog"
 import { useBrandsContext } from "./brands-provider"
 import { BrandsViewDialog } from "./brands-view-dialog"
-
-const PERMISSIONS = {
-  create: "create brands",
-  update: "update brands",
-  delete: "delete brands",
-  view: "view brands",
-  import: "import brands",
-  export: "export brands",
-} as const
 
 export function BrandsDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useBrandsContext()

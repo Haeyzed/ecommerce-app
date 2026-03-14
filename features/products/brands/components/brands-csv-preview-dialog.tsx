@@ -17,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Loader2 } from "lucide-react"
+import { Spinner } from "@/components/ui/spinner"
 
 interface BrandsCsvPreviewDialogProps {
   open: boolean
@@ -91,7 +91,7 @@ export function BrandsCsvPreviewDialog({
           <Button onClick={onConfirm} disabled={isPending}>
             {isPending ? (
               <>
-                <Loader2 className="mr-2 size-4 animate-spin" />
+                <Spinner className="mr-2" />
                 Importing...
               </>
             ) : (

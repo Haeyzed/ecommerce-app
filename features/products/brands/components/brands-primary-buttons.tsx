@@ -3,13 +3,9 @@
 import { FileDown, FileUp, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuthSession } from "@/features/auth/api"
-import { useBrandsContext } from "./brands-provider"
 
-const PERMISSIONS = {
-  create: "create brands",
-  import: "import brands",
-  export: "export brands",
-} as const
+import { PERMISSIONS } from "../constants"
+import { useBrandsContext } from "./brands-provider"
 
 export function BrandsPrimaryButtons() {
   const { setOpen } = useBrandsContext()

@@ -2,20 +2,18 @@
 
 import { useState } from "react"
 import type { Table } from "@tanstack/react-table"
-import { CheckCircle2, CircleSlash, Loader2, Trash2 } from "lucide-react"
+import { CheckCircle2, CircleSlash, Trash2 } from "lucide-react"
+
+import { Spinner } from "@/components/ui/spinner"
 
 import { Button } from "@/components/ui/button"
 import { DataTableBulkActions } from "@/components/data-table/data-table-bulk-actions"
 import { useAuthSession } from "@/features/auth/api"
 
 import { useBulkActivateBrands, useBulkDeactivateBrands } from "../api"
+import { PERMISSIONS } from "../constants"
 import type { Brand } from "../types"
 import { BrandsMultiDeleteDialog } from "./brands-multi-delete-dialog"
-
-const PERMISSIONS = {
-  update: "update brands",
-  delete: "delete brands",
-} as const
 
 export interface BrandsDataTableBulkActionsProps {
   table: Table<Brand>
@@ -67,7 +65,7 @@ export function BrandsDataTableBulkActions({
               aria-label="Activate selected brands"
             >
               {isActivating ? (
-                <Loader2 className="size-4 animate-spin" />
+                <Spinner className="size-4" />
               ) : (
                 <CheckCircle2 className="size-4" />
               )}
@@ -81,7 +79,7 @@ export function BrandsDataTableBulkActions({
               aria-label="Deactivate selected brands"
             >
               {isDeactivating ? (
-                <Loader2 className="size-4 animate-spin" />
+                <Spinner className="size-4" />
               ) : (
                 <CircleSlash className="size-4" />
               )}

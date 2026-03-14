@@ -32,26 +32,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Loader2 } from "lucide-react"
+import { Spinner } from "@/components/ui/spinner"
 import { useApiClient } from "@/lib/api/use-api-client"
 
 import { useBrandsExport } from "../api"
+import { BRAND_EXPORT_COLUMNS, DEFAULT_EXPORT_COLUMNS } from "../constants"
 import {
   brandExportSchema,
   type BrandExportFormData,
 } from "../schemas"
-
-const AVAILABLE_COLUMNS = [
-  { value: "id", label: "ID" },
-  { value: "name", label: "Name" },
-  { value: "slug", label: "Slug" },
-  { value: "short_description", label: "Short Description" },
-  { value: "page_title", label: "Page Title" },
-  { value: "image_url", label: "Image URL" },
-  { value: "is_active", label: "Is Active" },
-  { value: "created_at", label: "Created At" },
-  { value: "updated_at", label: "Updated At" },
-] as const
 
 interface BrandsExportDialogProps {
   open: boolean
@@ -72,7 +61,7 @@ export function BrandsExportDialog({
     defaultValues: {
       format: "excel",
       method: "download",
-      columns: ["id", "name", "slug", "is_active"],
+      columns: [...DEFAULT_EXPORT_COLUMNS],
       start_date: undefined,
       end_date: undefined,
     },
@@ -286,7 +275,7 @@ export function BrandsExportDialog({
                         onClick={() =>
                           form.setValue(
                             "columns",
-                            AVAILABLE_COLUMNS.map((c) => c.value)
+                            BRAND_EXPORT_COLUMNS.map((c) => c.value)
                           )
                         }
                       >
@@ -303,7 +292,7 @@ export function BrandsExportDialog({
                     </div>
                   </div>
                   <div className="grid max-h-60 grid-cols-2 gap-3 overflow-y-auto rounded-md border p-3">
-                    {AVAILABLE_COLUMNS.map((column) => (
+                    {BRAND_EXPORT_COLUMNS.map((column) => (
                       <div
                         key={column.value}
                         className="flex items-center space-x-2"
@@ -356,7 +345,7 @@ export function BrandsExportDialog({
           >
             {isPending ? (
               <>
-                <Loader2 className="mr-2 size-4 animate-spin" />
+                <Spinner className="mr-2" />
                 Exporting...
               </>
             ) : (

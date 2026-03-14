@@ -37,7 +37,7 @@ import {
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { Loader2 } from "lucide-react"
+import { Spinner } from "@/components/ui/spinner"
 
 import { useCreateBrand, useUpdateBrand } from "../api"
 import { brandSchema, type BrandFormData } from "../schemas"
@@ -132,7 +132,7 @@ export function BrandsActionDialog({
           >
             {isLoading ? (
               <>
-                <Loader2 className="mr-2 size-4 animate-spin" />
+                <Spinner className="mr-2" />
                 Saving...
               </>
             ) : (
