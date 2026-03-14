@@ -70,7 +70,11 @@ function ResponsiveDialogContent({
   if (isMobile) {
     return (
       <DrawerContent
-        className={cn("max-h-[90vh] overflow-y-auto px-4 pb-6", className)}
+        className={cn(
+          "max-h-[90vh] overflow-y-auto overscroll-contain px-4 pb-6",
+          "touch-pan-y",
+          className
+        )}
         {...props}
       />
     )

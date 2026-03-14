@@ -1,6 +1,6 @@
 "use client"
 
-import { FileDown, FileUp, Plus } from "lucide-react"
+import { Download, Plus, Upload } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuthSession } from "@/features/auth/api"
 
@@ -28,7 +28,7 @@ export function BrandsPrimaryButtons() {
           onClick={() => setOpen("export")}
           aria-label="Export Brands"
         >
-          <FileDown className="size-4" />
+          <Download className="size-4" />
           <span className="ml-2 hidden sm:inline">Export</span>
         </Button>
       )}
@@ -39,14 +39,14 @@ export function BrandsPrimaryButtons() {
           onClick={() => setOpen("import")}
           aria-label="Import Brands"
         >
-          <FileUp className="size-4" />
+          <Upload className="size-4" />
           <span className="ml-2 hidden sm:inline">Import</span>
         </Button>
       )}
       {canCreate && (
         <Button size="sm" onClick={() => setOpen("add")} aria-label="Add Brand">
           <Plus className="size-4" />
-          <span className="ml-2">Add Brand</span>
+          <span className="ml-2 hidden sm:inline">Add Brand</span>
         </Button>
       )}
     </div>
