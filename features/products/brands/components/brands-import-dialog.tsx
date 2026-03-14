@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/file-upload"
 import {
   ResponsiveDialog,
+  ResponsiveDialogBody,
   ResponsiveDialogContent,
   ResponsiveDialogDescription,
   ResponsiveDialogFooter,
@@ -125,11 +126,12 @@ export function BrandsImportDialog({
             </ResponsiveDialogDescription>
           </ResponsiveDialogHeader>
 
-          <form
-            id="import-form"
-            onSubmit={form.handleSubmit(handlePreview)}
-            className="grid gap-4 py-4"
-          >
+          <ResponsiveDialogBody>
+            <form
+              id="import-form"
+              onSubmit={form.handleSubmit(handlePreview)}
+              className="grid gap-4 py-4"
+            >
             <div className="flex justify-end">
               <Button
                 type="button"
@@ -228,7 +230,8 @@ export function BrandsImportDialog({
                 )}
               />
             </FieldGroup>
-          </form>
+            </form>
+          </ResponsiveDialogBody>
 
           <ResponsiveDialogFooter>
             <Button variant="outline" onClick={() => handleOpenChange(false)}>

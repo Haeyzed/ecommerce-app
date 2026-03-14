@@ -19,6 +19,7 @@ import {
 import { Label } from "@/components/ui/label"
 import {
   ResponsiveDialog,
+  ResponsiveDialogBody,
   ResponsiveDialogContent,
   ResponsiveDialogDescription,
   ResponsiveDialogFooter,
@@ -103,7 +104,7 @@ export function BrandsExportDialog({
 
   return (
     <ResponsiveDialog open={open} onOpenChange={handleOpenChange}>
-      <ResponsiveDialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+      <ResponsiveDialogContent className="sm:max-w-2xl">
         <ResponsiveDialogHeader className="text-start">
           <ResponsiveDialogTitle>Export Brands</ResponsiveDialogTitle>
           <ResponsiveDialogDescription>
@@ -112,7 +113,8 @@ export function BrandsExportDialog({
           </ResponsiveDialogDescription>
         </ResponsiveDialogHeader>
 
-        <form
+        <ResponsiveDialogBody>
+          <form
           id="export-form"
           onSubmit={form.handleSubmit(onSubmit)}
           className="grid gap-4 py-4"
@@ -334,6 +336,7 @@ export function BrandsExportDialog({
             />
           </FieldGroup>
         </form>
+        </ResponsiveDialogBody>
 
         <ResponsiveDialogFooter>
           <Button variant="outline" onClick={() => handleOpenChange(false)}>

@@ -70,9 +70,31 @@ function ResponsiveDialogContent({
   if (isMobile) {
     return (
       <DrawerContent
+        className={cn("flex flex-col max-h-[90vh]", className)}
+        {...props}
+      />
+    )
+  }
+
+  return <DialogContent className={className} {...props} />
+}
+
+/**
+ * Wraps the scrollable body of the dialog. On mobile (drawer), this becomes the
+ * scroll container so the header/footer stay fixed and overscroll is contained.
+ * Use between ResponsiveDialogHeader and ResponsiveDialogFooter.
+ */
+function ResponsiveDialogBody({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  const { isMobile } = useResponsiveDialog()
+
+  if (isMobile) {
+    return (
+      <div
         className={cn(
-          "max-h-[90vh] overflow-y-auto overscroll-contain px-4 pb-6",
-          "touch-pan-y",
+          "min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain px-4",
           className
         )}
         {...props}
@@ -80,7 +102,7 @@ function ResponsiveDialogContent({
     )
   }
 
-  return <DialogContent className={className} {...props} />
+  return <div className={className} {...props} />
 }
 
 function ResponsiveDialogHeader(
@@ -125,6 +147,7 @@ function ResponsiveDialogTrigger(
 
 export {
   ResponsiveDialog,
+  ResponsiveDialogBody,
   ResponsiveDialogContent,
   ResponsiveDialogDescription,
   ResponsiveDialogFooter,

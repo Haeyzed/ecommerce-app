@@ -28,6 +28,7 @@ import { ImageZoom } from "@/components/ui/image-zoom"
 import { Input } from "@/components/ui/input"
 import {
   ResponsiveDialog,
+  ResponsiveDialogBody,
   ResponsiveDialogContent,
   ResponsiveDialogDescription,
   ResponsiveDialogFooter,
@@ -114,7 +115,7 @@ export function BrandsActionDialog({
           </ResponsiveDialogDescription>
         </ResponsiveDialogHeader>
 
-        <div className="max-h-[70vh] overflow-y-auto py-1 pe-3">
+        <ResponsiveDialogBody className="py-1 pe-3">
           <BrandForm
             form={form}
             onSubmit={onSubmit}
@@ -122,7 +123,7 @@ export function BrandsActionDialog({
             isEdit={isEdit}
             currentRow={currentRow}
           />
-        </div>
+        </ResponsiveDialogBody>
 
         <ResponsiveDialogFooter>
           <Button
