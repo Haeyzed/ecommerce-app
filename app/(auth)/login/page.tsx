@@ -33,7 +33,16 @@ export default function LoginPage() {
             <LoginForm />
           </Suspense>
         </CardContent>
-        <CardFooter>
+        <CardFooter className='flex flex-col items-center gap-3'>
+          <p className='text-sm text-muted-foreground'>
+            Don&apos;t have an account?{' '}
+            <Link
+              href='/register'
+              className='text-primary font-medium hover:underline'
+            >
+              Sign up
+            </Link>
+          </p>
           <p className='px-8 text-center text-sm text-muted-foreground'>
             By clicking sign in, you agree to our{' '}
             <Link
