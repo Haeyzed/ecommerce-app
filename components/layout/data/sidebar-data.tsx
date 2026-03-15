@@ -9,6 +9,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 
 import { PERMISSIONS as BRAND_PERMISSIONS } from "@/features/products/brands/constants"
+import { PERMISSIONS as CATEGORY_PERMISSIONS } from "@/features/products/categories/constants"
 import type { SidebarData } from "../types"
 
 const DashboardIcon = () => (
@@ -47,6 +48,11 @@ export const sidebarData: Omit<SidebarData, "user"> = {
           icon: ProductsIcon,
           items: [
             { title: "All products", url: "/products" },
+            {
+              title: "Categories",
+              url: "/products/categories",
+              permissions: [CATEGORY_PERMISSIONS.view],
+            },
             {
               title: "Brands",
               url: "/products/brands",
