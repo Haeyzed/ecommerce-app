@@ -28,14 +28,21 @@ const BASE_PATH = "/categories"
 
 function toApiParams(
   params?: CategoryListParams
-): Record<string, string | number | boolean | null | undefined> {
+): Record<string, string | number | null | undefined> {
   if (!params) return {}
-  const out: Record<string, string | number | boolean | null | undefined> = {}
+  const out: Record<string, string | number | null | undefined> = {}
   if (params.page != null) out.page = params.page
   if (params.per_page != null) out.per_page = params.per_page
   if (params.search != null && params.search !== "") out.search = params.search
-  if (params.status != null) out.status = params.status
-  if (params.featured != null) out.featured = params.featured
+  if (params.is_active != null && params.is_active.length > 0) {
+    out.is_active = params.is_active.join(",")
+  }
+  if (params.featured != null && params.featured.length > 0) {
+    out.featured = params.featured.join(",")
+  }
+  if (params.is_sync_disable != null && params.is_sync_disable.length > 0) {
+    out.is_sync_disable = params.is_sync_disable.join(",")
+  }
   if (params.parent_id != null) out.parent_id = params.parent_id ?? ""
   if (params.start_date != null && params.start_date !== "")
     out.start_date = params.start_date

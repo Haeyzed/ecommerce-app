@@ -1,6 +1,6 @@
 "use client"
 
-import { parseAsInteger, parseAsString, useQueryState } from "nuqs"
+import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryState } from "nuqs"
 import * as React from "react"
 
 import { DataTable } from "@/components/data-table/data-table"
@@ -18,7 +18,18 @@ export function CategoriesTable() {
   const [page] = useQueryState("page", parseAsInteger.withDefault(1))
   const [perPage] = useQueryState("perPage", parseAsInteger.withDefault(10))
   const [name] = useQueryState("name", parseAsString.withDefault(""))
-  const [status] = useQueryState("status", parseAsString.withDefault(""))
+  const [isActive] = useQueryState(
+    "is_active",
+    parseAsArrayOf(parseAsString).withDefault([])
+  )
+  const [featured] = useQueryState(
+    "featured",
+    parseAsArrayOf(parseAsString).withDefault([])
+  )
+  const [isSyncDisable] = useQueryState(
+    "is_sync_disable",
+    parseAsArrayOf(parseAsString).withDefault([])
+  )
   const [startDate] = useQueryState("start_date", parseAsString.withDefault(""))
   const [endDate] = useQueryState("end_date", parseAsString.withDefault(""))
 
@@ -27,16 +38,22 @@ export function CategoriesTable() {
       page,
       per_page: perPage,
       search: name === "" ? undefined : name,
-      status:
-        status === "active"
-          ? true
-          : status === "inactive"
-            ? false
-            : undefined,
+      is_active:
+        isActive.length > 0
+          ? (isActive.map((v) => (v === "1" ? 1 : 0)) as (0 | 1)[])
+          : undefined,
+      featured:
+        featured.length > 0
+          ? (featured.map((v) => (v === "1" ? 1 : 0)) as (0 | 1)[])
+          : undefined,
+      is_sync_disable:
+        isSyncDisable.length > 0
+          ? (isSyncDisable.map((v) => (v === "1" ? 1 : 0)) as (0 | 1)[])
+          : undefined,
       start_date: startDate === "" ? undefined : startDate,
       end_date: endDate === "" ? undefined : endDate,
     }),
-    [page, perPage, name, status, startDate, endDate]
+    [page, perPage, name, isActive, featured, isSyncDisable, startDate, endDate]
   )
 
   const { data: apiData, meta, isLoading, isError, error } =

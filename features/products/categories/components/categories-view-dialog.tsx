@@ -14,9 +14,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { ImageZoom } from "@/components/ui/image-zoom"
-import { cn } from "@/lib/utils"
 
-import { featuredTypes, statusTypes, syncTypes } from "../constants"
 import type { Category } from "../types"
 
 interface CategoriesViewDialogProps {
@@ -139,40 +137,22 @@ function CategoryViewContent({ currentRow }: { currentRow: Category }) {
       <div className="flex flex-wrap gap-2">
         <div className="space-y-1">
           <div className="text-sm font-medium text-muted-foreground">Status</div>
-          <Badge
-            variant="outline"
-            className={cn(
-              "capitalize",
-              statusTypes.get(currentRow.active_status)
-            )}
-          >
-            {currentRow.active_status}
+          <Badge variant="outline" className="capitalize">
+            {currentRow.is_active ? "Active" : "Inactive"}
           </Badge>
         </div>
         <div className="space-y-1">
           <div className="text-sm font-medium text-muted-foreground">
             Featured
           </div>
-          <Badge
-            variant="outline"
-            className={cn(
-              "capitalize",
-              featuredTypes.get(currentRow.featured_status)
-            )}
-          >
-            {currentRow.featured_status}
+          <Badge variant="outline" className="capitalize">
+            {currentRow.featured ? "Yes" : "No"}
           </Badge>
         </div>
         <div className="space-y-1">
           <div className="text-sm font-medium text-muted-foreground">Sync</div>
-          <Badge
-            variant="outline"
-            className={cn(
-              "capitalize",
-              syncTypes.get(currentRow.sync_status)
-            )}
-          >
-            {currentRow.sync_status}
+          <Badge variant="outline" className="capitalize">
+            {currentRow.is_sync_disable ? "Disabled" : "Enabled"}
           </Badge>
         </div>
       </div>

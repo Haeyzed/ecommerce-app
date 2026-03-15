@@ -10,12 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 
-import {
-  featuredTypes,
-  isActiveOptions,
-  statusTypes,
-  syncTypes,
-} from "../constants"
+import { isActiveOptions } from "../constants"
 import type { Category } from "../types"
 import { CategoriesDataTableRowActions } from "./categories-data-table-row-actions"
 
@@ -127,19 +122,18 @@ export const categoriesColumns: ColumnDef<Category>[] = [
     ),
   },
   {
-    id: "active_status",
-    accessorKey: "active_status",
+    id: "is_active",
+    accessorKey: "is_active",
     header: ({ column }: { column: Column<Category, unknown> }) => (
       <DataTableColumnHeader column={column} label="Status" />
     ),
-    cell: ({ row }) => {
-      const status = row.original.active_status
-      const statusClass = statusTypes.get(status)
-      const Icon = row.original.is_active ? CheckCircle2 : XCircle
+    cell: ({ cell }) => {
+      const isActive = cell.getValue<Category["is_active"]>()
+      const Icon = isActive ? CheckCircle2 : XCircle
       return (
-        <Badge variant="outline" className={cn("capitalize", statusClass)}>
+        <Badge variant="outline" className="capitalize">
           <Icon className="size-3.5" />
-          {status}
+          {isActive ? "Active" : "Inactive"}
         </Badge>
       )
     },
@@ -155,33 +149,35 @@ export const categoriesColumns: ColumnDef<Category>[] = [
     enableColumnFilter: true,
   },
   {
-    id: "featured_status",
-    accessorKey: "featured_status",
+    id: "featured",
+    accessorKey: "featured",
     header: ({ column }: { column: Column<Category, unknown> }) => (
       <DataTableColumnHeader column={column} label="Featured" />
     ),
-    cell: ({ row }) => {
-      const status = row.original.featured_status
-      const statusClass = featuredTypes.get(status)
+    cell: ({ cell }) => {
+      const featured = cell.getValue<Category["featured"]>()
+      const Icon = featured ? CheckCircle2 : XCircle
       return (
-        <Badge variant="outline" className={cn("capitalize", statusClass)}>
-          {status}
+        <Badge variant="outline" className="capitalize">
+          <Icon className="size-3.5" />
+          {featured ? "Yes" : "No"}
         </Badge>
       )
     },
   },
   {
-    id: "sync_status",
-    accessorKey: "sync_status",
+    id: "is_sync_disable",
+    accessorKey: "is_sync_disable",
     header: ({ column }: { column: Column<Category, unknown> }) => (
       <DataTableColumnHeader column={column} label="Sync" />
     ),
-    cell: ({ row }) => {
-      const status = row.original.sync_status
-      const statusClass = syncTypes.get(status)
+    cell: ({ cell }) => {
+      const isSyncDisable = cell.getValue<Category["is_sync_disable"]>()
+      const Icon = isSyncDisable ? XCircle : CheckCircle2
       return (
-        <Badge variant="outline" className={cn("capitalize", statusClass)}>
-          {status}
+        <Badge variant="outline" className="capitalize">
+          <Icon className="size-3.5" />
+          {isSyncDisable ? "Disabled" : "Enabled"}
         </Badge>
       )
     },
