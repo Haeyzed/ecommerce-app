@@ -80,8 +80,9 @@ function ResponsiveDialogContent({
 }
 
 /**
- * Wraps the scrollable body of the dialog. On mobile (drawer), this becomes the
- * scroll container so the header/footer stay fixed and overscroll is contained.
+ * Wraps the scrollable body of the dialog. On desktop: scrollable area with
+ * max-h so the dialog content scrolls. On mobile (drawer): scroll container
+ * so header/footer stay fixed and overscroll is contained.
  * Use between ResponsiveDialogHeader and ResponsiveDialogFooter.
  */
 function ResponsiveDialogBody({
@@ -102,7 +103,12 @@ function ResponsiveDialogBody({
     )
   }
 
-  return <div className={className} {...props} />
+  return (
+    <div
+      className={cn("max-h-[70vh] overflow-y-auto overflow-x-hidden", className)}
+      {...props}
+    />
+  )
 }
 
 function ResponsiveDialogHeader(

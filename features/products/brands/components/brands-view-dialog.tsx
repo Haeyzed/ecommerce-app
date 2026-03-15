@@ -3,8 +3,10 @@
 import Image from "next/image"
 import {
   ResponsiveDialog,
+  ResponsiveDialogBody,
   ResponsiveDialogContent,
   ResponsiveDialogDescription,
+  ResponsiveDialogFooter,
   ResponsiveDialogHeader,
   ResponsiveDialogTitle,
 } from "@/components/ui/responsive-dialog"
@@ -36,15 +38,15 @@ export function BrandsViewDialog({
           </ResponsiveDialogDescription>
         </ResponsiveDialogHeader>
 
-        <div className="max-h-[70vh] overflow-y-auto py-1 pe-2">
+        <ResponsiveDialogBody className="py-1 pe-2">
           <BrandViewContent currentRow={currentRow} />
-        </div>
+        </ResponsiveDialogBody>
 
-        <div className="flex justify-end pt-2">
+        <ResponsiveDialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Close
           </Button>
-        </div>
+        </ResponsiveDialogFooter>
       </ResponsiveDialogContent>
     </ResponsiveDialog>
   )

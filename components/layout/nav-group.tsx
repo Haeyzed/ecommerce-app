@@ -30,6 +30,9 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { hasPermission } from "@/lib/utils/permissions"
+
+import { useAuthSession } from "@/features/auth/api"
 
 import type {
   LayoutNavCollapsible,
@@ -63,25 +66,48 @@ function checkIsActive(
 export function NavGroup({ title, items }: NavGroupProps) {
   const { state, isMobile } = useSidebar()
   const pathname = usePathname()
+  const { data: session } = useAuthSession()
+  const userPermissions = (session?.user as { user_permissions?: string[] } | undefined)
+    ?.user_permissions ?? []
 
-  if (items.length === 0) return null
+  const visibleItems = items.filter((item) => {
+    if (!hasPermission(userPermissions, item.permissions)) {
+      return false
+    }
+    if (!isNavLink(item) && item.items) {
+      const visibleChildren = item.items.filter((child) =>
+        hasPermission(userPermissions, child.permissions)
+      )
+      return visibleChildren.length > 0
+    }
+    return true
+  })
+
+  if (visibleItems.length === 0) return null
 
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{title}</SidebarGroupLabel>
       <SidebarMenu>
-        {items.map((item) => {
+        {visibleItems.map((item) => {
           const key = isNavLink(item)
             ? `${item.title}-${item.url}`
             : `${item.title}-collapsible`
 
           if (!isNavLink(item) && item.items) {
             const collapsibleItem = item as LayoutNavCollapsible
+            const filteredChildren = collapsibleItem.items.filter((child) =>
+              hasPermission(userPermissions, child.permissions)
+            )
+            const itemWithFilteredChildren = {
+              ...collapsibleItem,
+              items: filteredChildren,
+            }
             if (state === "collapsed" && !isMobile) {
               return (
                 <SidebarMenuCollapsedDropdown
                   key={key}
-                  item={collapsibleItem}
+                  item={itemWithFilteredChildren}
                   pathname={pathname}
                 />
               )
@@ -89,7 +115,7 @@ export function NavGroup({ title, items }: NavGroupProps) {
             return (
               <SidebarMenuCollapsible
                 key={key}
-                item={collapsibleItem}
+                item={itemWithFilteredChildren}
                 pathname={pathname}
               />
             )
