@@ -1,73 +1,83 @@
 "use client"
 
+import * as React from "react"
+import { AlertTriangle } from "lucide-react"
+
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { ConfirmResponsiveDialog } from "@/components/confirm-responsive-dialog"
+
+import { useDeleteUnit } from "../api"
 import type { Unit } from "../types"
 
-import {
-  ConfirmationDialog,
-  ConfirmationDialogBody,
-  ConfirmationDialogCancel,
-  ConfirmationDialogContent,
-  ConfirmationDialogDescription,
-  ConfirmationDialogHeader,
-  ConfirmationDialogTitle,
-  ConfirmationDialogTrigger,
-} from "@/components/ui/confirmation-dialog"
-import { AlertDialogFooter } from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
-import { useDeleteUnit } from "../api"
-
 interface UnitsDeleteDialogProps {
-  currentRow: Unit
   open: boolean
   onOpenChange: (open: boolean) => void
+  currentRow: Unit
 }
 
 export function UnitsDeleteDialog({
-  currentRow,
   open,
   onOpenChange,
+  currentRow,
 }: UnitsDeleteDialogProps) {
+  const [value, setValue] = React.useState("")
   const { mutate: deleteUnit, isPending } = useDeleteUnit()
 
-  const handleConfirm = () => {
+  const handleDelete = () => {
+    if (value.trim() !== currentRow.name) return
     deleteUnit(currentRow.id, {
-      onSuccess: () => onOpenChange(false),
+      onSuccess: () => {
+        onOpenChange(false)
+        setValue("")
+      },
     })
   }
 
   return (
-    <ConfirmationDialog open={open} onOpenChange={onOpenChange}>
-      <ConfirmationDialogTrigger asChild>
-        <span />
-      </ConfirmationDialogTrigger>
-      <ConfirmationDialogContent>
-        <ConfirmationDialogHeader>
-          <ConfirmationDialogTitle>
-            Delete unit &quot;{currentRow.name}&quot;?
-          </ConfirmationDialogTitle>
-          <ConfirmationDialogDescription>
-            This action cannot be undone. This will permanently delete the unit.
-          </ConfirmationDialogDescription>
-        </ConfirmationDialogHeader>
-        <ConfirmationDialogBody>
-          <AlertDialogFooter>
-            <ConfirmationDialogCancel asChild>
-              <Button type="button" variant="outline">
-                Cancel
-              </Button>
-            </ConfirmationDialogCancel>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleConfirm}
-              disabled={isPending}
-            >
-              Delete
-            </Button>
-          </AlertDialogFooter>
-        </ConfirmationDialogBody>
-      </ConfirmationDialogContent>
-    </ConfirmationDialog>
+    <ConfirmResponsiveDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={
+        <span className="flex items-center gap-1 text-destructive">
+          <AlertTriangle className="size-[18px] stroke-destructive" />
+          Delete Unit
+        </span>
+      }
+      description={
+        <div className="space-y-4">
+          <p className="mb-2">
+            Are you sure you want to delete{" "}
+            <span className="font-bold">{currentRow.name}</span>?
+            <br />
+            This action will permanently remove the unit from the system. This
+            cannot be undone.
+          </p>
+
+          <Label className="my-2 block">
+            Unit Name:
+            <Input
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              placeholder="Enter unit name to confirm deletion."
+              className="mt-1"
+            />
+          </Label>
+
+          <Alert variant="destructive">
+            <AlertTitle>Warning!</AlertTitle>
+            <AlertDescription>
+              Please be careful, this operation can not be rolled back.
+            </AlertDescription>
+          </Alert>
+        </div>
+      }
+      confirmText="Delete"
+      destructive
+      disabled={value.trim() !== currentRow.name}
+      isLoading={isPending}
+      onConfirm={handleDelete}
+    />
   )
 }
-

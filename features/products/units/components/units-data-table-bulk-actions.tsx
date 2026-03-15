@@ -9,11 +9,7 @@ import { Button } from "@/components/ui/button"
 import { DataTableBulkActions } from "@/components/data-table/data-table-bulk-actions"
 import { useAuthSession } from "@/features/auth/api"
 
-import {
-  useBulkActivateUnits,
-  useBulkDeactivateUnits,
-  useBulkDeleteUnits,
-} from "../api"
+import { useBulkActivateUnits, useBulkDeactivateUnits } from "../api"
 import { PERMISSIONS } from "../constants"
 import type { Unit } from "../types"
 import { UnitsMultiDeleteDialog } from "./units-multi-delete-dialog"
@@ -38,31 +34,22 @@ export function UnitsDataTableBulkActions({
     useBulkActivateUnits()
   const { mutate: deactivateUnits, isPending: isDeactivating } =
     useBulkDeactivateUnits()
-  const { mutate: bulkDeleteUnits, isPending: isDeleting } =
-    useBulkDeleteUnits()
 
-  const isBusy = isActivating || isDeactivating || isDeleting
-
-  const selectedIds = table
-    .getFilteredSelectedRowModel()
-    .rows.map((row) => row.original.id)
+  const isBusy = isActivating || isDeactivating
 
   const handleBulkActivate = () => {
+    const selectedIds = table
+      .getFilteredSelectedRowModel()
+      .rows.map((row) => row.original.id)
     activateUnits(selectedIds, { onSuccess: () => table.resetRowSelection() })
   }
 
   const handleBulkDeactivate = () => {
+    const selectedIds = table
+      .getFilteredSelectedRowModel()
+      .rows.map((row) => row.original.id)
     deactivateUnits(selectedIds, {
       onSuccess: () => table.resetRowSelection(),
-    })
-  }
-
-  const handleBulkDeleteConfirm = () => {
-    bulkDeleteUnits(selectedIds, {
-      onSuccess: () => {
-        table.resetRowSelection()
-        setShowMultiDelete(false)
-      },
     })
   }
 
@@ -118,11 +105,8 @@ export function UnitsDataTableBulkActions({
       <UnitsMultiDeleteDialog
         open={showMultiDelete}
         onOpenChange={setShowMultiDelete}
-        onConfirm={handleBulkDeleteConfirm}
         table={table}
-        isLoading={isDeleting}
       />
     </>
   )
 }
-

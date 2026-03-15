@@ -1,17 +1,16 @@
 "use client"
 
 import type { Row } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
+import { MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
 import { useAuthSession } from "@/features/auth/api"
 
 import { PERMISSIONS } from "../constants"
@@ -25,58 +24,71 @@ interface UnitsDataTableRowActionsProps {
 export function UnitsDataTableRowActions({
   row,
 }: UnitsDataTableRowActionsProps) {
-  const unit = row.original
   const { setOpen, setCurrentRow } = useUnitsContext()
   const { data: session } = useAuthSession()
   const userPermissions =
     (session?.user as { user_permissions?: string[] } | undefined)
       ?.user_permissions ?? []
 
+  const canView = userPermissions.includes(PERMISSIONS.view)
   const canUpdate = userPermissions.includes(PERMISSIONS.update)
   const canDelete = userPermissions.includes(PERMISSIONS.delete)
-  const canView = userPermissions.includes(PERMISSIONS.view)
 
-  const handleOpen = (type: "view" | "edit" | "delete") => {
-    setCurrentRow(unit)
-    setOpen(type)
-  }
+  if (!canView && !canUpdate && !canDelete) return null
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="flex size-8 items-center justify-center p-0"
+          className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
         >
-          <MoreHorizontal className="size-4" />
-          <span className="sr-only">Open row actions</span>
+          <MoreHorizontal className="h-4 w-4" />
+          <span className="sr-only">Open menu</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+      <DropdownMenuContent align="end" className="w-[160px]">
         {canView && (
-          <DropdownMenuItem onClick={() => handleOpen("view")}>
-            View details
-          </DropdownMenuItem>
+          <>
+            <DropdownMenuItem
+              onClick={() => {
+                setCurrentRow(row.original)
+                setOpen("view")
+              }}
+            >
+              View
+              <Eye className="ml-auto size-4" />
+            </DropdownMenuItem>
+            {(canUpdate || canDelete) && <DropdownMenuSeparator />}
+          </>
         )}
         {canUpdate && (
-          <DropdownMenuItem onClick={() => handleOpen("edit")}>
-            Edit
-          </DropdownMenuItem>
+          <>
+            <DropdownMenuItem
+              onClick={() => {
+                setCurrentRow(row.original)
+                setOpen("edit")
+              }}
+            >
+              Edit
+              <Pencil className="ml-auto size-4" />
+            </DropdownMenuItem>
+            {canDelete && <DropdownMenuSeparator />}
+          </>
         )}
         {canDelete && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="text-destructive focus:text-destructive"
-              onClick={() => handleOpen("delete")}
-            >
-              Delete
-            </DropdownMenuItem>
-          </>
+          <DropdownMenuItem
+            onClick={() => {
+              setCurrentRow(row.original)
+              setOpen("delete")
+            }}
+            className="text-destructive focus:text-destructive"
+          >
+            Delete
+            <Trash2 className="ml-auto size-4" />
+          </DropdownMenuItem>
         )}
       </DropdownMenuContent>
     </DropdownMenu>
   )
 }
-

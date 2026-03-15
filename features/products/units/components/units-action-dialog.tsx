@@ -118,6 +118,7 @@ export function UnitsActionDialog({
             onSubmit={onSubmit}
             id="unit-form"
             isEdit={isEdit}
+            currentRow={currentRow}
           />
         </ResponsiveDialogBody>
 
@@ -143,17 +144,14 @@ interface UnitFormProps {
   onSubmit: (data: UnitFormData) => void
   id: string
   isEdit: boolean
+  currentRow?: Unit
 }
 
-function UnitForm({ form, onSubmit, id, isEdit }: UnitFormProps) {
+function UnitForm({ form, onSubmit, id, isEdit, currentRow }: UnitFormProps) {
   const { data: baseUnits = [] } = useBaseUnits()
 
   return (
-    <form
-      id={id}
-      onSubmit={form.handleSubmit(onSubmit)}
-      className="space-y-4"
-    >
+    <form id={id} onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
       <FieldGroup>
         <Controller
           control={form.control}
@@ -305,4 +303,3 @@ function UnitForm({ form, onSubmit, id, isEdit }: UnitFormProps) {
     </form>
   )
 }
-

@@ -1,6 +1,7 @@
 "use client"
 
 import type { Column, ColumnDef } from "@tanstack/react-table"
+import { CheckCircle2, Ruler, XCircle } from "lucide-react"
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { Badge } from "@/components/ui/badge"
@@ -10,6 +11,7 @@ import { cn } from "@/lib/utils"
 import { isActiveOptions } from "../constants"
 import type { Unit } from "../types"
 import { UnitsDataTableRowActions } from "./units-data-table-row-actions"
+import { LongText } from "@/components/long-text"
 
 export const unitsColumns: ColumnDef<Unit>[] = [
   {
@@ -55,9 +57,20 @@ export const unitsColumns: ColumnDef<Unit>[] = [
             {row.original.name.charAt(0).toUpperCase()}
           </span>
         </div>
-        <span className="max-w-36 truncate">{row.original.name}</span>
+        <LongText className="max-w-36">{row.original.name}</LongText>
       </div>
     ),
+    meta: {
+      label: "Name",
+      placeholder: "Search units...",
+      variant: "text",
+      icon: Ruler,
+      className: cn(
+        "bg-background drop-shadow-[0_1px_2px_rgb(0_0_0_/_0.1)] dark:drop-shadow-[0_1px_2px_rgb(255_255_255_/_0.1)]",
+        "ps-0.5 max-md:sticky max-md:start-10 @4xl/content:table-cell @4xl/content:drop-shadow-none"
+      ),
+    },
+    enableColumnFilter: true,
   },
   {
     id: "code",
@@ -91,8 +104,10 @@ export const unitsColumns: ColumnDef<Unit>[] = [
     ),
     cell: ({ cell }) => {
       const isActive = cell.getValue<Unit["is_active"]>()
+      const Icon = isActive ? CheckCircle2 : XCircle
       return (
         <Badge variant="outline" className="capitalize">
+          <Icon className="size-3.5" />
           {isActive ? "Active" : "Inactive"}
         </Badge>
       )
@@ -100,7 +115,11 @@ export const unitsColumns: ColumnDef<Unit>[] = [
     meta: {
       label: "Status",
       variant: "multiSelect",
-      options: isActiveOptions,
+      options: isActiveOptions.map((o) => ({
+        label: o.label,
+        value: o.value,
+        icon: o.icon,
+      })),
     },
     enableColumnFilter: true,
   },
@@ -138,4 +157,3 @@ export const unitsColumns: ColumnDef<Unit>[] = [
     },
   },
 ]
-

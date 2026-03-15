@@ -1,7 +1,6 @@
 "use client"
 
-import { Plus } from "lucide-react"
-
+import { Download, Plus, Upload } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuthSession } from "@/features/auth/api"
 
@@ -16,19 +15,41 @@ export function UnitsPrimaryButtons() {
       ?.user_permissions ?? []
 
   const canCreate = userPermissions.includes(PERMISSIONS.create)
+  const canImport = userPermissions.includes(PERMISSIONS.import)
+  const canExport = userPermissions.includes(PERMISSIONS.export)
 
-  if (!canCreate) return null
+  if (!canCreate && !canImport && !canExport) return null
 
   return (
-    <Button
-      type="button"
-      size="sm"
-      onClick={() => setOpen("add")}
-      className="h-8"
-    >
-      <Plus className="mr-2 size-4" />
-      Add unit
-    </Button>
+    <div className="flex gap-2">
+      {canExport && (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setOpen("export")}
+          aria-label="Export Units"
+        >
+          <Download className="size-4" />
+          <span className="ml-2 hidden sm:inline">Export</span>
+        </Button>
+      )}
+      {canImport && (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setOpen("import")}
+          aria-label="Import Units"
+        >
+          <Upload className="size-4" />
+          <span className="ml-2 hidden sm:inline">Import</span>
+        </Button>
+      )}
+      {canCreate && (
+        <Button size="sm" onClick={() => setOpen("add")} aria-label="Add Unit">
+          <Plus className="size-4" />
+          <span className="ml-2 hidden sm:inline">Add Unit</span>
+        </Button>
+      )}
+    </div>
   )
 }
-

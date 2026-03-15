@@ -1,75 +1,93 @@
 "use client"
 
+import * as React from "react"
 import type { Table } from "@tanstack/react-table"
+import { toast } from "sonner"
+import { AlertTriangle } from "lucide-react"
 
-import { AlertDialogFooter } from "@/components/ui/alert-dialog"
-import {
-  ConfirmationDialog,
-  ConfirmationDialogBody,
-  ConfirmationDialogCancel,
-  ConfirmationDialogContent,
-  ConfirmationDialogDescription,
-  ConfirmationDialogHeader,
-  ConfirmationDialogTitle,
-  ConfirmationDialogTrigger,
-} from "@/components/ui/confirmation-dialog"
-import { Button } from "@/components/ui/button"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { ConfirmResponsiveDialog } from "@/components/confirm-responsive-dialog"
 
+import { useBulkDeleteUnits } from "../api"
 import type { Unit } from "../types"
 
+const CONFIRM_WORD = "DELETE"
+
 interface UnitsMultiDeleteDialogProps {
-  table: Table<Unit>
   open: boolean
   onOpenChange: (open: boolean) => void
-  onConfirm: () => void
-  isLoading?: boolean
+  table: Table<Unit>
 }
 
 export function UnitsMultiDeleteDialog({
-  table,
   open,
   onOpenChange,
-  onConfirm,
-  isLoading,
+  table,
 }: UnitsMultiDeleteDialogProps) {
-  const selectedCount =
-    table.getFilteredSelectedRowModel().rows.length ?? 0
+  const [value, setValue] = React.useState("")
+  const selectedRows = table.getFilteredSelectedRowModel().rows
+  const selectedIds = selectedRows.map((row) => row.original.id)
+
+  const { mutate: bulkDestroy, isPending } = useBulkDeleteUnits()
+
+  const handleDelete = () => {
+    if (value.trim() !== CONFIRM_WORD) {
+      toast.error(`Please type "${CONFIRM_WORD}" to confirm.`)
+      return
+    }
+    bulkDestroy(selectedIds, {
+      onSuccess: () => {
+        onOpenChange(false)
+        setValue("")
+        table.resetRowSelection()
+      },
+    })
+  }
 
   return (
-    <ConfirmationDialog open={open} onOpenChange={onOpenChange}>
-      <ConfirmationDialogTrigger asChild>
-        <span />
-      </ConfirmationDialogTrigger>
-      <ConfirmationDialogContent>
-        <ConfirmationDialogHeader>
-          <ConfirmationDialogTitle>
-            Delete selected units?
-          </ConfirmationDialogTitle>
-          <ConfirmationDialogDescription>
-            This action cannot be undone. This will permanently delete{" "}
-            <span className="font-semibold">{selectedCount}</span>{" "}
-            selected unit{selectedCount === 1 ? "" : "s"}.
-          </ConfirmationDialogDescription>
-        </ConfirmationDialogHeader>
-        <ConfirmationDialogBody>
-          <AlertDialogFooter>
-            <ConfirmationDialogCancel asChild>
-              <Button type="button" variant="outline">
-                Cancel
-              </Button>
-            </ConfirmationDialogCancel>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={onConfirm}
-              disabled={isLoading}
-            >
-              Delete
-            </Button>
-          </AlertDialogFooter>
-        </ConfirmationDialogBody>
-      </ConfirmationDialogContent>
-    </ConfirmationDialog>
+    <ConfirmResponsiveDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={
+        <span className="flex items-center gap-1 text-destructive">
+          <AlertTriangle className="size-[18px] stroke-destructive" />
+          Delete {selectedRows.length}{" "}
+          {selectedRows.length > 1 ? "units" : "unit"}
+        </span>
+      }
+      description={
+        <div className="space-y-4">
+          <p className="mb-2">
+            Are you sure you want to delete the selected measurement units?
+            <br />
+            This action cannot be undone.
+          </p>
+
+          <Label className="my-4 flex flex-col items-start gap-1.5">
+            <span>Confirm by typing &quot;{CONFIRM_WORD}&quot;:</span>
+            <Input
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              placeholder={`Type "${CONFIRM_WORD}" to confirm.`}
+              className="mt-1"
+            />
+          </Label>
+
+          <Alert variant="destructive">
+            <AlertTitle>Warning!</AlertTitle>
+            <AlertDescription>
+              Please be careful, this operation can not be rolled back.
+            </AlertDescription>
+          </Alert>
+        </div>
+      }
+      confirmText="Delete"
+      destructive
+      disabled={value.trim() !== CONFIRM_WORD}
+      isLoading={isPending}
+      onConfirm={handleDelete}
+    />
   )
 }
-

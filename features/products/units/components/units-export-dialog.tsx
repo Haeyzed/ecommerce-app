@@ -1,8 +1,22 @@
 "use client"
 
+import { format } from "date-fns"
 import * as React from "react"
+import { Controller, useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useQuery } from "@tanstack/react-query"
+import { Upload } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field"
+import { Label } from "@/components/ui/label"
 import {
   ResponsiveDialog,
   ResponsiveDialogBody,
@@ -12,147 +26,190 @@ import {
   ResponsiveDialogHeader,
   ResponsiveDialogTitle,
 } from "@/components/ui/responsive-dialog"
-import { Spinner } from "@/components/ui/spinner"
 import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
-import { Checkbox } from "@/components/ui/checkbox"
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Spinner } from "@/components/ui/spinner"
+import { useApiClient } from "@/lib/api/use-api-client"
+import { DateRangePicker } from "@/components/date-range-picker"
 
 import { useUnitsExport } from "../api"
-import type { UnitExportParams } from "../types"
-import { DEFAULT_EXPORT_COLUMNS, UNIT_EXPORT_COLUMNS } from "../constants"
+import { UNIT_EXPORT_COLUMNS, DEFAULT_EXPORT_COLUMNS } from "../constants"
+import { unitExportSchema, type UnitExportFormData } from "../schemas"
 
 interface UnitsExportDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  ids: number[]
+  ids?: number[]
 }
 
 export function UnitsExportDialog({
   open,
   onOpenChange,
-  ids,
+  ids = [],
 }: UnitsExportDialogProps) {
-  const [columns, setColumns] = React.useState<string[]>(
-    [...DEFAULT_EXPORT_COLUMNS]
-  )
-  const [format, setFormat] = React.useState<UnitExportParams["format"]>("excel")
-  const [method, setMethod] = React.useState<UnitExportParams["method"]>("download")
-
   const { mutate: exportUnits, isPending } = useUnitsExport()
+  const { api } = useApiClient()
 
-  const handleToggleColumn = (value: string) => {
-    setColumns((prev) =>
-      prev.includes(value) ? prev.filter((c) => c !== value) : [...prev, value]
+  const form = useForm<UnitExportFormData>({
+    resolver: zodResolver(unitExportSchema),
+    defaultValues: {
+      format: "excel",
+      method: "download",
+      columns: [...DEFAULT_EXPORT_COLUMNS],
+      start_date: undefined,
+      end_date: undefined,
+    },
+  })
+
+  const method = form.watch("method")
+
+  const { data: usersResponse, isLoading: isLoadingUsers } = useQuery({
+    queryKey: ["users", "list"],
+    queryFn: async () =>
+      api.get<Array<{ id: number; name: string; email: string }>>("/users", {
+        params: { per_page: 100 },
+      }),
+    enabled: open && method === "email",
+  })
+
+  const users = usersResponse?.data ?? []
+
+  const handleOpenChange = (value: boolean) => {
+    if (!value) form.reset()
+    onOpenChange(value)
+  }
+
+  const onSubmit = (data: UnitExportFormData) => {
+    exportUnits(
+      {
+        ids: ids.length > 0 ? ids : undefined,
+        format: data.format,
+        method: data.method,
+        columns: data.columns,
+        user_id: data.method === "email" ? data.user_id : undefined,
+        start_date: data.start_date,
+        end_date: data.end_date,
+      },
+      { onSuccess: () => handleOpenChange(false) }
     )
   }
 
-  const handleSubmit = () => {
-    const payload: UnitExportParams = {
-      ids: ids.length ? ids : undefined,
-      format,
-      method,
-      columns,
-    }
-    exportUnits(payload, {
-      onSuccess: () => {
-        if (method !== "download") {
-          onOpenChange(false)
-        }
-      },
-    })
-  }
-
   return (
-    <ResponsiveDialog open={open} onOpenChange={onOpenChange}>
-      <ResponsiveDialogContent className="sm:max-w-lg">
+    <ResponsiveDialog open={open} onOpenChange={handleOpenChange}>
+      <ResponsiveDialogContent className="sm:max-w-2xl">
         <ResponsiveDialogHeader className="text-start">
           <ResponsiveDialogTitle>Export Units</ResponsiveDialogTitle>
           <ResponsiveDialogDescription>
-            Choose columns and format for exporting units. If no rows are selected,
-            all units matching current filters will be exported.
+            Select export format, method, and columns.
+            {ids.length > 0 && ` ${ids.length} unit(s) selected.`}
           </ResponsiveDialogDescription>
         </ResponsiveDialogHeader>
 
-        <ResponsiveDialogBody className="py-1 pe-3">
-          <FieldGroup>
-            <Field>
-              <FieldLabel>Format</FieldLabel>
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant={format === "excel" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setFormat("excel")}
-                >
-                  Excel
-                </Button>
-                <Button
-                  type="button"
-                  variant={format === "pdf" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setFormat("pdf")}
-                >
-                  PDF
-                </Button>
-              </div>
-            </Field>
-
-            <Field>
-              <FieldLabel>Delivery method</FieldLabel>
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant={method === "download" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setMethod("download")}
-                >
-                  Download
-                </Button>
-                <Button
-                  type="button"
-                  variant={method === "email" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setMethod("email")}
-                >
-                  Email
-                </Button>
-              </div>
-            </Field>
-
-            <Field>
-              <FieldLabel>Columns</FieldLabel>
-              <FieldDescription>
-                Select which columns to include in the export.
-              </FieldDescription>
-              <div className="mt-2 grid grid-cols-2 gap-2">
-                {UNIT_EXPORT_COLUMNS.map((col) => (
-                  <label
-                    key={col.value}
-                    className="flex cursor-pointer items-center gap-2 text-sm"
-                  >
-                    <Checkbox
-                      checked={columns.includes(col.value)}
-                      onCheckedChange={() => handleToggleColumn(col.value)}
+        <ResponsiveDialogBody>
+          <form
+            id="unit-export-form"
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="grid gap-4 py-4"
+          >
+            <FieldGroup>
+              <Controller
+                control={form.control}
+                name="start_date"
+                render={({ fieldState }) => (
+                  <Field className="grid w-full gap-1.5">
+                    <FieldLabel>Date range (optional)</FieldLabel>
+                    <DateRangePicker
+                      value={{
+                        from: form.watch("start_date") ? new Date(form.watch("start_date")!) : undefined,
+                        to: form.watch("end_date") ? new Date(form.watch("end_date")!) : undefined,
+                      }}
+                      onChange={(range) => {
+                        form.setValue("start_date", range?.from ? format(range.from, "yyyy-MM-dd") : undefined)
+                        form.setValue("end_date", range?.to ? format(range.to, "yyyy-MM-dd") : undefined)
+                      }}
                     />
-                    <span>{col.label}</span>
-                  </label>
-                ))}
-              </div>
-            </Field>
-          </FieldGroup>
+                    {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                control={form.control}
+                name="format"
+                render={({ field }) => (
+                  <Field>
+                    <FieldLabel>Format</FieldLabel>
+                    <div className="flex gap-4">
+                      <Label className="flex items-center gap-2"><input type="radio" checked={field.value === "excel"} onChange={() => field.onChange("excel")} /> Excel</Label>
+                      <Label className="flex items-center gap-2"><input type="radio" checked={field.value === "pdf"} onChange={() => field.onChange("pdf")} /> PDF</Label>
+                    </div>
+                  </Field>
+                )}
+              />
+
+              <Controller
+                control={form.control}
+                name="method"
+                render={({ field }) => (
+                  <Field>
+                    <FieldLabel>Method</FieldLabel>
+                    <div className="flex gap-4">
+                      <Label className="flex items-center gap-2"><input type="radio" checked={field.value === "download"} onChange={() => field.onChange("download")} /> Download</Label>
+                      <Label className="flex items-center gap-2"><input type="radio" checked={field.value === "email"} onChange={() => field.onChange("email")} /> Email</Label>
+                    </div>
+                  </Field>
+                )}
+              />
+
+              {method === "email" && (
+                <Controller
+                  control={form.control}
+                  name="user_id"
+                  render={({ field }) => (
+                    <Field>
+                      <FieldLabel>Select User</FieldLabel>
+                      <Select onValueChange={(v) => field.onChange(Number(v))} value={field.value ? String(field.value) : ""}>
+                        <SelectTrigger><SelectValue placeholder="Select user" /></SelectTrigger>
+                        <SelectContent>{users.map(u => <SelectItem key={u.id} value={String(u.id)}>{u.name}</SelectItem>)}</SelectContent>
+                      </Select>
+                    </Field>
+                  )}
+                />
+              )}
+
+              <Controller
+                control={form.control}
+                name="columns"
+                render={({ field }) => (
+                  <Field>
+                    <FieldLabel>Columns</FieldLabel>
+                    <div className="grid grid-cols-2 gap-3 rounded-md border p-3">
+                      {UNIT_EXPORT_COLUMNS.map((col) => (
+                        <div key={col.value} className="flex items-center gap-2">
+                          <Checkbox checked={field.value.includes(col.value)} onCheckedChange={(checked) => {
+                            const val = checked ? [...field.value, col.value] : field.value.filter(v => v !== col.value)
+                            field.onChange(val)
+                          }} />
+                          <span className="text-sm">{col.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </Field>
+                )}
+              />
+            </FieldGroup>
+          </form>
         </ResponsiveDialogBody>
 
         <ResponsiveDialogFooter>
-          <Button
-            type="button"
-            onClick={handleSubmit}
-            disabled={isPending || columns.length === 0}
-          >
-            {isPending && <Spinner className="mr-2 size-4" />}
+          <Button variant="outline" onClick={() => handleOpenChange(false)}>Cancel</Button>
+          <Button type="submit" form="unit-export-form" disabled={isPending}>
+            {isPending ? <Spinner className="mr-2" /> : <Upload className="mr-2 size-4" />}
             Export
           </Button>
         </ResponsiveDialogFooter>
@@ -160,4 +217,3 @@ export function UnitsExportDialog({
     </ResponsiveDialog>
   )
 }
-
