@@ -54,6 +54,7 @@ import {
 } from "../api"
 import { categorySchema, type CategoryFormData } from "../schemas"
 import type { Category } from "../types"
+import { CropperFileUpload } from "@/components/cropper-file-upload"
 
 interface CategoriesActionDialogProps {
   currentRow?: Category
@@ -368,40 +369,16 @@ function CategoryForm({
                     </div>
                   </div>
                 )}
-                <FileUpload
-                  value={value ?? []}
-                  onValueChange={onChange}
-                  accept="image/*"
-                  maxFiles={1}
-                  maxSize={5 * 1024 * 1024}
-                  onFileReject={(_file, message) => {
-                    form.setError("image", { message })
-                  }}
-                >
-                  <FileUploadDropzone className="flex flex-row flex-wrap border-dotted text-center">
-                    <CloudUpload className="size-4" />
-                    Drag and drop or{" "}
-                    <FileUploadTrigger asChild>
-                      <Button variant="link" size="sm" className="p-0">
-                        choose file
-                      </Button>
-                    </FileUploadTrigger>{" "}
-                    to upload
-                  </FileUploadDropzone>
-                  <FileUploadList>
-                    {(value ?? []).map((file, index) => (
-                      <FileUploadItem key={index} value={file}>
-                        <FileUploadItemPreview />
-                        <FileUploadItemMetadata />
-                        <FileUploadItemDelete asChild>
-                          <Button variant="ghost" size="icon" className="size-7">
-                            <span className="sr-only">Delete</span>
-                          </Button>
-                        </FileUploadItemDelete>
-                      </FileUploadItem>
-                    ))}
-                  </FileUploadList>
-                </FileUpload>
+                <CropperFileUpload
+  value={value ?? []}
+  onValueChange={onChange}
+  accept="image/*"
+  maxFiles={1}
+  maxSize={5 * 1024 * 1024}
+  onFileReject={(_file, message) => {
+    form.setError("image", { message })
+  }}
+/>
                 <FieldDescription>
                   JPEG, PNG, JPG, GIF, or WebP. Max 5MB.
                 </FieldDescription>
@@ -444,39 +421,16 @@ function CategoryForm({
                     </div>
                   </div>
                 )}
-                <FileUpload
-                  value={value ?? []}
-                  onValueChange={onChange}
-                  accept="image/*"
-                  maxFiles={1}
-                  maxSize={2 * 1024 * 1024}
-                  onFileReject={(_file, message) => {
-                    form.setError("icon", { message })
-                  }}
-                >
-                  <FileUploadDropzone className="flex flex-row flex-wrap border-dotted text-center">
-                    <CloudUpload className="size-4" />
-                    Drag and drop or{" "}
-                    <FileUploadTrigger asChild>
-                      <Button variant="link" size="sm" className="p-0">
-                        choose file
-                      </Button>
-                    </FileUploadTrigger>
-                  </FileUploadDropzone>
-                  <FileUploadList>
-                    {(value ?? []).map((file, index) => (
-                      <FileUploadItem key={index} value={file}>
-                        <FileUploadItemPreview />
-                        <FileUploadItemMetadata />
-                        <FileUploadItemDelete asChild>
-                          <Button variant="ghost" size="icon" className="size-7">
-                            <span className="sr-only">Delete</span>
-                          </Button>
-                        </FileUploadItemDelete>
-                      </FileUploadItem>
-                    ))}
-                  </FileUploadList>
-                </FileUpload>
+                <CropperFileUpload
+  value={value ?? []}
+  onValueChange={onChange}
+  accept="image/*"
+  maxFiles={1}
+  maxSize={2 * 1024 * 1024}
+  onFileReject={(_file, message) => {
+    form.setError("icon", { message })
+  }}
+/>
                 <FieldDescription>
                   Optional. SVG or image. Max 2MB.
                 </FieldDescription>

@@ -49,6 +49,7 @@ import {
 
 import { useRegister } from '../api'
 import { registerSchema, type RegisterFormData } from '../schemas'
+import { CropperFileUpload } from '@/components/cropper-file-upload'
 
 const STEPS = [
   {
@@ -262,54 +263,28 @@ export function RegisterForm() {
               )}
             />
             <Controller
-              control={form.control}
-              name="image"
-              render={({ field: { value, onChange }, fieldState }) => (
-                <Field data-invalid={!!fieldState.error}>
-                  <FieldLabel htmlFor="register-image">Avatar</FieldLabel>
-                  <FileUpload
-                    value={value ?? []}
-                    onValueChange={onChange}
-                    accept="image/*"
-                    maxFiles={1}
-                    maxSize={5 * 1024 * 1024}
-                    onFileReject={(_file, message) => {
-                      form.setError('image', { message })
-                    }}
-                  >
-                    <FileUploadDropzone className="flex flex-row flex-wrap border-dotted text-center">
-                      <CloudUpload className="size-4" />
-                      Drag and drop or{' '}
-                      <FileUploadTrigger asChild>
-                        <Button variant="link" size="sm" className="p-0">
-                          choose file
-                        </Button>
-                      </FileUploadTrigger>{' '}
-                      to upload
-                    </FileUploadDropzone>
-                    <FileUploadList>
-                      {(value ?? []).map((file, index) => (
-                        <FileUploadItem key={index} value={file}>
-                          <FileUploadItemPreview />
-                          <FileUploadItemMetadata />
-                          <FileUploadItemDelete asChild>
-                            <Button variant="ghost" size="icon" className="size-7">
-                              <span className="sr-only">Delete</span>
-                            </Button>
-                          </FileUploadItemDelete>
-                        </FileUploadItem>
-                      ))}
-                    </FileUploadList>
-                  </FileUpload>
-                  <FieldDescription>
-                    JPEG, PNG, JPG, GIF, or WebP. Max 5MB.
-                  </FieldDescription>
-                  {fieldState.error && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+  control={form.control}
+  name="image"
+  render={({ field: { value, onChange }, fieldState }) => (
+    <Field data-invalid={!!fieldState.error}>
+      <FieldLabel htmlFor="register-image">Avatar</FieldLabel>
+      <CropperFileUpload
+        value={value ?? []}
+        onValueChange={onChange}
+        accept="image/*"
+        maxFiles={1}
+        maxSize={5 * 1024 * 1024}
+        onFileReject={(_file, message) => {
+          form.setError('image', { message })
+        }}
+      />
+      <FieldDescription>
+        JPEG, PNG, JPG, GIF, or WebP. Max 5MB.
+      </FieldDescription>
+      {fieldState.error && <FieldError errors={[fieldState.error]} />}
+    </Field>
+  )}
+/>
           </FieldGroup>
         </StepperContent>
 
