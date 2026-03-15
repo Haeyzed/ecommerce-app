@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ConfirmResponsiveDialog } from "@/components/confirm-responsive-dialog"
 
-import { useBulkDestroyBrands } from "../api"
+import { useBulkDeleteBrands } from "../api"
 import type { Brand } from "../types"
 
 const CONFIRM_WORD = "DELETE"
@@ -30,7 +30,7 @@ export function BrandsMultiDeleteDialog({
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const selectedIds = selectedRows.map((row) => row.original.id)
 
-  const { mutate: bulkDestroy, isPending } = useBulkDestroyBrands()
+  const { mutate: bulkDestroy, isPending } = useBulkDeleteBrands()
 
   const handleDelete = () => {
     if (value.trim() !== CONFIRM_WORD) {
