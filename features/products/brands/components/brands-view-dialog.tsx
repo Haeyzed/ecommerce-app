@@ -92,7 +92,7 @@ function BrandViewContent({ currentRow }: { currentRow: Brand }) {
           <div className="text-sm font-medium text-muted-foreground">
             Description
           </div>
-          <div className="whitespace-pre-wrap text-sm text-muted-foreground">
+          <div className="text-sm whitespace-pre-wrap text-muted-foreground">
             {currentRow.short_description}
           </div>
         </div>

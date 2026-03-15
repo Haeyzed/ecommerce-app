@@ -2,13 +2,7 @@
 
 import { useState } from "react"
 import type { Table } from "@tanstack/react-table"
-import {
-  CheckCircle2,
-  CircleSlash,
-  Star,
-  StarOff,
-  Trash2,
-} from "lucide-react"
+import { CheckCircle2, CircleSlash, Star, StarOff, Trash2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { DataTableBulkActions } from "@/components/data-table/data-table-bulk-actions"
@@ -37,8 +31,9 @@ export function CategoriesDataTableBulkActions({
 }: CategoriesDataTableBulkActionsProps) {
   const [showMultiDelete, setShowMultiDelete] = useState(false)
   const { data: session } = useAuthSession()
-  const userPermissions = (session?.user as { user_permissions?: string[] } | undefined)
-    ?.user_permissions ?? []
+  const userPermissions =
+    (session?.user as { user_permissions?: string[] } | undefined)
+      ?.user_permissions ?? []
 
   const canUpdate = userPermissions.includes(PERMISSIONS.update)
   const canDelete = userPermissions.includes(PERMISSIONS.delete)
@@ -87,7 +82,9 @@ export function CategoriesDataTableBulkActions({
     enableSync(getSelectedIds(), { onSuccess: () => table.resetRowSelection() })
   }
   const handleBulkDisableSync = () => {
-    disableSync(getSelectedIds(), { onSuccess: () => table.resetRowSelection() })
+    disableSync(getSelectedIds(), {
+      onSuccess: () => table.resetRowSelection(),
+    })
   }
 
   return (

@@ -1,22 +1,22 @@
-'use client'
+"use client"
 
-import * as React from 'react'
-import { useForm, Controller } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import * as React from "react"
+import { useForm, Controller } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 
-import { ValidationError } from '@/lib/api'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Spinner } from '@/components/ui/spinner'
+import { ValidationError } from "@/lib/api"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Spinner } from "@/components/ui/spinner"
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from '@/components/ui/field'
+} from "@/components/ui/field"
 
-import { useForgotPassword } from '../api'
-import { forgotPasswordSchema, type ForgotPasswordFormData } from '../schemas'
+import { useForgotPassword } from "../api"
+import { forgotPasswordSchema, type ForgotPasswordFormData } from "../schemas"
 
 export function ForgotPasswordForm() {
   const [isSubmitted, setIsSubmitted] = React.useState(false)
@@ -25,7 +25,7 @@ export function ForgotPasswordForm() {
   const form = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
-      email: '',
+      email: "",
     },
   })
 
@@ -37,7 +37,7 @@ export function ForgotPasswordForm() {
       if (error instanceof ValidationError && error.errors) {
         Object.entries(error.errors).forEach(([field, messages]) => {
           form.setError(field as keyof ForgotPasswordFormData, {
-            type: 'server',
+            type: "server",
             message: messages[0],
           })
         })
@@ -48,7 +48,8 @@ export function ForgotPasswordForm() {
   if (isSubmitted) {
     return (
       <div className="rounded-md bg-green-50 p-4 text-sm font-medium text-green-800">
-        If an account exists for that email, we have sent password reset instructions.
+        If an account exists for that email, we have sent password reset
+        instructions.
       </div>
     )
   }
@@ -70,16 +71,14 @@ export function ForgotPasswordForm() {
                 disabled={isPending}
                 aria-invalid={fieldState.invalid}
               />
-              {fieldState.invalid && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
 
         <Button type="submit" className="w-full" disabled={isPending}>
           {isPending && <Spinner className="mr-2 h-4 w-4" />}
-          {isPending ? 'Sending link...' : 'Send Reset Link'}
+          {isPending ? "Sending link..." : "Send Reset Link"}
         </Button>
       </FieldGroup>
     </form>

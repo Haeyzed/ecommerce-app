@@ -20,19 +20,18 @@ export function AppSidebar() {
   const { collapsible, variant } = useLayout()
   const { data: session } = useSession()
 
-  const user =
-    session?.user
-      ? {
-          name: session.user.name ?? "User",
-          email: session.user.email ?? "No email",
-          image:
-            (session.user as { image?: string }).image ?? "/avatars/shadcn.png",
-        }
-      : {
-          name: "User",
-          email: "No email",
-          image: "/avatars/shadcn.png",
-        }
+  const user = session?.user
+    ? {
+        name: session.user.name ?? "User",
+        email: session.user.email ?? "No email",
+        image:
+          (session.user as { image?: string }).image ?? "/avatars/shadcn.png",
+      }
+    : {
+        name: "User",
+        email: "No email",
+        image: "/avatars/shadcn.png",
+      }
 
   return (
     <Sidebar

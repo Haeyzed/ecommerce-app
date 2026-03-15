@@ -25,7 +25,10 @@ import {
 import { Kbd } from "@/components/ui/kbd"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { sidebarData } from "@/components/layout/data/sidebar-data"
-import type { LayoutNavLink, LayoutNavCollapsible } from "@/components/layout/types"
+import type {
+  LayoutNavLink,
+  LayoutNavCollapsible,
+} from "@/components/layout/types"
 
 function isNavLink(
   item: LayoutNavLink | LayoutNavCollapsible
@@ -107,7 +110,9 @@ export function CommandMenu() {
               ))}
               <CommandSeparator />
               <CommandGroup heading="Theme">
-                <CommandItem onSelect={() => runCommand(() => setTheme("light"))}>
+                <CommandItem
+                  onSelect={() => runCommand(() => setTheme("light"))}
+                >
                   <HugeiconsIcon
                     icon={Sun03Icon}
                     strokeWidth={2}
@@ -115,7 +120,9 @@ export function CommandMenu() {
                   />
                   <span>Light</span>
                 </CommandItem>
-                <CommandItem onSelect={() => runCommand(() => setTheme("dark"))}>
+                <CommandItem
+                  onSelect={() => runCommand(() => setTheme("dark"))}
+                >
                   <HugeiconsIcon
                     icon={Moon02Icon}
                     strokeWidth={2}

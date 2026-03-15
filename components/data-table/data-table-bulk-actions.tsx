@@ -47,12 +47,7 @@ export function DataTableBulkActions<TData>({
 
   return (
     <>
-      <div
-        aria-live="polite"
-        aria-atomic
-        className="sr-only"
-        role="status"
-      >
+      <div aria-live="polite" aria-atomic className="sr-only" role="status">
         {announcement}
       </div>
       <div

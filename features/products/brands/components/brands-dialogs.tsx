@@ -13,8 +13,9 @@ import { BrandsViewDialog } from "./brands-view-dialog"
 export function BrandsDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useBrandsContext()
   const { data: session } = useAuthSession()
-  const userPermissions = (session?.user as { user_permissions?: string[] } | undefined)
-    ?.user_permissions ?? []
+  const userPermissions =
+    (session?.user as { user_permissions?: string[] } | undefined)
+      ?.user_permissions ?? []
 
   const canCreate = userPermissions.includes(PERMISSIONS.create)
   const canUpdate = userPermissions.includes(PERMISSIONS.update)

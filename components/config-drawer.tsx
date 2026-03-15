@@ -200,7 +200,9 @@ export function ConfigDrawer() {
 function ThemeConfig() {
   const { theme, setTheme } = useTheme()
   const defaultTheme = "system"
-  const [clickEvent, setClickEvent] = React.useState<React.MouseEvent | null>(null)
+  const [clickEvent, setClickEvent] = React.useState<React.MouseEvent | null>(
+    null
+  )
 
   const handleThemeChange = (newTheme: string) => {
     const root = document.documentElement

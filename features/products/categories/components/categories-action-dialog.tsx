@@ -147,11 +147,7 @@ export function CategoriesActionDialog({
         </ResponsiveDialogBody>
 
         <ResponsiveDialogFooter>
-          <Button
-            type="submit"
-            form="category-form"
-            disabled={isLoading}
-          >
+          <Button type="submit" form="category-form" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Spinner className="mr-2" />
@@ -190,11 +186,7 @@ function CategoryForm({
   }, [optionCategories, isEdit, currentRow])
 
   return (
-    <form
-      id={id}
-      onSubmit={form.handleSubmit(onSubmit)}
-      className="space-y-4"
-    >
+    <form id={id} onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
       <FieldGroup>
         <Controller
           control={form.control}
@@ -218,9 +210,7 @@ function CategoryForm({
                   }
                 }}
               />
-              {fieldState.error && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
@@ -254,9 +244,7 @@ function CategoryForm({
               <FieldDescription>
                 URL-friendly version of the name (auto-generated)
               </FieldDescription>
-              {fieldState.error && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
@@ -279,18 +267,13 @@ function CategoryForm({
                 <SelectContent>
                   <SelectItem value="none">None (root category)</SelectItem>
                   {parentOptions.map((opt) => (
-                    <SelectItem
-                      key={opt.value}
-                      value={String(opt.value)}
-                    >
+                    <SelectItem key={opt.value} value={String(opt.value)}>
                       {opt.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              {fieldState.error && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
@@ -300,7 +283,9 @@ function CategoryForm({
           name="short_description"
           render={({ field, fieldState }) => (
             <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor="category-description">Description</FieldLabel>
+              <FieldLabel htmlFor="category-description">
+                Description
+              </FieldLabel>
               <Textarea
                 id="category-description"
                 placeholder="Category description"
@@ -309,9 +294,7 @@ function CategoryForm({
                 {...field}
                 value={field.value ?? ""}
               />
-              {fieldState.error && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
@@ -329,9 +312,7 @@ function CategoryForm({
                 {...field}
                 value={field.value ?? ""}
               />
-              {fieldState.error && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
@@ -370,21 +351,19 @@ function CategoryForm({
                   </div>
                 )}
                 <CropperFileUpload
-  value={value ?? []}
-  onValueChange={onChange}
-  accept="image/*"
-  maxFiles={1}
-  maxSize={5 * 1024 * 1024}
-  onFileReject={(_file, message) => {
-    form.setError("image", { message })
-  }}
-/>
+                  value={value ?? []}
+                  onValueChange={onChange}
+                  accept="image/*"
+                  maxFiles={1}
+                  maxSize={5 * 1024 * 1024}
+                  onFileReject={(_file, message) => {
+                    form.setError("image", { message })
+                  }}
+                />
                 <FieldDescription>
                   JPEG, PNG, JPG, GIF, or WebP. Max 5MB.
                 </FieldDescription>
-                {fieldState.error && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
+                {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )
           }}
@@ -422,21 +401,19 @@ function CategoryForm({
                   </div>
                 )}
                 <CropperFileUpload
-  value={value ?? []}
-  onValueChange={onChange}
-  accept="image/*"
-  maxFiles={1}
-  maxSize={2 * 1024 * 1024}
-  onFileReject={(_file, message) => {
-    form.setError("icon", { message })
-  }}
-/>
+                  value={value ?? []}
+                  onValueChange={onChange}
+                  accept="image/*"
+                  maxFiles={1}
+                  maxSize={2 * 1024 * 1024}
+                  onFileReject={(_file, message) => {
+                    form.setError("icon", { message })
+                  }}
+                />
                 <FieldDescription>
                   Optional. SVG or image. Max 2MB.
                 </FieldDescription>
-                {fieldState.error && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
+                {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )
           }}
@@ -461,9 +438,7 @@ function CategoryForm({
                 checked={!!field.value}
                 onCheckedChange={field.onChange}
               />
-              {fieldState.error && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
@@ -487,9 +462,7 @@ function CategoryForm({
                 checked={!!field.value}
                 onCheckedChange={field.onChange}
               />
-              {fieldState.error && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
@@ -513,9 +486,7 @@ function CategoryForm({
                 checked={!!field.value}
                 onCheckedChange={field.onChange}
               />
-              {fieldState.error && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />

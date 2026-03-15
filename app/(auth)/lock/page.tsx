@@ -1,9 +1,9 @@
-import { Card, CardContent } from '@/components/ui/card'
-import { LockScreenContent } from '@/features/auth'
+import { Card, CardContent } from "@/components/ui/card"
+import { LockScreenContent } from "@/features/auth"
 
 export default function LockScreenPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center p-4 bg-muted/30">
+    <div className="flex min-h-screen items-center justify-center bg-muted/30 p-4">
       {/* Note: We omit CardHeader here because LockScreenContent
         already renders the user's Avatar and Name beautifully at the top.
       */}

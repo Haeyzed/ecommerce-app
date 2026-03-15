@@ -1,6 +1,11 @@
 "use client"
 
-import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryState } from "nuqs"
+import {
+  parseAsArrayOf,
+  parseAsInteger,
+  parseAsString,
+  useQueryState,
+} from "nuqs"
 import * as React from "react"
 
 import { DataTable } from "@/components/data-table/data-table"
@@ -40,7 +45,13 @@ export function BrandsTable() {
     [page, perPage, name, isActive, startDate, endDate]
   )
 
-  const { data: apiData, meta, isLoading, isError, error } = useBrands(apiParams)
+  const {
+    data: apiData,
+    meta,
+    isLoading,
+    isError,
+    error,
+  } = useBrands(apiParams)
 
   const brands: Brand[] = apiData ?? []
 
@@ -76,7 +87,9 @@ export function BrandsTable() {
   if (isError) {
     return (
       <div className="data-table-container flex min-h-[200px] flex-col items-center justify-center gap-2 rounded-md border border-dashed border-destructive/50 bg-destructive/5 p-4">
-        <p className="text-sm font-medium text-destructive">Failed to load brands</p>
+        <p className="text-sm font-medium text-destructive">
+          Failed to load brands
+        </p>
         <p className="text-xs text-muted-foreground">
           {error instanceof Error ? error.message : "Something went wrong"}
         </p>
@@ -86,7 +99,10 @@ export function BrandsTable() {
 
   return (
     <div className="data-table-container flex flex-1 flex-col gap-4 max-sm:has-[div[role='toolbar']]:mb-16">
-      <DataTable table={table} actionBar={<BrandsDataTableBulkActions table={table} />}>
+      <DataTable
+        table={table}
+        actionBar={<BrandsDataTableBulkActions table={table} />}
+      >
         <DataTableToolbar table={table} />
       </DataTable>
     </div>

@@ -23,9 +23,9 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
 
-const ResponsiveDialogContext = React.createContext<{ isMobile: boolean } | null>(
-  null
-)
+const ResponsiveDialogContext = React.createContext<{
+  isMobile: boolean
+} | null>(null)
 
 function useResponsiveDialog() {
   const ctx = React.useContext(ResponsiveDialogContext)
@@ -70,7 +70,7 @@ function ResponsiveDialogContent({
   if (isMobile) {
     return (
       <DrawerContent
-        className={cn("flex flex-col max-h-[90vh]", className)}
+        className={cn("flex max-h-[90vh] flex-col", className)}
         {...props}
       />
     )
@@ -95,7 +95,7 @@ function ResponsiveDialogBody({
     return (
       <div
         className={cn(
-          "min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain px-4",
+          "min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain px-4",
           className
         )}
         {...props}
@@ -105,7 +105,10 @@ function ResponsiveDialogBody({
 
   return (
     <div
-      className={cn("max-h-[70vh] overflow-y-auto overflow-x-hidden", className)}
+      className={cn(
+        "max-h-[70vh] overflow-x-hidden overflow-y-auto",
+        className
+      )}
       {...props}
     />
   )

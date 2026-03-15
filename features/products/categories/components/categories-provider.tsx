@@ -19,9 +19,15 @@ type CategoriesContextValue = {
   setCurrentRow: React.Dispatch<React.SetStateAction<Category | null>>
 }
 
-const CategoriesContext = React.createContext<CategoriesContextValue | null>(null)
+const CategoriesContext = React.createContext<CategoriesContextValue | null>(
+  null
+)
 
-export function CategoriesProvider({ children }: { children: React.ReactNode }) {
+export function CategoriesProvider({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   const [open, setOpen] = useDialogState<CategoriesDialogType>(null)
   const [currentRow, setCurrentRow] = React.useState<Category | null>(null)
 
@@ -37,7 +43,9 @@ export function CategoriesProvider({ children }: { children: React.ReactNode }) 
 export function useCategoriesContext() {
   const ctx = React.useContext(CategoriesContext)
   if (!ctx) {
-    throw new Error("useCategoriesContext must be used within CategoriesProvider")
+    throw new Error(
+      "useCategoriesContext must be used within CategoriesProvider"
+    )
   }
   return ctx
 }

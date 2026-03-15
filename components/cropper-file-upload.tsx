@@ -71,20 +71,17 @@ async function createCroppedImage(
         cropData.height
       )
 
-      canvas.toBlob(
-        (blob) => {
-          if (!blob) {
-            reject(new Error("Canvas is empty"))
-            return
-          }
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          reject(new Error("Canvas is empty"))
+          return
+        }
 
-          const croppedFile = new File([blob], `cropped-${fileName}`, {
-            type: mimeType || "image/png",
-          })
-          resolve(croppedFile)
-        },
-        mimeType || "image/png"
-      )
+        const croppedFile = new File([blob], `cropped-${fileName}`, {
+          type: mimeType || "image/png",
+        })
+        resolve(croppedFile)
+      }, mimeType || "image/png")
     }
 
     image.onerror = () => reject(new Error("Failed to load image"))
@@ -254,7 +251,13 @@ export function CropperFileUpload({
         error instanceof Error ? error.message : "Failed to crop image"
       )
     }
-  }, [selectedFile, croppedArea, selectedImageUrl, emitFiles, onCropDialogOpenChange])
+  }, [
+    selectedFile,
+    croppedArea,
+    selectedImageUrl,
+    emitFiles,
+    onCropDialogOpenChange,
+  ])
 
   return (
     <FileUpload
@@ -305,7 +308,10 @@ export function CropperFileUpload({
               />
               <FileUploadItemMetadata />
               <div className="flex gap-1">
-                <Dialog open={showCropDialog} onOpenChange={onCropDialogOpenChange}>
+                <Dialog
+                  open={showCropDialog}
+                  onOpenChange={onCropDialogOpenChange}
+                >
                   <DialogTrigger asChild>
                     <Button
                       variant="ghost"
@@ -321,7 +327,8 @@ export function CropperFileUpload({
                     <DialogHeader>
                       <DialogTitle>Crop Image</DialogTitle>
                       <DialogDescription>
-                        Adjust the crop area and zoom level for {selectedFile?.name}
+                        Adjust the crop area and zoom level for{" "}
+                        {selectedFile?.name}
                       </DialogDescription>
                     </DialogHeader>
                     {selectedFile && selectedImageUrl && (
@@ -360,7 +367,11 @@ export function CropperFileUpload({
                       </div>
                     )}
                     <DialogFooter>
-                      <Button type="button" onClick={onCropReset} variant="outline">
+                      <Button
+                        type="button"
+                        onClick={onCropReset}
+                        variant="outline"
+                      >
                         Reset
                       </Button>
                       <Button
@@ -378,7 +389,7 @@ export function CropperFileUpload({
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="size-8 hover:bg-destructive/30 hover:text-destructive-foreground dark:hover:bg-destructive dark:hover:text-destructive-foreground"
+                    className="hover:text-destructive-foreground dark:hover:text-destructive-foreground size-8 hover:bg-destructive/30 dark:hover:bg-destructive"
                   >
                     <XIcon />
                   </Button>

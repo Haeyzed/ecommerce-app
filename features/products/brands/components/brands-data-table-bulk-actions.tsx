@@ -24,8 +24,9 @@ export function BrandsDataTableBulkActions({
 }: BrandsDataTableBulkActionsProps) {
   const [showMultiDelete, setShowMultiDelete] = useState(false)
   const { data: session } = useAuthSession()
-  const userPermissions = (session?.user as { user_permissions?: string[] } | undefined)
-    ?.user_permissions ?? []
+  const userPermissions =
+    (session?.user as { user_permissions?: string[] } | undefined)
+      ?.user_permissions ?? []
 
   const canUpdate = userPermissions.includes(PERMISSIONS.update)
   const canDelete = userPermissions.includes(PERMISSIONS.delete)
@@ -48,7 +49,9 @@ export function BrandsDataTableBulkActions({
     const selectedIds = table
       .getFilteredSelectedRowModel()
       .rows.map((row) => row.original.id)
-    deactivateBrands(selectedIds, { onSuccess: () => table.resetRowSelection() })
+    deactivateBrands(selectedIds, {
+      onSuccess: () => table.resetRowSelection(),
+    })
   }
 
   return (

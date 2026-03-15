@@ -26,4 +26,9 @@ export const BRAND_EXPORT_COLUMNS = [
   { value: "updated_at", label: "Updated At" },
 ] as const
 
-export const DEFAULT_EXPORT_COLUMNS = ["id", "name", "slug", "is_active"] as const
+export const DEFAULT_EXPORT_COLUMNS = [
+  "id",
+  "name",
+  "slug",
+  "is_active",
+] as const

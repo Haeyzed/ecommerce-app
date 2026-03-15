@@ -10,11 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 
-import {
-  featuredOptions,
-  isActiveOptions,
-  syncOptions,
-} from "../constants"
+import { featuredOptions, isActiveOptions, syncOptions } from "../constants"
 import type { Category } from "../types"
 import { CategoriesDataTableRowActions } from "./categories-data-table-row-actions"
 
@@ -34,7 +30,7 @@ export const categoriesColumns: ColumnDef<Category>[] = [
     ),
     meta: {
       className: cn(
-        "w-10 min-w-10 max-w-10 bg-background max-md:sticky start-0 z-10 rounded-tl-[inherit]"
+        "start-0 z-10 w-10 max-w-10 min-w-10 rounded-tl-[inherit] bg-background max-md:sticky"
       ),
     },
     cell: ({ row }) => (
@@ -58,15 +54,9 @@ export const categoriesColumns: ColumnDef<Category>[] = [
     cell: ({ row }) => (
       <div className="flex items-center gap-3 ps-3">
         {row.original.image_url ? (
-          <ImageZoomCell
-            src={row.original.image_url}
-            alt={row.original.name}
-          />
+          <ImageZoomCell src={row.original.image_url} alt={row.original.name} />
         ) : row.original.icon_url ? (
-          <ImageZoomCell
-            src={row.original.icon_url}
-            alt={row.original.name}
-          />
+          <ImageZoomCell src={row.original.icon_url} alt={row.original.name} />
         ) : (
           <div className="flex size-10 items-center justify-center rounded-md bg-muted">
             <span className="text-xs font-medium">
@@ -231,13 +221,11 @@ export const categoriesColumns: ColumnDef<Category>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => (
-      <CategoriesDataTableRowActions row={row} />
-    ),
+    cell: ({ row }) => <CategoriesDataTableRowActions row={row} />,
     size: 32,
     meta: {
       className: cn(
-        "bg-background max-md:sticky end-0 z-10 rounded-tr-[inherit]"
+        "end-0 z-10 rounded-tr-[inherit] bg-background max-md:sticky"
       ),
     },
   },

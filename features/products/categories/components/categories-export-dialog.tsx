@@ -37,14 +37,8 @@ import { Spinner } from "@/components/ui/spinner"
 import { useApiClient } from "@/lib/api/use-api-client"
 
 import { useCategoriesExport } from "../api"
-import {
-  CATEGORY_EXPORT_COLUMNS,
-  DEFAULT_EXPORT_COLUMNS,
-} from "../constants"
-import {
-  categoryExportSchema,
-  type CategoryExportFormData,
-} from "../schemas"
+import { CATEGORY_EXPORT_COLUMNS, DEFAULT_EXPORT_COLUMNS } from "../constants"
+import { categoryExportSchema, type CategoryExportFormData } from "../schemas"
 import { DateRangePicker } from "@/components/date-range-picker"
 
 interface CategoriesExportDialogProps {
@@ -311,7 +305,9 @@ export function CategoriesExportDialog({
                         >
                           <Checkbox
                             id={`category-column-${column.value}`}
-                            checked={field.value?.includes(column.value) ?? false}
+                            checked={
+                              field.value?.includes(column.value) ?? false
+                            }
                             onCheckedChange={(checked) => {
                               const current = field.value ?? []
                               if (checked) {
@@ -352,9 +348,7 @@ export function CategoriesExportDialog({
           <Button
             type="submit"
             form="category-export-form"
-            disabled={
-              isPending || (method === "email" && isLoadingUsers)
-            }
+            disabled={isPending || (method === "email" && isLoadingUsers)}
           >
             {isPending ? (
               <>

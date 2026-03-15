@@ -2,7 +2,10 @@ import { z } from "zod"
 import { CSV_MIME_TYPES, MAX_FILE_SIZE } from "@/lib/utils/mimes"
 
 export const categorySchema = z.object({
-  name: z.string().min(1, "Category name is required").max(255, "Name is too long"),
+  name: z
+    .string()
+    .min(1, "Category name is required")
+    .max(255, "Name is too long"),
   slug: z.string().max(255, "Slug is too long").nullable().optional(),
   short_description: z
     .string()
@@ -34,17 +37,17 @@ export const categoryImportSchema = z.object({
     .array(z.custom<File>())
     .min(1, "Please select a file to import")
     .max(1, "Please select only one file")
-    .refine((files) => (files?.[0]?.size ?? 0) <= MAX_FILE_SIZE, "Max file size is 5MB.")
     .refine(
-      (files) => {
-        const file = files?.[0]
-        if (!file) return false
-        const isValidMime = CSV_MIME_TYPES.includes(file.type)
-        const isValidExtension = file.name.toLowerCase().endsWith(".csv")
-        return isValidMime || isValidExtension
-      },
-      "Only .csv files are allowed"
-    ),
+      (files) => (files?.[0]?.size ?? 0) <= MAX_FILE_SIZE,
+      "Max file size is 5MB."
+    )
+    .refine((files) => {
+      const file = files?.[0]
+      if (!file) return false
+      const isValidMime = CSV_MIME_TYPES.includes(file.type)
+      const isValidExtension = file.name.toLowerCase().endsWith(".csv")
+      return isValidMime || isValidExtension
+    }, "Only .csv files are allowed"),
 })
 
 export const categoryExportSchema = z

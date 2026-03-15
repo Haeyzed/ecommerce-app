@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from "next/link"
 
 import {
   Card,
@@ -7,8 +7,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { ForgotPasswordForm } from '@/features/auth'
+} from "@/components/ui/card"
+import { ForgotPasswordForm } from "@/features/auth"
 
 export default function ForgotPasswordPage() {
   return (
@@ -25,7 +25,7 @@ export default function ForgotPasswordPage() {
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-muted-foreground">
-            Remember your password?{' '}
+            Remember your password?{" "}
             <Link href="/login" className="text-primary hover:underline">
               Back to login
             </Link>

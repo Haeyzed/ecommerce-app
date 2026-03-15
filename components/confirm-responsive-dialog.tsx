@@ -46,7 +46,9 @@ export function ConfirmResponsiveDialog({
       <ResponsiveDialogContent>
         <ResponsiveDialogHeader>
           <ResponsiveDialogTitle>{title}</ResponsiveDialogTitle>
-          <ResponsiveDialogDescription>{description}</ResponsiveDialogDescription>
+          <ResponsiveDialogDescription>
+            {description}
+          </ResponsiveDialogDescription>
         </ResponsiveDialogHeader>
         <ResponsiveDialogFooter>
           <Button

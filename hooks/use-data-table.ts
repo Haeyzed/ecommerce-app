@@ -43,7 +43,9 @@ const THROTTLE_MS = 50
 const DATE_RANGE_START_KEY = "start_date"
 const DATE_RANGE_END_KEY = "end_date"
 
-function dateRangeValueToYYYYMMDD(value: unknown): [string | null, string | null] {
+function dateRangeValueToYYYYMMDD(
+  value: unknown
+): [string | null, string | null] {
   if (!value || !Array.isArray(value)) return [null, null]
   const from = value[0] != null ? new Date(Number(value[0])) : null
   const to = value[1] != null ? new Date(Number(value[1])) : null
@@ -194,7 +196,9 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
   const dateRangeColumnId = React.useMemo(
     () =>
       filterableColumns.find(
-        (col) => (col.meta as { variant?: string } | undefined)?.variant === "dateRange"
+        (col) =>
+          (col.meta as { variant?: string } | undefined)?.variant ===
+          "dateRange"
       )?.id ?? null,
     [filterableColumns]
   )
@@ -208,7 +212,8 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
       const variant = (column.meta as { variant?: string } | undefined)?.variant
       if (variant === "dateRange") {
         if (!acc[DATE_RANGE_START_KEY]) {
-          acc[DATE_RANGE_START_KEY] = parseAsString.withOptions(queryStateOptions)
+          acc[DATE_RANGE_START_KEY] =
+            parseAsString.withOptions(queryStateOptions)
           acc[DATE_RANGE_END_KEY] = parseAsString.withOptions(queryStateOptions)
         }
         return acc

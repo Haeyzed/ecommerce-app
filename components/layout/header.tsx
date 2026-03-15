@@ -10,19 +10,12 @@ type HeaderProps = React.HTMLAttributes<HTMLElement> & {
   fixed?: boolean
 }
 
-export function Header({
-  className,
-  fixed,
-  children,
-  ...props
-}: HeaderProps) {
+export function Header({ className, fixed, children, ...props }: HeaderProps) {
   const [offset, setOffset] = useState(0)
 
   useEffect(() => {
     const onScroll = () => {
-      setOffset(
-        document.body.scrollTop || document.documentElement.scrollTop
-      )
+      setOffset(document.body.scrollTop || document.documentElement.scrollTop)
     }
     document.addEventListener("scroll", onScroll, { passive: true })
     return () => document.removeEventListener("scroll", onScroll)

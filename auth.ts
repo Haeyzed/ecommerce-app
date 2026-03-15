@@ -1,17 +1,17 @@
-import NextAuth from 'next-auth'
-import 'next-auth/jwt'
-import Credentials from 'next-auth/providers/credentials'
-import { api } from '@/lib/api'
-import type { AuthResponse, User } from '@/features/auth'
+import NextAuth from "next-auth"
+import "next-auth/jwt"
+import Credentials from "next-auth/providers/credentials"
+import { api } from "@/lib/api"
+import type { AuthResponse, User } from "@/features/auth"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
   providers: [
     Credentials({
-      name: 'Credentials',
+      name: "Credentials",
       credentials: {
-        identifier: { label: 'Email or Username', type: 'text' },
-        password: { label: 'Password', type: 'password' },
+        identifier: { label: "Email or Username", type: "text" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         if (!credentials?.identifier || !credentials?.password) {
@@ -20,7 +20,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         try {
           const response = await api.post<AuthResponse>(
-            '/auth/login',
+            "/auth/login",
             {
               identifier: credentials.identifier,
               password: credentials.password,
@@ -44,7 +44,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           return null
         } catch (error) {
-          console.error('Auth error:', error)
+          console.error("Auth error:", error)
           return null
         }
       },
@@ -63,20 +63,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (session.user) {
         session.user.id = token.id as string
         session.user.token = token.token as string
-        session.user.user_permissions = (token.user_permissions as string[]) || []
+        session.user.user_permissions =
+          (token.user_permissions as string[]) || []
       }
       return session
     },
   },
   pages: {
-    signIn: '/login',
+    signIn: "/login",
   },
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
   },
 })
 
-declare module 'next-auth' {
+declare module "next-auth" {
   interface User {
     token?: string
     image_url?: string | null
@@ -95,7 +96,7 @@ declare module 'next-auth' {
   }
 }
 
-declare module 'next-auth/jwt' {
+declare module "next-auth/jwt" {
   interface JWT {
     user_permissions?: string[]
   }

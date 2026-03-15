@@ -174,7 +174,10 @@ export function useUpdateCategory() {
     mutationFn: async ({
       id,
       data,
-    }: { id: number; data: Partial<CategoryFormData> }) => {
+    }: {
+      id: number
+      data: Partial<CategoryFormData>
+    }) => {
       const formData = new FormData()
       formData.append("_method", "PUT")
       if (data.name) formData.append("name", data.name)
@@ -188,7 +191,10 @@ export function useUpdateCategory() {
       const iconFile = data.icon?.[0]
       if (iconFile instanceof File) formData.append("icon", iconFile)
       if (data.parent_id !== undefined)
-        formData.append("parent_id", data.parent_id != null ? String(data.parent_id) : "")
+        formData.append(
+          "parent_id",
+          data.parent_id != null ? String(data.parent_id) : ""
+        )
       if (data.is_active !== undefined)
         formData.append("is_active", data.is_active ? "1" : "0")
       if (data.featured !== undefined)
@@ -235,7 +241,10 @@ export function useReparentCategory() {
     mutationFn: async ({
       id,
       parent_id,
-    }: { id: number; parent_id: number | null }) => {
+    }: {
+      id: number
+      parent_id: number | null
+    }) => {
       const response = await api.patch<{ data: Category }>(
         `${BASE_PATH}/${id}/reparent`,
         { parent_id }

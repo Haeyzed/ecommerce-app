@@ -20,9 +20,5 @@ export default async function DashboardLayout({
     </span>
   )
 
-  return (
-    <DashboardShell greeting={greeting}>
-      {children}
-    </DashboardShell>
-  )
+  return <DashboardShell greeting={greeting}>{children}</DashboardShell>
 }

@@ -8,7 +8,10 @@ export function hasPermission(
   userPermissions: string[] | undefined,
   requiredPermissions: string | string[] | undefined
 ): boolean {
-  if (!requiredPermissions || (Array.isArray(requiredPermissions) && requiredPermissions.length === 0)) {
+  if (
+    !requiredPermissions ||
+    (Array.isArray(requiredPermissions) && requiredPermissions.length === 0)
+  ) {
     return true
   }
 

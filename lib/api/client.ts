@@ -5,9 +5,9 @@ import {
   ServerError,
   UnauthorizedError,
   ValidationError,
-} from './errors'
-import type { ApiResponse, NormalizedApiResponse } from './types'
-import { AUTH_REDIRECT_MESSAGE_KEY } from '@/features/auth'
+} from "./errors"
+import type { ApiResponse, NormalizedApiResponse } from "./types"
+import { AUTH_REDIRECT_MESSAGE_KEY } from "@/features/auth"
 
 export interface ApiClientOptions extends RequestInit {
   skipAuth?: boolean
@@ -22,52 +22,89 @@ class ApiClient {
   private readonly baseURL: string
 
   constructor(baseURL?: string) {
-    this.baseURL = baseURL || process.env.NEXT_PUBLIC_API_URL || ''
+    this.baseURL = baseURL || process.env.NEXT_PUBLIC_API_URL || ""
   }
 
-  async get<T>(url: string, options?: ApiRequestOptions): Promise<NormalizedApiResponse<T>> {
-    return this.request<T>(url, { ...options, method: 'GET' })
+  async get<T>(
+    url: string,
+    options?: ApiRequestOptions
+  ): Promise<NormalizedApiResponse<T>> {
+    return this.request<T>(url, { ...options, method: "GET" })
   }
 
-  async post<T>(url: string, body?: unknown, options?: ApiClientOptions): Promise<NormalizedApiResponse<T>> {
+  async post<T>(
+    url: string,
+    body?: unknown,
+    options?: ApiClientOptions
+  ): Promise<NormalizedApiResponse<T>> {
     return this.request<T>(url, {
       ...options,
-      method: 'POST',
-      body: body instanceof FormData ? body : body ? JSON.stringify(body) : undefined,
+      method: "POST",
+      body:
+        body instanceof FormData
+          ? body
+          : body
+            ? JSON.stringify(body)
+            : undefined,
     })
   }
 
-  async put<T>(url: string, body?: unknown, options?: ApiClientOptions): Promise<NormalizedApiResponse<T>> {
+  async put<T>(
+    url: string,
+    body?: unknown,
+    options?: ApiClientOptions
+  ): Promise<NormalizedApiResponse<T>> {
     return this.request<T>(url, {
       ...options,
-      method: 'PUT',
-      body: body instanceof FormData ? body : body ? JSON.stringify(body) : undefined,
+      method: "PUT",
+      body:
+        body instanceof FormData
+          ? body
+          : body
+            ? JSON.stringify(body)
+            : undefined,
     })
   }
 
-  async patch<T>(url: string, body?: unknown, options?: ApiClientOptions): Promise<NormalizedApiResponse<T>> {
+  async patch<T>(
+    url: string,
+    body?: unknown,
+    options?: ApiClientOptions
+  ): Promise<NormalizedApiResponse<T>> {
     return this.request<T>(url, {
       ...options,
-      method: 'PATCH',
-      body: body instanceof FormData ? body : body ? JSON.stringify(body) : undefined,
+      method: "PATCH",
+      body:
+        body instanceof FormData
+          ? body
+          : body
+            ? JSON.stringify(body)
+            : undefined,
     })
   }
 
-  async delete<T>(url: string, options?: ApiClientOptions): Promise<NormalizedApiResponse<T>> {
-    return this.request<T>(url, { ...options, method: 'DELETE' })
+  async delete<T>(
+    url: string,
+    options?: ApiClientOptions
+  ): Promise<NormalizedApiResponse<T>> {
+    return this.request<T>(url, { ...options, method: "DELETE" })
   }
 
-  async postBlob(url: string, body?: unknown, options?: ApiClientOptions): Promise<Blob> {
+  async postBlob(
+    url: string,
+    body?: unknown,
+    options?: ApiClientOptions
+  ): Promise<Blob> {
     const fullURL = this.buildURL(url)
     const isFormData = body instanceof FormData
 
     const requestHeaders: Record<string, string> = {
-      Accept: '*/*',
+      Accept: "*/*",
       ...(options?.headers as Record<string, string>),
     }
 
     if (!isFormData && body) {
-      requestHeaders['Content-Type'] = 'application/json'
+      requestHeaders["Content-Type"] = "application/json"
     }
 
     let authToken: string | null = null
@@ -80,9 +117,14 @@ class ApiClient {
 
     const response = await fetch(fullURL, {
       ...options,
-      method: 'POST',
+      method: "POST",
       headers: requestHeaders,
-      body: body instanceof FormData ? body : body ? JSON.stringify(body) : undefined,
+      body:
+        body instanceof FormData
+          ? body
+          : body
+            ? JSON.stringify(body)
+            : undefined,
     })
 
     if (!response.ok) {
@@ -93,11 +135,16 @@ class ApiClient {
   }
 
   async getBlob(url: string, options?: ApiRequestOptions): Promise<Blob> {
-    const { skipAuth = false, params, headers = {}, ...fetchOptions } = options || {}
+    const {
+      skipAuth = false,
+      params,
+      headers = {},
+      ...fetchOptions
+    } = options || {}
     const fullURL = this.buildURL(url, params)
 
     const requestHeaders: Record<string, string> = {
-      Accept: '*/*',
+      Accept: "*/*",
       ...(headers as Record<string, string>),
     }
 
@@ -112,7 +159,7 @@ class ApiClient {
 
     const response = await fetch(fullURL, {
       ...fetchOptions,
-      method: 'GET',
+      method: "GET",
       headers: requestHeaders,
     })
 
@@ -124,9 +171,9 @@ class ApiClient {
   }
 
   private async getAuthToken(): Promise<string | null> {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       try {
-        const { auth } = await import('@/auth')
+        const { auth } = await import("@/auth")
         const session = await auth()
         return (session?.user as { token?: string })?.token || null
       } catch {
@@ -136,8 +183,13 @@ class ApiClient {
     return null
   }
 
-  private buildURL(url: string, params?: Record<string, string | number | boolean | null | undefined>): string {
-    const base = url.startsWith('http') ? url : `${this.baseURL}${url.startsWith('/') ? url : `/${url}`}`
+  private buildURL(
+    url: string,
+    params?: Record<string, string | number | boolean | null | undefined>
+  ): string {
+    const base = url.startsWith("http")
+      ? url
+      : `${this.baseURL}${url.startsWith("/") ? url : `/${url}`}`
 
     if (!params || Object.keys(params).length === 0) {
       return base
@@ -150,11 +202,13 @@ class ApiClient {
       }
     })
 
-    const separator = base.includes('?') ? '&' : '?'
+    const separator = base.includes("?") ? "&" : "?"
     return `${base}${separator}${searchParams.toString()}`
   }
 
-  private normalizeResponse<T>(response: ApiResponse<T>): NormalizedApiResponse<T> {
+  private normalizeResponse<T>(
+    response: ApiResponse<T>
+  ): NormalizedApiResponse<T> {
     return {
       success: response.success,
       message: response.message,
@@ -171,18 +225,19 @@ class ApiClient {
       errorData = await response.json()
     } catch {}
 
-    const message = errorData?.message || response.statusText || 'An error occurred'
+    const message =
+      errorData?.message || response.statusText || "An error occurred"
     const errors = errorData?.errors
 
     switch (response.status) {
       case 401:
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
           try {
             sessionStorage.setItem(AUTH_REDIRECT_MESSAGE_KEY, message)
           } catch {}
           try {
-            const { signOut } = await import('next-auth/react')
-            signOut({ redirect: true, callbackUrl: '/login' })
+            const { signOut } = await import("next-auth/react")
+            signOut({ redirect: true, callbackUrl: "/login" })
           } catch {}
         }
         throw new UnauthorizedError(message)
@@ -205,8 +260,17 @@ class ApiClient {
     }
   }
 
-  private async request<T>(url: string, options: ApiRequestOptions = {}): Promise<NormalizedApiResponse<T>> {
-    const { skipAuth = false, baseURL, params, headers = {}, ...fetchOptions } = options
+  private async request<T>(
+    url: string,
+    options: ApiRequestOptions = {}
+  ): Promise<NormalizedApiResponse<T>> {
+    const {
+      skipAuth = false,
+      baseURL,
+      params,
+      headers = {},
+      ...fetchOptions
+    } = options
     const fullURL = this.buildURL(url, params)
 
     let authToken: string | null = null
@@ -216,12 +280,12 @@ class ApiClient {
 
     const isFormData = fetchOptions.body instanceof FormData
     const requestHeaders: Record<string, string> = {
-      Accept: 'application/json',
+      Accept: "application/json",
       ...(headers as Record<string, string>),
     }
 
     if (!isFormData) {
-      requestHeaders['Content-Type'] = 'application/json'
+      requestHeaders["Content-Type"] = "application/json"
     }
 
     if (authToken) {

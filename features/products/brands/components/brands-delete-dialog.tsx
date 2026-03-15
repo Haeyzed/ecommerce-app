@@ -40,7 +40,7 @@ export function BrandsDeleteDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={
-        <span className="text-destructive flex items-center gap-1">
+        <span className="flex items-center gap-1 text-destructive">
           <AlertTriangle className="size-[18px] stroke-destructive" />
           Delete Brand
         </span>

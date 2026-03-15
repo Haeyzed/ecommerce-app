@@ -1,4 +1,4 @@
-import { Suspense } from 'react'
+import { Suspense } from "react"
 
 import {
   Card,
@@ -6,9 +6,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Spinner } from '@/components/ui/spinner'
-import { VerifyEmailContent } from '@/features/auth'
+} from "@/components/ui/card"
+import { Spinner } from "@/components/ui/spinner"
+import { VerifyEmailContent } from "@/features/auth"
 
 export default function VerifyEmailPage() {
   return (

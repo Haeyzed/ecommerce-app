@@ -119,7 +119,7 @@ function CategoryViewContent({ currentRow }: { currentRow: Category }) {
           <div className="text-sm font-medium text-muted-foreground">
             Description
           </div>
-          <div className="whitespace-pre-wrap text-sm text-muted-foreground">
+          <div className="text-sm whitespace-pre-wrap text-muted-foreground">
             {currentRow.short_description}
           </div>
         </div>
@@ -136,7 +136,9 @@ function CategoryViewContent({ currentRow }: { currentRow: Category }) {
 
       <div className="flex flex-wrap gap-2">
         <div className="space-y-1">
-          <div className="text-sm font-medium text-muted-foreground">Status</div>
+          <div className="text-sm font-medium text-muted-foreground">
+            Status
+          </div>
           <Badge variant="outline" className="capitalize">
             {currentRow.is_active ? "Active" : "Inactive"}
           </Badge>

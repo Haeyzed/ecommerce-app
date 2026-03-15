@@ -30,7 +30,7 @@ export const brandsColumns: ColumnDef<Brand>[] = [
     ),
     meta: {
       className: cn(
-        "w-10 min-w-10 max-w-10 bg-background max-md:sticky start-0 z-10 rounded-tl-[inherit]"
+        "start-0 z-10 w-10 max-w-10 min-w-10 rounded-tl-[inherit] bg-background max-md:sticky"
       ),
     },
     cell: ({ row }) => (
@@ -52,17 +52,17 @@ export const brandsColumns: ColumnDef<Brand>[] = [
       <DataTableColumnHeader column={column} label="Name" />
     ),
     cell: ({ row }) => (
-      <div className='flex items-center gap-3 ps-3'>
+      <div className="flex items-center gap-3 ps-3">
         {row.original.image_url ? (
           <ImageZoomCell src={row.original.image_url} alt={row.original.name} />
         ) : (
-          <div className='flex size-10 items-center justify-center rounded-md bg-muted'>
-            <span className='text-xs font-medium'>
+          <div className="flex size-10 items-center justify-center rounded-md bg-muted">
+            <span className="text-xs font-medium">
               {row.original.name.charAt(0).toUpperCase()}
             </span>
           </div>
         )}
-        <LongText className='max-w-36'>{row.original.name}</LongText>
+        <LongText className="max-w-36">{row.original.name}</LongText>
       </div>
     ),
     meta: {
@@ -153,13 +153,11 @@ export const brandsColumns: ColumnDef<Brand>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => (
-      <BrandsDataTableRowActions row={row} />
-    ),
+    cell: ({ row }) => <BrandsDataTableRowActions row={row} />,
     size: 32,
     meta: {
       className: cn(
-        "bg-background max-md:sticky end-0 z-10 rounded-tr-[inherit]"
+        "end-0 z-10 rounded-tr-[inherit] bg-background max-md:sticky"
       ),
     },
   },

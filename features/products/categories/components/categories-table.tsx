@@ -1,6 +1,11 @@
 "use client"
 
-import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryState } from "nuqs"
+import {
+  parseAsArrayOf,
+  parseAsInteger,
+  parseAsString,
+  useQueryState,
+} from "nuqs"
 import * as React from "react"
 
 import { DataTable } from "@/components/data-table/data-table"
@@ -56,8 +61,13 @@ export function CategoriesTable() {
     [page, perPage, name, isActive, featured, isSyncDisable, startDate, endDate]
   )
 
-  const { data: apiData, meta, isLoading, isError, error } =
-    useCategories(apiParams)
+  const {
+    data: apiData,
+    meta,
+    isLoading,
+    isError,
+    error,
+  } = useCategories(apiParams)
 
   const categories: Category[] = apiData ?? []
 

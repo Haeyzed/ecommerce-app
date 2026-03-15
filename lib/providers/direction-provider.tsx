@@ -31,7 +31,7 @@ export function DirectionProvider({ children }: { children: React.ReactNode }) {
     setDirState(d)
     setCookie(DIR_COOKIE, d, COOKIE_MAX_AGE)
   }
-  
+
   const resetDir = () => {
     removeCookie(DIR_COOKIE)
     setDirState(DEFAULT_DIR)
@@ -41,7 +41,9 @@ export function DirectionProvider({ children }: { children: React.ReactNode }) {
     <DirectionContext.Provider
       value={{ defaultDir: DEFAULT_DIR, dir, setDir, resetDir }}
     >
-      <Direction.DirectionProvider dir={dir}>{children}</Direction.DirectionProvider>
+      <Direction.DirectionProvider dir={dir}>
+        {children}
+      </Direction.DirectionProvider>
     </DirectionContext.Provider>
   )
 }

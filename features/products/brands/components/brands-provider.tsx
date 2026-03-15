@@ -4,7 +4,13 @@ import * as React from "react"
 import { useDialogState } from "@/hooks/use-dialog-state"
 import type { Brand } from "../types"
 
-export type BrandsDialogType = "add" | "edit" | "delete" | "view" | "import" | "export"
+export type BrandsDialogType =
+  | "add"
+  | "edit"
+  | "delete"
+  | "view"
+  | "import"
+  | "export"
 
 type BrandsContextValue = {
   open: BrandsDialogType | null
@@ -20,7 +26,9 @@ export function BrandsProvider({ children }: { children: React.ReactNode }) {
   const [currentRow, setCurrentRow] = React.useState<Brand | null>(null)
 
   return (
-    <BrandsContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <BrandsContext.Provider
+      value={{ open, setOpen, currentRow, setCurrentRow }}
+    >
       {children}
     </BrandsContext.Provider>
   )

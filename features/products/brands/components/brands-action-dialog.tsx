@@ -63,23 +63,24 @@ export function BrandsActionDialog({
 
   const form = useForm<BrandFormData>({
     resolver: zodResolver(brandSchema),
-    defaultValues: isEdit && currentRow
-      ? {
-          name: currentRow.name,
-          slug: currentRow.slug ?? "",
-          short_description: currentRow.short_description ?? "",
-          page_title: currentRow.page_title ?? "",
-          is_active: currentRow.is_active,
-          image: [],
-        }
-      : {
-          name: "",
-          slug: "",
-          short_description: "",
-          page_title: "",
-          is_active: true,
-          image: [],
-        },
+    defaultValues:
+      isEdit && currentRow
+        ? {
+            name: currentRow.name,
+            slug: currentRow.slug ?? "",
+            short_description: currentRow.short_description ?? "",
+            page_title: currentRow.page_title ?? "",
+            is_active: currentRow.is_active,
+            image: [],
+          }
+        : {
+            name: "",
+            slug: "",
+            short_description: "",
+            page_title: "",
+            is_active: true,
+            image: [],
+          },
   })
 
   const onSubmit = (values: BrandFormData) => {
@@ -127,11 +128,7 @@ export function BrandsActionDialog({
         </ResponsiveDialogBody>
 
         <ResponsiveDialogFooter>
-          <Button
-            type="submit"
-            form="brand-form"
-            disabled={isLoading}
-          >
+          <Button type="submit" form="brand-form" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Spinner className="mr-2" />
@@ -155,21 +152,11 @@ interface BrandFormProps {
   currentRow?: Brand
 }
 
-function BrandForm({
-  form,
-  onSubmit,
-  id,
-  isEdit,
-  currentRow,
-}: BrandFormProps) {
+function BrandForm({ form, onSubmit, id, isEdit, currentRow }: BrandFormProps) {
   const [isSlugDisabled, setIsSlugDisabled] = React.useState(true)
 
   return (
-    <form
-      id={id}
-      onSubmit={form.handleSubmit(onSubmit)}
-      className="space-y-4"
-    >
+    <form id={id} onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
       <FieldGroup>
         <Controller
           control={form.control}
@@ -193,9 +180,7 @@ function BrandForm({
                   }
                 }}
               />
-              {fieldState.error && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
@@ -229,9 +214,7 @@ function BrandForm({
               <FieldDescription>
                 URL-friendly version of the name (auto-generated)
               </FieldDescription>
-              {fieldState.error && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
@@ -250,9 +233,7 @@ function BrandForm({
                 {...field}
                 value={field.value ?? ""}
               />
-              {fieldState.error && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
@@ -270,9 +251,7 @@ function BrandForm({
                 {...field}
                 value={field.value ?? ""}
               />
-              {fieldState.error && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
@@ -283,8 +262,7 @@ function BrandForm({
           render={({ field: { value, onChange }, fieldState }) => {
             const existingImageUrl =
               isEdit && currentRow?.image_url ? currentRow.image_url : null
-            const hasNewImage =
-              Array.isArray(value) && value.length > 0
+            const hasNewImage = Array.isArray(value) && value.length > 0
 
             return (
               <Field data-invalid={!!fieldState.error}>
@@ -313,22 +291,20 @@ function BrandForm({
                   </div>
                 )}
 
-<CropperFileUpload
-  value={value ?? []}
-  onValueChange={onChange}
-  accept="image/*"
-  maxFiles={1}
-  maxSize={5 * 1024 * 1024}
-  onFileReject={(_file, message) => {
-    form.setError("image", { message })
-  }}
-/>
+                <CropperFileUpload
+                  value={value ?? []}
+                  onValueChange={onChange}
+                  accept="image/*"
+                  maxFiles={1}
+                  maxSize={5 * 1024 * 1024}
+                  onFileReject={(_file, message) => {
+                    form.setError("image", { message })
+                  }}
+                />
                 <FieldDescription>
                   JPEG, PNG, JPG, GIF, or WebP. Max 5MB.
                 </FieldDescription>
-                {fieldState.error && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
+                {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )
           }}
@@ -353,9 +329,7 @@ function BrandForm({
                 checked={!!field.value}
                 onCheckedChange={field.onChange}
               />
-              {fieldState.error && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />

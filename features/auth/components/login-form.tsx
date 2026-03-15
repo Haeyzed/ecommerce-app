@@ -1,23 +1,23 @@
-'use client'
+"use client"
 
-import * as React from 'react'
-import { useForm, Controller } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import Link from 'next/link'
+import * as React from "react"
+import { useForm, Controller } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import Link from "next/link"
 
-import { ValidationError } from '@/lib/api'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Spinner } from '@/components/ui/spinner'
+import { ValidationError } from "@/lib/api"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Spinner } from "@/components/ui/spinner"
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from '@/components/ui/field'
+} from "@/components/ui/field"
 
-import { useLogin } from '../api'
-import { loginSchema, type LoginFormData } from '../schemas'
+import { useLogin } from "../api"
+import { loginSchema, type LoginFormData } from "../schemas"
 
 export function LoginForm() {
   const { mutateAsync: login, isPending } = useLogin()
@@ -25,8 +25,8 @@ export function LoginForm() {
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      identifier: '',
-      password: '',
+      identifier: "",
+      password: "",
     },
   })
 
@@ -37,7 +37,7 @@ export function LoginForm() {
       if (error instanceof ValidationError && error.errors) {
         Object.entries(error.errors).forEach(([field, messages]) => {
           form.setError(field as keyof LoginFormData, {
-            type: 'server',
+            type: "server",
             message: messages[0],
           })
         })
@@ -64,9 +64,7 @@ export function LoginForm() {
                 aria-invalid={fieldState.invalid}
                 autoComplete="username"
               />
-              {fieldState.invalid && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
@@ -94,16 +92,14 @@ export function LoginForm() {
                 aria-invalid={fieldState.invalid}
                 autoComplete="current-password"
               />
-              {fieldState.invalid && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
 
         <Button type="submit" className="w-full" disabled={isPending}>
           {isPending && <Spinner className="mr-2 h-4 w-4" />}
-          {isPending ? 'Signing in...' : 'Sign In'}
+          {isPending ? "Signing in..." : "Sign In"}
         </Button>
       </FieldGroup>
     </form>

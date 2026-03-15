@@ -1,4 +1,4 @@
-import { Logo } from '@/assets/logo'
+import { Logo } from "@/assets/logo"
 
 type AuthLayoutProps = {
   children: React.ReactNode

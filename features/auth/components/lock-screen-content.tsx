@@ -1,14 +1,14 @@
-'use client'
+"use client"
 
-import * as React from 'react'
-import { useAuthSession } from '../api'
-import { LockScreenForm } from '@/features/auth'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import * as React from "react"
+import { useAuthSession } from "../api"
+import { LockScreenForm } from "@/features/auth"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export function LockScreenContent() {
   const { data: session } = useAuthSession()
-  const userName = session?.user?.name ?? 'User'
-  const userEmail = session?.user?.email ?? ''
+  const userName = session?.user?.name ?? "User"
+  const userEmail = session?.user?.email ?? ""
   const userImage = session?.user?.image_url ?? undefined
 
   return (

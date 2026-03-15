@@ -67,8 +67,9 @@ export function NavGroup({ title, items }: NavGroupProps) {
   const { state, isMobile } = useSidebar()
   const pathname = usePathname()
   const { data: session } = useAuthSession()
-  const userPermissions = (session?.user as { user_permissions?: string[] } | undefined)
-    ?.user_permissions ?? []
+  const userPermissions =
+    (session?.user as { user_permissions?: string[] } | undefined)
+      ?.user_permissions ?? []
 
   const visibleItems = items.filter((item) => {
     if (!hasPermission(userPermissions, item.permissions)) {
@@ -123,11 +124,7 @@ export function NavGroup({ title, items }: NavGroupProps) {
 
           const linkItem = item as LayoutNavLink
           return (
-            <SidebarMenuLink
-              key={key}
-              item={linkItem}
-              pathname={pathname}
-            />
+            <SidebarMenuLink key={key} item={linkItem} pathname={pathname} />
           )
         })}
       </SidebarMenu>
@@ -191,7 +188,10 @@ function SidebarMenuCollapsible({
               <SidebarMenuSubItem key={subItem.title}>
                 <SidebarMenuSubButton
                   asChild
-                  isActive={checkIsActive(pathname, { ...subItem, url: subItem.url })}
+                  isActive={checkIsActive(pathname, {
+                    ...subItem,
+                    url: subItem.url,
+                  })}
                 >
                   <Link href={subItem.url} onClick={() => setOpenMobile(false)}>
                     {subItem.icon && <subItem.icon />}

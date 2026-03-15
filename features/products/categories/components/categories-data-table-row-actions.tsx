@@ -26,8 +26,9 @@ export function CategoriesDataTableRowActions({
 }: CategoriesDataTableRowActionsProps) {
   const { setOpen, setCurrentRow } = useCategoriesContext()
   const { data: session } = useAuthSession()
-  const userPermissions = (session?.user as { user_permissions?: string[] } | undefined)
-    ?.user_permissions ?? []
+  const userPermissions =
+    (session?.user as { user_permissions?: string[] } | undefined)
+      ?.user_permissions ?? []
 
   const canView = userPermissions.includes(PERMISSIONS.view)
   const canUpdate = userPermissions.includes(PERMISSIONS.update)

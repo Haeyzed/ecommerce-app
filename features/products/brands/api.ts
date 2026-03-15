@@ -37,8 +37,10 @@ function toApiParams(
   if (params.is_active != null && params.is_active.length > 0) {
     out.is_active = params.is_active.join(",")
   }
-  if (params.start_date != null && params.start_date !== "") out.start_date = params.start_date
-  if (params.end_date != null && params.end_date !== "") out.end_date = params.end_date
+  if (params.start_date != null && params.start_date !== "")
+    out.start_date = params.start_date
+  if (params.end_date != null && params.end_date !== "")
+    out.end_date = params.end_date
   return out
 }
 
@@ -137,7 +139,10 @@ export function useUpdateBrand() {
     mutationFn: async ({
       id,
       data,
-    }: { id: number; data: Partial<BrandFormData> }) => {
+    }: {
+      id: number
+      data: Partial<BrandFormData>
+    }) => {
       const formData = new FormData()
       formData.append("_method", "PUT")
       if (data.name) formData.append("name", data.name)

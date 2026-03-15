@@ -1,46 +1,46 @@
-'use client'
+"use client"
 
-import * as React from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
-import Link from 'next/link'
+import * as React from "react"
+import { useSearchParams, useRouter } from "next/navigation"
+import Link from "next/link"
 
-import { Button } from '@/components/ui/button'
-import { Spinner } from '@/components/ui/spinner'
+import { Button } from "@/components/ui/button"
+import { Spinner } from "@/components/ui/spinner"
 
-import { useVerifyEmail } from '../api'
+import { useVerifyEmail } from "../api"
 
 export function VerifyEmailContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const token = searchParams.get('token')
+  const token = searchParams.get("token")
 
-  const [status, setStatus] = React.useState<'loading' | 'success' | 'error'>(
-    'loading'
+  const [status, setStatus] = React.useState<"loading" | "success" | "error">(
+    "loading"
   )
   const { mutateAsync: verifyEmail } = useVerifyEmail()
 
   React.useEffect(() => {
     if (!token) {
-      setStatus('error')
+      setStatus("error")
       return
     }
 
     async function verify() {
       try {
         await verifyEmail(token as string)
-        setStatus('success')
+        setStatus("success")
         setTimeout(() => {
-          router.push('/dashboard')
+          router.push("/dashboard")
         }, 3000)
       } catch {
-        setStatus('error')
+        setStatus("error")
       }
     }
 
     verify()
   }, [token, verifyEmail, router])
 
-  if (status === 'loading') {
+  if (status === "loading") {
     return (
       <div className="flex flex-col items-center justify-center space-y-4 text-center">
         <Spinner className="h-8 w-8 text-primary" />
@@ -54,7 +54,7 @@ export function VerifyEmailContent() {
     )
   }
 
-  if (status === 'success') {
+  if (status === "success") {
     return (
       <div className="flex flex-col items-center justify-center space-y-4 text-center">
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600">

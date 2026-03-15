@@ -1,1 +1,1 @@
-export const AUTH_REDIRECT_MESSAGE_KEY = 'auth_redirect_message'
+export const AUTH_REDIRECT_MESSAGE_KEY = "auth_redirect_message"

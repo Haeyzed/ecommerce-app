@@ -34,14 +34,8 @@ import {
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 
-import {
-  useCategoriesImport,
-  useCategoriesTemplateDownload,
-} from "../api"
-import {
-  categoryImportSchema,
-  type CategoryImportFormData,
-} from "../schemas"
+import { useCategoriesImport, useCategoriesTemplateDownload } from "../api"
+import { categoryImportSchema, type CategoryImportFormData } from "../schemas"
 import { CategoriesImportPreviewDialog } from "./categories-import-preview-dialog"
 
 interface CategoriesImportDialogProps {
@@ -74,9 +68,9 @@ export function CategoriesImportDialog({
     useCategoriesTemplateDownload()
 
   const [previewOpen, setPreviewOpen] = React.useState(false)
-  const [previewData, setPreviewData] = React.useState<Record<string, string>[]>(
-    []
-  )
+  const [previewData, setPreviewData] = React.useState<
+    Record<string, string>[]
+  >([])
 
   const form = useForm<CategoryImportFormData>({
     resolver: zodResolver(categoryImportSchema),

@@ -1,4 +1,4 @@
-import { Suspense } from 'react'
+import { Suspense } from "react"
 
 import {
   Card,
@@ -6,9 +6,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Spinner } from '@/components/ui/spinner'
-import { ResetPasswordForm } from '@/features/auth'
+} from "@/components/ui/card"
+import { Spinner } from "@/components/ui/spinner"
+import { ResetPasswordForm } from "@/features/auth"
 
 export default function ResetPasswordPage() {
   return (
@@ -21,7 +21,7 @@ export default function ResetPasswordPage() {
         <CardContent>
           <Suspense
             fallback={
-              <div className="flex py-6 justify-center">
+              <div className="flex justify-center py-6">
                 <Spinner className="h-6 w-6 text-primary" />
               </div>
             }

@@ -34,7 +34,6 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
 
 export function useSearch() {
   const ctx = useContext(SearchContext)
-  if (!ctx)
-    throw new Error("useSearch must be used within SearchProvider")
+  if (!ctx) throw new Error("useSearch must be used within SearchProvider")
   return ctx
 }

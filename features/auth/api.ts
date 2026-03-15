@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
-import { signIn, signOut, useSession } from 'next-auth/react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
+import { signIn, signOut, useSession } from "next-auth/react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 
-import { UnauthorizedError, useApiClient, ValidationError } from '@/lib/api'
+import { UnauthorizedError, useApiClient, ValidationError } from "@/lib/api"
 
 import type {
   AuthResponse,
@@ -16,14 +16,14 @@ import type {
   RegisterRequest,
   ResetPasswordRequest,
   User,
-} from './types'
+} from "./types"
 
 export const authKeys = {
-  all: ['auth'] as const,
-  user: () => [...authKeys.all, 'user'] as const,
+  all: ["auth"] as const,
+  user: () => [...authKeys.all, "user"] as const,
 }
 
-const BASE_PATH = '/auth'
+const BASE_PATH = "/auth"
 
 export function useAuthSession() {
   return useSession()
@@ -43,7 +43,7 @@ export function useAuth() {
 
       return response.data
     },
-    enabled: sessionStatus === 'authenticated',
+    enabled: sessionStatus === "authenticated",
     retry: (failureCount, error: unknown) => {
       const err = error as { status?: number } | null
       if (err?.status === 401) return false
@@ -57,8 +57,8 @@ export function useLogin() {
   const searchParams = useSearchParams()
   const { api } = useApiClient()
 
-  const raw = searchParams.get('callbackUrl') ?? '/dashboard'
-  const callbackUrl = raw.startsWith('/') ? raw : '/dashboard'
+  const raw = searchParams.get("callbackUrl") ?? "/dashboard"
+  const callbackUrl = raw.startsWith("/") ? raw : "/dashboard"
 
   return useMutation({
     mutationFn: async (credentials: LoginRequest) => {
@@ -72,7 +72,7 @@ export function useLogin() {
         throw new Error(response.message)
       }
 
-      const result = await signIn('credentials', {
+      const result = await signIn("credentials", {
         identifier: credentials.identifier,
         password: credentials.password,
         redirect: false,
@@ -99,20 +99,24 @@ export function useLogin() {
 }
 
 function toRegisterBody(data: RegisterRequest): FormData | RegisterRequest {
-  const hasImage = Array.isArray(data.image) && data.image.length > 0 && data.image[0] instanceof File
+  const hasImage =
+    Array.isArray(data.image) &&
+    data.image.length > 0 &&
+    data.image[0] instanceof File
   if (!hasImage) {
     const { image: _i, ...rest } = data
     return rest as RegisterRequest
   }
   const form = new FormData()
-  form.append('name', data.name)
-  if (data.username?.trim()) form.append('username', data.username.trim())
-  if (data.email?.trim()) form.append('email', data.email.trim())
-  if (data.phone?.trim()) form.append('phone', data.phone.trim())
-  if (data.company_name?.trim()) form.append('company_name', data.company_name.trim())
-  form.append('password', data.password)
-  form.append('password_confirmation', data.password_confirmation)
-  if (data.image?.[0]) form.append('image', data.image[0])
+  form.append("name", data.name)
+  if (data.username?.trim()) form.append("username", data.username.trim())
+  if (data.email?.trim()) form.append("email", data.email.trim())
+  if (data.phone?.trim()) form.append("phone", data.phone.trim())
+  if (data.company_name?.trim())
+    form.append("company_name", data.company_name.trim())
+  form.append("password", data.password)
+  form.append("password_confirmation", data.password_confirmation)
+  if (data.image?.[0]) form.append("image", data.image[0])
   return form
 }
 
@@ -136,8 +140,9 @@ export function useRegister() {
         throw new Error(response.message)
       }
 
-      const identifier = data.email?.trim() || data.username?.trim() || data.name
-      const result = await signIn('credentials', {
+      const identifier =
+        data.email?.trim() || data.username?.trim() || data.name
+      const result = await signIn("credentials", {
         identifier,
         password: data.password,
         redirect: false,
@@ -150,7 +155,7 @@ export function useRegister() {
       return { data: response.data, message: response.message }
     },
     onSuccess: ({ message }) => {
-      router.push('/dashboard')
+      router.push("/dashboard")
       router.refresh()
       toast.success(message)
     },
@@ -188,7 +193,7 @@ export function useUnlock() {
     onError: (error) => {
       toast.error(error.message)
       if (error instanceof UnauthorizedError) {
-        router.push('/login')
+        router.push("/login")
         router.refresh()
       }
     },
@@ -217,7 +222,7 @@ export function useLogout() {
     },
     onSuccess: ({ message }) => {
       queryClient.clear()
-      router.push('/login')
+      router.push("/login")
       router.refresh()
       toast.success(message)
     },
@@ -277,7 +282,7 @@ export function useResetPassword() {
       return { data: response.data, message: response.message }
     },
     onSuccess: ({ message }) => {
-      router.push('/login')
+      router.push("/login")
       toast.success(message)
     },
     onError: (error) => {
@@ -345,7 +350,11 @@ export function useRefreshToken() {
   const { api } = useApiClient()
   const { update: updateSession } = useSession()
 
-  return useMutation<{ data: RefreshTokenResponse; message: string }, Error, boolean>({
+  return useMutation<
+    { data: RefreshTokenResponse; message: string },
+    Error,
+    boolean
+  >({
     mutationFn: async (revokeOldToken = false) => {
       const response = await api.post<RefreshTokenResponse>(
         `${BASE_PATH}/refresh-token`,

@@ -1,17 +1,17 @@
-'use client'
+"use client"
 
-import * as React from 'react'
-import { useForm, Controller } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import * as React from "react"
+import { useForm, Controller } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 
-import { ValidationError } from '@/lib/api'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Spinner } from '@/components/ui/spinner'
-import { Field, FieldError, FieldGroup } from '@/components/ui/field'
+import { ValidationError } from "@/lib/api"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Spinner } from "@/components/ui/spinner"
+import { Field, FieldError, FieldGroup } from "@/components/ui/field"
 
-import { useUnlock } from '../api'
-import { lockScreenSchema, type LockScreenFormData } from '../schemas'
+import { useUnlock } from "../api"
+import { lockScreenSchema, type LockScreenFormData } from "../schemas"
 
 export function LockScreenForm() {
   const { mutateAsync: unlock, isPending } = useUnlock()
@@ -19,7 +19,7 @@ export function LockScreenForm() {
   const form = useForm<LockScreenFormData>({
     resolver: zodResolver(lockScreenSchema),
     defaultValues: {
-      password: '',
+      password: "",
     },
   })
 
@@ -30,7 +30,7 @@ export function LockScreenForm() {
       if (error instanceof ValidationError && error.errors) {
         Object.entries(error.errors).forEach(([field, messages]) => {
           form.setError(field as keyof LockScreenFormData, {
-            type: 'server',
+            type: "server",
             message: messages[0],
           })
         })
@@ -55,16 +55,14 @@ export function LockScreenForm() {
                 aria-invalid={fieldState.invalid}
                 className="text-center"
               />
-              {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
 
         <Button type="submit" className="w-full" disabled={isPending}>
           {isPending && <Spinner className="mr-2 h-4 w-4" />}
-          {isPending ? 'Unlocking...' : 'Unlock'}
+          {isPending ? "Unlocking..." : "Unlock"}
         </Button>
       </FieldGroup>
     </form>
