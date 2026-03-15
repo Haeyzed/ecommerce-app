@@ -22,6 +22,7 @@ export const categoryKeys = {
   details: () => [...categoryKeys.all, "detail"] as const,
   detail: (id: number) => [...categoryKeys.details(), id] as const,
   options: () => [...categoryKeys.all, "options"] as const,
+  parentOptions: () => [...categoryKeys.all, "parent-options"] as const,
 }
 
 const BASE_PATH = "/categories"
@@ -43,7 +44,8 @@ function toApiParams(
   if (params.is_sync_disable != null && params.is_sync_disable.length > 0) {
     out.is_sync_disable = params.is_sync_disable.join(",")
   }
-  if (params.parent_id != null) out.parent_id = params.parent_id ?? ""
+  if (params.parent_id !== undefined)
+    out.parent_id = params.parent_id === "" ? "" : params.parent_id
   if (params.start_date != null && params.start_date !== "")
     out.start_date = params.start_date
   if (params.end_date != null && params.end_date !== "")
@@ -77,6 +79,20 @@ export function useOptionCategories() {
     queryKey: categoryKeys.options(),
     queryFn: async () => {
       const response = await api.get<CategoryOption[]>(`${BASE_PATH}/options`)
+      return response.data ?? []
+    },
+    enabled: sessionStatus !== "loading",
+  })
+}
+
+export function useParentOptionCategories() {
+  const { api, sessionStatus } = useApiClient()
+  return useQuery({
+    queryKey: categoryKeys.parentOptions(),
+    queryFn: async () => {
+      const response = await api.get<CategoryOption[]>(
+        `${BASE_PATH}/parent-options`
+      )
       return response.data ?? []
     },
     enabled: sessionStatus !== "loading",

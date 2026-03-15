@@ -48,7 +48,7 @@ export type CategoryListParams = {
   is_active?: (0 | 1)[]
   featured?: (0 | 1)[]
   is_sync_disable?: (0 | 1)[]
-  parent_id?: number | null
+  parent_id?: number | null | ""
   start_date?: string
   end_date?: string
 }
