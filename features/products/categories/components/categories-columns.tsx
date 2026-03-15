@@ -1,7 +1,7 @@
 "use client"
 
 import type { Column, ColumnDef } from "@tanstack/react-table"
-import { CheckCircle2, MoreHorizontal, Text, XCircle } from "lucide-react"
+import { CheckCircle2, Text, XCircle } from "lucide-react"
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { ImageZoomCell } from "@/components/image-zoom"
@@ -10,7 +10,11 @@ import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 
-import { isActiveOptions } from "../constants"
+import {
+  featuredOptions,
+  isActiveOptions,
+  syncOptions,
+} from "../constants"
 import type { Category } from "../types"
 import { CategoriesDataTableRowActions } from "./categories-data-table-row-actions"
 
@@ -164,6 +168,16 @@ export const categoriesColumns: ColumnDef<Category>[] = [
         </Badge>
       )
     },
+    meta: {
+      label: "Featured",
+      variant: "multiSelect",
+      options: featuredOptions.map((o) => ({
+        label: o.label,
+        value: o.value,
+        icon: o.icon,
+      })),
+    },
+    enableColumnFilter: true,
   },
   {
     id: "is_sync_disable",
@@ -181,6 +195,16 @@ export const categoriesColumns: ColumnDef<Category>[] = [
         </Badge>
       )
     },
+    meta: {
+      label: "Sync",
+      variant: "multiSelect",
+      options: syncOptions.map((o) => ({
+        label: o.label,
+        value: o.value,
+        icon: o.icon,
+      })),
+    },
+    enableColumnFilter: true,
   },
   {
     id: "created_at",

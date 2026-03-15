@@ -15,6 +15,18 @@ export const isActiveOptions = [
   { label: "Inactive", value: "0", icon: XCircle },
 ] as const
 
+/** Options for featured filter; value 1 = yes, 0 = no. */
+export const featuredOptions = [
+  { label: "Yes", value: "1", icon: CheckCircle },
+  { label: "No", value: "0", icon: XCircle },
+] as const
+
+/** Options for is_sync_disable filter; value 1 = disabled, 0 = enabled. */
+export const syncOptions = [
+  { label: "Enabled", value: "0", icon: CheckCircle },
+  { label: "Disabled", value: "1", icon: XCircle },
+] as const
+
 export const CATEGORY_EXPORT_COLUMNS = [
   { value: "id", label: "ID" },
   { value: "name", label: "Name" },
