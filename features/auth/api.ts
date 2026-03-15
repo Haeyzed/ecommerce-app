@@ -98,15 +98,34 @@ export function useLogin() {
   })
 }
 
+function toRegisterBody(data: RegisterRequest): FormData | RegisterRequest {
+  const hasImage = Array.isArray(data.image) && data.image.length > 0 && data.image[0] instanceof File
+  if (!hasImage) {
+    const { image: _i, ...rest } = data
+    return rest as RegisterRequest
+  }
+  const form = new FormData()
+  form.append('name', data.name)
+  if (data.username?.trim()) form.append('username', data.username.trim())
+  if (data.email?.trim()) form.append('email', data.email.trim())
+  if (data.phone?.trim()) form.append('phone', data.phone.trim())
+  if (data.company_name?.trim()) form.append('company_name', data.company_name.trim())
+  form.append('password', data.password)
+  form.append('password_confirmation', data.password_confirmation)
+  if (data.image?.[0]) form.append('image', data.image[0])
+  return form
+}
+
 export function useRegister() {
   const router = useRouter()
   const { api } = useApiClient()
 
   return useMutation({
     mutationFn: async (data: RegisterRequest) => {
+      const body = toRegisterBody(data)
       const response = await api.post<AuthResponse>(
         `${BASE_PATH}/register`,
-        data,
+        body,
         { skipAuth: true }
       )
 
@@ -117,8 +136,9 @@ export function useRegister() {
         throw new Error(response.message)
       }
 
+      const identifier = data.email?.trim() || data.username?.trim() || data.name
       const result = await signIn('credentials', {
-        identifier: data.email,
+        identifier,
         password: data.password,
         redirect: false,
       })

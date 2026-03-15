@@ -22,9 +22,14 @@ export interface LoginRequest {
   password: string
 }
 
+/** Payload sent to register API (JSON or FormData when image is present). */
 export interface RegisterRequest {
   name: string
-  email: string
+  username?: string | null
+  email?: string | null
+  image?: File[] | null
+  phone?: string | null
+  company_name?: string | null
   password: string
   password_confirmation: string
 }

@@ -31,6 +31,7 @@ export function DirectionProvider({ children }: { children: React.ReactNode }) {
     setDirState(d)
     setCookie(DIR_COOKIE, d, COOKIE_MAX_AGE)
   }
+  
   const resetDir = () => {
     removeCookie(DIR_COOKIE)
     setDirState(DEFAULT_DIR)
