@@ -38,7 +38,7 @@ export default function LoginPage() {
             Don&apos;t have an account?{' '}
             <Link
               href='/register'
-              className='text-primary font-medium hover:underline'
+              className='underline underline-offset-4 hover:text-primary'
             >
               Sign up
             </Link>

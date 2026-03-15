@@ -32,12 +32,12 @@ export default function RegisterPage() {
             <RegisterForm />
           </Suspense>
         </CardContent>
-        <CardFooter>
-          <p className='px-8 text-center text-sm text-muted-foreground'>
+        <CardFooter className='flex flex-col items-center gap-3'>
+          <p className='text-sm text-muted-foreground'>
             Already have an account?{' '}
             <Link
               href="/login"
-              className='text-primary hover:underline'
+              className='underline underline-offset-4 hover:text-primary'
             >
               Sign in
             </Link>
