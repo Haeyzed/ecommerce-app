@@ -55,40 +55,38 @@ export function CategoriesViewDialog({
 function CategoryViewContent({ currentRow }: { currentRow: Category }) {
   return (
     <div className="space-y-6">
-      {(currentRow.image_url || currentRow.icon_url) && (
+      {currentRow.image_url && (
         <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">
-            Image / Icon
+          <div className="text-sm font-medium text-muted-foreground">Image</div>
+          <div className="relative h-48 w-full overflow-hidden rounded-md border bg-muted">
+            <ImageZoom>
+              <Image
+                src={currentRow.image_url}
+                alt={currentRow.name}
+                width={800}
+                height={400}
+                className="h-full w-full object-cover"
+                unoptimized
+              />
+            </ImageZoom>
           </div>
-          <div className="flex gap-4">
-            {currentRow.image_url && (
-              <div className="relative h-32 w-32 shrink-0 overflow-hidden rounded-md border bg-muted">
-                <ImageZoom>
-                  <Image
-                    src={currentRow.image_url}
-                    alt={currentRow.name}
-                    width={128}
-                    height={128}
-                    className="h-full w-full object-cover"
-                    unoptimized
-                  />
-                </ImageZoom>
-              </div>
-            )}
-            {currentRow.icon_url && (
-              <div className="relative h-32 w-32 shrink-0 overflow-hidden rounded-md border bg-muted p-2">
-                <ImageZoom>
-                  <Image
-                    src={currentRow.icon_url}
-                    alt={`${currentRow.name} icon`}
-                    width={128}
-                    height={128}
-                    className="h-full w-full object-contain"
-                    unoptimized
-                  />
-                </ImageZoom>
-              </div>
-            )}
+        </div>
+      )}
+
+      {currentRow.icon_url && (
+        <div className="space-y-2">
+          <div className="text-sm font-medium text-muted-foreground">Icon</div>
+          <div className="relative h-32 w-32 overflow-hidden rounded-md border bg-muted p-2">
+            <ImageZoom>
+              <Image
+                src={currentRow.icon_url}
+                alt={`${currentRow.name} icon`}
+                width={128}
+                height={128}
+                className="h-full w-full object-contain"
+                unoptimized
+              />
+            </ImageZoom>
           </div>
         </div>
       )}
@@ -121,7 +119,7 @@ function CategoryViewContent({ currentRow }: { currentRow: Category }) {
           <div className="text-sm font-medium text-muted-foreground">
             Description
           </div>
-          <div className="whitespace-pre-wrap text-sm text-muted-foreground">
+          <div className="text-sm whitespace-pre-wrap text-muted-foreground">
             {currentRow.short_description}
           </div>
         </div>
@@ -136,33 +134,25 @@ function CategoryViewContent({ currentRow }: { currentRow: Category }) {
         </div>
       )}
 
-      <div className="grid grid-cols-3 gap-4">
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Status</div>
-          <div>
-            <Badge variant="outline" className="capitalize">
-              {currentRow.is_active ? "Active" : "Inactive"}
-            </Badge>
-          </div>
-        </div>
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">
-            Featured
-          </div>
-          <div>
-            <Badge variant="outline" className="capitalize">
-              {currentRow.featured ? "Yes" : "No"}
-            </Badge>
-          </div>
-        </div>
-        <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Sync</div>
-          <div>
-            <Badge variant="outline" className="capitalize">
-              {currentRow.is_sync_disable ? "Disabled" : "Enabled"}
-            </Badge>
-          </div>
-        </div>
+      <div className="space-y-2">
+        <div className="text-sm font-medium text-muted-foreground">Status</div>
+        <Badge variant="outline" className="capitalize">
+          {currentRow.is_active ? "Active" : "Inactive"}
+        </Badge>
+      </div>
+
+      <div className="space-y-2">
+        <div className="text-sm font-medium text-muted-foreground">Featured</div>
+        <Badge variant="outline" className="capitalize">
+          {currentRow.featured ? "Yes" : "No"}
+        </Badge>
+      </div>
+
+      <div className="space-y-2">
+        <div className="text-sm font-medium text-muted-foreground">Sync</div>
+        <Badge variant="outline" className="capitalize">
+          {currentRow.is_sync_disable ? "Disabled" : "Enabled"}
+        </Badge>
       </div>
 
       <Separator />
