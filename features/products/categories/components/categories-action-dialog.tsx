@@ -1,12 +1,15 @@
 "use client"
 
 import * as React from "react"
+import { useState } from "react"
 import Image from "next/image"
 import { Controller, type UseFormReturn, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { CloudUpload, Pencil } from "lucide-react"
+import { CloudUpload, Pencil, X } from "lucide-react"
 
 import { generateSlug } from "@/lib/slug"
+import { useTheme } from "next-themes"
+import { cn } from "@/lib/utils"
 import {
   Field,
   FieldDescription,
@@ -36,16 +39,18 @@ import {
   ResponsiveDialogTitle,
 } from "@/components/ui/responsive-dialog"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
+import { CropperFileUpload } from "@/components/cropper-file-upload"
 
 import {
   useCreateCategory,
@@ -54,7 +59,6 @@ import {
 } from "../api"
 import { categorySchema, type CategoryFormData } from "../schemas"
 import type { Category } from "../types"
-import { CropperFileUpload } from "@/components/cropper-file-upload"
 
 interface CategoriesActionDialogProps {
   currentRow?: Category
@@ -85,6 +89,7 @@ export function CategoriesActionDialog({
             is_active: currentRow.is_active,
             featured: currentRow.featured,
             is_sync_disable: currentRow.is_sync_disable,
+            woocommerce_category_id: currentRow.woocommerce_category_id,
             image: [],
             icon: [],
           }
@@ -97,6 +102,7 @@ export function CategoriesActionDialog({
             is_active: true,
             featured: false,
             is_sync_disable: false,
+            woocommerce_category_id: null,
             image: [],
             icon: [],
           },
@@ -178,12 +184,11 @@ function CategoryForm({
   isEdit,
   currentRow,
 }: CategoryFormProps) {
-  const [isSlugDisabled, setIsSlugDisabled] = React.useState(true)
-  const { data: optionCategories = [] } = useOptionCategories()
-  const parentOptions = React.useMemo(() => {
-    if (!isEdit || !currentRow) return optionCategories
-    return optionCategories.filter((o) => o.value !== currentRow.id)
-  }, [optionCategories, isEdit, currentRow])
+  const { theme } = useTheme()
+  const [isSlugDisabled, setIsSlugDisabled] = useState(true)
+  const { data: optionCategories } = useOptionCategories()
+  const availableParents =
+    optionCategories?.filter((c) => c.value !== currentRow?.id) ?? []
 
   return (
     <form id={id} onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -253,26 +258,41 @@ function CategoryForm({
           control={form.control}
           name="parent_id"
           render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor="category-parent">Parent Category</FieldLabel>
-              <Select
-                value={field.value != null ? String(field.value) : "none"}
-                onValueChange={(v) =>
-                  field.onChange(v === "none" ? null : Number(v))
+            <Field data-invalid={!!fieldState.error} className="flex flex-col">
+              <FieldLabel htmlFor="category-parent-id">
+                Parent Category
+              </FieldLabel>
+              <Combobox
+                items={availableParents}
+                itemToStringLabel={(item) => item.label}
+                value={
+                  availableParents.find((p) => p.value === field.value) ?? null
                 }
+                onValueChange={(item) => {
+                  field.onChange(item?.value ?? null)
+                }}
+                isItemEqualToValue={(a, b) => a?.value === b?.value}
               >
-                <SelectTrigger id="category-parent">
-                  <SelectValue placeholder="None (root category)" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">None (root category)</SelectItem>
-                  {parentOptions.map((opt) => (
-                    <SelectItem key={opt.value} value={String(opt.value)}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                <ComboboxInput
+                  id="category-parent-id"
+                  name="category-parent-id"
+                  placeholder="Select parent category..."
+                  showClear
+                />
+                <ComboboxContent>
+                  <ComboboxEmpty>No category found.</ComboboxEmpty>
+                  <ComboboxList>
+                    {(item) => (
+                      <ComboboxItem key={item.value} value={item}>
+                        {item.label}
+                      </ComboboxItem>
+                    )}
+                  </ComboboxList>
+                </ComboboxContent>
+              </Combobox>
+              <FieldDescription>
+                Select a parent category to create a hierarchy.
+              </FieldDescription>
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -317,6 +337,7 @@ function CategoryForm({
           )}
         />
 
+        {/* Main Image Uploader (Uses Cropper) */}
         <Controller
           control={form.control}
           name="image"
@@ -331,7 +352,13 @@ function CategoryForm({
                 {existingImageUrl && !hasNewImage && (
                   <div className="mb-3 flex items-center gap-3 rounded-md border p-3">
                     <div className="relative size-16 overflow-hidden rounded-md bg-muted">
-                      <ImageZoom>
+                      <ImageZoom
+                        backdropClassName={cn(
+                          theme === "dark"
+                            ? '[&_[data-rmiz-modal-overlay="visible"]]:bg-white/80'
+                            : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80'
+                        )}
+                      >
                         <Image
                           src={existingImageUrl}
                           alt={currentRow?.name ?? "Category image"}
@@ -380,17 +407,26 @@ function CategoryForm({
             return (
               <Field data-invalid={!!fieldState.error}>
                 <FieldLabel htmlFor="category-icon">Icon</FieldLabel>
+
                 {existingIconUrl && !hasNewIcon && (
                   <div className="mb-3 flex items-center gap-3 rounded-md border p-3">
-                    <div className="relative size-16 overflow-hidden rounded-md bg-muted">
-                      <Image
-                        src={existingIconUrl}
-                        alt={currentRow?.name ?? "Category icon"}
-                        width={64}
-                        height={64}
-                        className="h-full w-full object-contain"
-                        unoptimized
-                      />
+                    <div className="relative size-16 overflow-hidden rounded-md bg-muted p-2">
+                      <ImageZoom
+                        backdropClassName={cn(
+                          theme === "dark"
+                            ? '[&_[data-rmiz-modal-overlay="visible"]]:bg-white/80'
+                            : '[&_[data-rmiz-modal-overlay="visible"]]:bg-black/80'
+                        )}
+                      >
+                        <Image
+                          src={existingIconUrl}
+                          alt={currentRow?.name ?? "Category icon"}
+                          width={64}
+                          height={64}
+                          className="h-full w-full object-contain"
+                          unoptimized
+                        />
+                      </ImageZoom>
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-medium">Current Icon</p>
@@ -400,23 +436,90 @@ function CategoryForm({
                     </div>
                   </div>
                 )}
-                <CropperFileUpload
-                  value={value ?? []}
+
+                <FileUpload
+                  value={value as File[] | undefined}
                   onValueChange={onChange}
-                  accept="image/*"
+                  accept="image/svg+xml,image/*"
                   maxFiles={1}
                   maxSize={2 * 1024 * 1024}
-                  onFileReject={(_file, message) => {
+                  onFileReject={(_, message) => {
                     form.setError("icon", { message })
                   }}
-                />
-                <FieldDescription>
-                  Optional. SVG or image. Max 2MB.
-                </FieldDescription>
+                >
+                  <FileUploadDropzone className="flex flex-col items-center justify-center gap-2 border-dashed p-8 text-center">
+                    <div className="flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                      <CloudUpload className="size-5" />
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold text-primary">
+                        Click to upload
+                      </span>{" "}
+                      or drag and drop
+                      <br />
+                      <span className="text-muted-foreground">
+                        SVG or Image (max 2MB)
+                      </span>
+                    </div>
+                    <FileUploadTrigger asChild>
+                      <Button variant="link" size="sm" className="sr-only">
+                        Select file
+                      </Button>
+                    </FileUploadTrigger>
+                  </FileUploadDropzone>
+                  <FileUploadList>
+                    {(value ?? []).map((file, index) => (
+                      <FileUploadItem
+                        key={index}
+                        value={file}
+                        className="w-full"
+                      >
+                        <FileUploadItemPreview />
+                        <FileUploadItemMetadata className="ml-2 flex-1" />
+                        <FileUploadItemDelete asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-7 text-muted-foreground hover:text-destructive"
+                          >
+                            <span className="sr-only">Remove</span>
+                            <X className="size-4" />
+                          </Button>
+                        </FileUploadItemDelete>
+                      </FileUploadItem>
+                    ))}
+                  </FileUploadList>
+                </FileUpload>
+                <FieldDescription>Optional. SVG or image.</FieldDescription>
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )
           }}
+        />
+
+        <Controller
+          control={form.control}
+          name="woocommerce_category_id"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={!!fieldState.error}>
+              <FieldLabel htmlFor="category-woocommerce-category-id">
+                WooCommerce Category ID
+              </FieldLabel>
+              <Input
+                id="category-woocommerce-category-id"
+                type="number"
+                placeholder="WooCommerce ID"
+                {...field}
+                value={field.value ?? ""}
+                onChange={(e) =>
+                  field.onChange(
+                    e.target.value ? Number(e.target.value) : null
+                  )
+                }
+              />
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
         />
 
         <Controller
@@ -452,7 +555,9 @@ function CategoryForm({
               className="flex flex-row items-center justify-between rounded-md border p-4"
             >
               <div className="space-y-0.5">
-                <FieldLabel htmlFor="category-featured">Featured</FieldLabel>
+                <FieldLabel htmlFor="category-featured">
+                  Featured Status
+                </FieldLabel>
                 <FieldDescription>
                   Show this category in featured sections.
                 </FieldDescription>

@@ -127,11 +127,15 @@ export function useCreateCategory() {
       if (data.slug) formData.append("slug", data.slug)
       if (data.short_description)
         formData.append("short_description", data.short_description)
-      if (data.page_title) formData.append("page_title", data.page_title ?? "")
-      const imageFile = data.image?.[0]
-      if (imageFile instanceof File) formData.append("image", imageFile)
-      const iconFile = data.icon?.[0]
-      if (iconFile instanceof File) formData.append("icon", iconFile)
+      if (data.page_title) formData.append("page_title", data.page_title)
+      
+      if (data.image && data.image.length > 0) {
+        formData.append("image", data.image[0] as Blob)
+      }
+      if (data.icon && data.icon.length > 0) {
+        formData.append("icon", data.icon[0] as Blob)
+      }
+      
       if (data.parent_id != null)
         formData.append("parent_id", String(data.parent_id))
       if (data.is_active !== undefined)
@@ -186,10 +190,15 @@ export function useUpdateCategory() {
         formData.append("short_description", data.short_description ?? "")
       if (data.page_title !== undefined)
         formData.append("page_title", data.page_title ?? "")
-      const imageFile = data.image?.[0]
-      if (imageFile instanceof File) formData.append("image", imageFile)
-      const iconFile = data.icon?.[0]
-      if (iconFile instanceof File) formData.append("icon", iconFile)
+      
+      // Fix: Removed strict instanceof File check so Blobs from cropper work
+      if (data.image && data.image.length > 0) {
+        formData.append("image", data.image[0] as Blob)
+      }
+      if (data.icon && data.icon.length > 0) {
+        formData.append("icon", data.icon[0] as Blob)
+      }
+
       if (data.parent_id !== undefined)
         formData.append(
           "parent_id",
