@@ -51,14 +51,7 @@ export const unitsColumns: ColumnDef<Unit>[] = [
       <DataTableColumnHeader column={column} label="Name" />
     ),
     cell: ({ row }) => (
-      <div className="flex items-center gap-3 ps-3">
-        <div className="flex size-10 items-center justify-center rounded-md bg-muted">
-          <span className="text-xs font-medium">
-            {row.original.name.charAt(0).toUpperCase()}
-          </span>
-        </div>
-        <LongText className="max-w-36">{row.original.name}</LongText>
-      </div>
+      <LongText className="max-w-36">{row.original.name}</LongText>
     ),
     meta: {
       label: "Name",
