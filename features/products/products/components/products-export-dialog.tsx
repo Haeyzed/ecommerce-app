@@ -33,31 +33,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Spinner } from "@/components/ui/spinner"
 import { useApiClient } from "@/lib/api/use-api-client"
 
-import { useCategoriesExport } from "../api"
-import { CATEGORY_EXPORT_COLUMNS, DEFAULT_EXPORT_COLUMNS } from "../constants"
-import { categoryExportSchema, type CategoryExportFormData } from "../schemas"
+import { useProductsExport } from "../api"
+import { PRODUCT_EXPORT_COLUMNS, DEFAULT_EXPORT_COLUMNS } from "../constants"
+import { productExportSchema, type ProductExportFormData } from "../schemas"
 import { DateRangePicker } from "@/components/date-range-picker"
 
-interface CategoriesExportDialogProps {
+interface ProductsExportDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   ids?: number[]
 }
 
-export function CategoriesExportDialog({
+export function ProductsExportDialog({
   open,
   onOpenChange,
   ids = [],
-}: CategoriesExportDialogProps) {
-  const { mutate: exportCategories, isPending } = useCategoriesExport()
+}: ProductsExportDialogProps) {
+  const { mutate: exportProducts, isPending } = useProductsExport()
   const { api } = useApiClient()
 
-  const form = useForm<CategoryExportFormData>({
-    resolver: zodResolver(categoryExportSchema),
+  const form = useForm<ProductExportFormData>({
+    resolver: zodResolver(productExportSchema),
     defaultValues: {
       format: "excel",
       method: "download",
@@ -85,8 +84,8 @@ export function CategoriesExportDialog({
     onOpenChange(value)
   }
 
-  const onSubmit = (data: CategoryExportFormData) => {
-    exportCategories(
+  const onSubmit = (data: ProductExportFormData) => {
+    exportProducts(
       {
         ids: ids.length > 0 ? ids : undefined,
         format: data.format,
@@ -104,16 +103,16 @@ export function CategoriesExportDialog({
     <ResponsiveDialog open={open} onOpenChange={handleOpenChange}>
       <ResponsiveDialogContent className="sm:max-w-2xl">
         <ResponsiveDialogHeader className="text-start">
-          <ResponsiveDialogTitle>Export Categories</ResponsiveDialogTitle>
+          <ResponsiveDialogTitle>Export Products</ResponsiveDialogTitle>
           <ResponsiveDialogDescription>
             Select export format, method, and columns.
-            {ids.length > 0 && ` ${ids.length} category(ies) selected.`}
+            {ids.length > 0 && ` ${ids.length} product(s) selected.`}
           </ResponsiveDialogDescription>
         </ResponsiveDialogHeader>
 
         <ResponsiveDialogBody>
           <form
-            id="category-export-form"
+            id="export-form"
             onSubmit={form.handleSubmit(onSubmit)}
             className="grid gap-4 py-4"
           >
@@ -282,7 +281,7 @@ export function CategoriesExportDialog({
                           onClick={() =>
                             form.setValue(
                               "columns",
-                              CATEGORY_EXPORT_COLUMNS.map((c) => c.value)
+                              PRODUCT_EXPORT_COLUMNS.map((c) => c.value)
                             )
                           }
                         >
@@ -299,13 +298,13 @@ export function CategoriesExportDialog({
                       </div>
                     </div>
                     <div className="grid max-h-60 grid-cols-2 gap-3 overflow-y-auto rounded-md border p-3">
-                      {CATEGORY_EXPORT_COLUMNS.map((column) => (
+                      {PRODUCT_EXPORT_COLUMNS.map((column) => (
                         <div
                           key={column.value}
                           className="flex items-center space-x-2"
                         >
                           <Checkbox
-                            id={`category-column-${column.value}`}
+                            id={`column-${column.value}`}
                             checked={
                               field.value?.includes(column.value) ?? false
                             }
@@ -321,7 +320,7 @@ export function CategoriesExportDialog({
                             }}
                           />
                           <Label
-                            htmlFor={`category-column-${column.value}`}
+                            htmlFor={`column-${column.value}`}
                             className="cursor-pointer text-sm font-medium"
                           >
                             {column.label}
@@ -348,7 +347,7 @@ export function CategoriesExportDialog({
           </Button>
           <Button
             type="submit"
-            form="category-export-form"
+            form="export-form"
             disabled={isPending || (method === "email" && isLoadingUsers)}
           >
             {isPending ? (
