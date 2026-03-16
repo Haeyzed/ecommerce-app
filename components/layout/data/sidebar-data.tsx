@@ -10,6 +10,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 
 import { PERMISSIONS as BRAND_PERMISSIONS } from "@/features/products/brands/constants"
 import { PERMISSIONS as CATEGORY_PERMISSIONS } from "@/features/products/categories/constants"
+import { PERMISSIONS as PRODUCT_PERMISSIONS } from "@/features/products/products/constants"
 import type { SidebarData } from "../types"
 import { PERMISSIONS as UNIT_PERMISSIONS } from "@/features/products/units/constants"
 
@@ -48,7 +49,11 @@ export const sidebarData: Omit<SidebarData, "user"> = {
           title: "Products",
           icon: ProductsIcon,
           items: [
-            { title: "All products", url: "/products" },
+            {
+              title: "Products",
+              url: "/products",
+              permissions: [PRODUCT_PERMISSIONS.view],
+            },
             {
               title: "Categories",
               url: "/products/categories",
@@ -64,7 +69,7 @@ export const sidebarData: Omit<SidebarData, "user"> = {
               url: "/products/units",
               permissions: [UNIT_PERMISSIONS.view],
             },
-            { title: "Add product", url: "/products/new" },
+            // { title: "Add product", url: "/products/new" },
           ],
         },
         {
