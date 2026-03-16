@@ -37,6 +37,9 @@ function toApiParams(
   if (params.is_active != null && params.is_active.length > 0) {
     out.is_active = params.is_active.join(",")
   }
+  if (params.featured != null && params.featured.length > 0) {
+    out.featured = params.featured.join(",")
+  }
   if (params.start_date != null && params.start_date !== "")
     out.start_date = params.start_date
   if (params.end_date != null && params.end_date !== "")
@@ -111,7 +114,8 @@ export function useCreateProduct() {
       }
       if (data.is_active !== undefined)
         formData.append("is_active", data.is_active ? "1" : "0")
-
+      if (data.featured !== undefined)
+        formData.append("featured", data.featured ? "1" : "0")
       const response = await api.post<{ data: Product }>(BASE_PATH, formData)
       if (!response.success) {
         if (response.errors) {
@@ -157,7 +161,8 @@ export function useUpdateProduct() {
       }
       if (data.is_active !== undefined)
         formData.append("is_active", data.is_active ? "1" : "0")
-
+      if (data.featured !== undefined)
+        formData.append("featured", data.featured ? "1" : "0")
       const response = await api.post<{ data: Product }>(
         `${BASE_PATH}/${id}`,
         formData
