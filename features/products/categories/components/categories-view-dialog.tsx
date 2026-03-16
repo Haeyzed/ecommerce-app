@@ -62,7 +62,7 @@ function CategoryViewContent({ currentRow }: { currentRow: Category }) {
           </div>
           <div className="flex gap-4">
             {currentRow.image_url && (
-              <div className="relative h-32 w-32 overflow-hidden rounded-md border bg-muted">
+              <div className="relative h-32 w-32 shrink-0 overflow-hidden rounded-md border bg-muted">
                 <ImageZoom>
                   <Image
                     src={currentRow.image_url}
@@ -76,15 +76,17 @@ function CategoryViewContent({ currentRow }: { currentRow: Category }) {
               </div>
             )}
             {currentRow.icon_url && (
-              <div className="relative h-32 w-32 overflow-hidden rounded-md border bg-muted">
-                <Image
-                  src={currentRow.icon_url}
-                  alt={`${currentRow.name} icon`}
-                  width={128}
-                  height={128}
-                  className="h-full w-full object-contain"
-                  unoptimized
-                />
+              <div className="relative h-32 w-32 shrink-0 overflow-hidden rounded-md border bg-muted p-2">
+                <ImageZoom>
+                  <Image
+                    src={currentRow.icon_url}
+                    alt={`${currentRow.name} icon`}
+                    width={128}
+                    height={128}
+                    className="h-full w-full object-contain"
+                    unoptimized
+                  />
+                </ImageZoom>
               </div>
             )}
           </div>
@@ -119,7 +121,7 @@ function CategoryViewContent({ currentRow }: { currentRow: Category }) {
           <div className="text-sm font-medium text-muted-foreground">
             Description
           </div>
-          <div className="text-sm whitespace-pre-wrap text-muted-foreground">
+          <div className="whitespace-pre-wrap text-sm text-muted-foreground">
             {currentRow.short_description}
           </div>
         </div>
@@ -134,28 +136,32 @@ function CategoryViewContent({ currentRow }: { currentRow: Category }) {
         </div>
       )}
 
-      <div className="flex flex-wrap gap-2">
-        <div className="space-y-1">
-          <div className="text-sm font-medium text-muted-foreground">
-            Status
+      <div className="grid grid-cols-3 gap-4">
+        <div className="space-y-2">
+          <div className="text-sm font-medium text-muted-foreground">Status</div>
+          <div>
+            <Badge variant="outline" className="capitalize">
+              {currentRow.is_active ? "Active" : "Inactive"}
+            </Badge>
           </div>
-          <Badge variant="outline" className="capitalize">
-            {currentRow.is_active ? "Active" : "Inactive"}
-          </Badge>
         </div>
-        <div className="space-y-1">
+        <div className="space-y-2">
           <div className="text-sm font-medium text-muted-foreground">
             Featured
           </div>
-          <Badge variant="outline" className="capitalize">
-            {currentRow.featured ? "Yes" : "No"}
-          </Badge>
+          <div>
+            <Badge variant="outline" className="capitalize">
+              {currentRow.featured ? "Yes" : "No"}
+            </Badge>
+          </div>
         </div>
-        <div className="space-y-1">
+        <div className="space-y-2">
           <div className="text-sm font-medium text-muted-foreground">Sync</div>
-          <Badge variant="outline" className="capitalize">
-            {currentRow.is_sync_disable ? "Disabled" : "Enabled"}
-          </Badge>
+          <div>
+            <Badge variant="outline" className="capitalize">
+              {currentRow.is_sync_disable ? "Disabled" : "Enabled"}
+            </Badge>
+          </div>
         </div>
       </div>
 
