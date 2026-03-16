@@ -1,9 +1,20 @@
 "use client"
 
 import * as React from "react"
+import { useMemo, useState } from "react"
 import { Controller, type UseFormReturn, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox"
 import {
   Field,
   FieldDescription,
@@ -21,9 +32,6 @@ import {
   ResponsiveDialogHeader,
   ResponsiveDialogTitle,
 } from "@/components/ui/responsive-dialog"
-import { Switch } from "@/components/ui/switch"
-import { Button } from "@/components/ui/button"
-import { Spinner } from "@/components/ui/spinner"
 import {
   Select,
   SelectContent,
@@ -31,6 +39,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Spinner } from "@/components/ui/spinner"
+import { Switch } from "@/components/ui/switch"
 
 import {
   useBaseUnits,
@@ -64,7 +74,7 @@ export function UnitsActionDialog({
             name: currentRow.name,
             code: currentRow.code,
             base_unit: currentRow.base_unit ?? null,
-            operator: currentRow.operator,
+            operator: currentRow.operator ?? null,
             operation_value: currentRow.operation_value ?? null,
             is_active: currentRow.is_active,
           }
@@ -72,8 +82,8 @@ export function UnitsActionDialog({
             name: "",
             code: "",
             base_unit: null,
-            operator: "*",
-            operation_value: 1,
+            operator: null,
+            operation_value: null,
             is_active: true,
           },
   })
@@ -148,7 +158,31 @@ interface UnitFormProps {
 }
 
 function UnitForm({ form, onSubmit, id, isEdit, currentRow }: UnitFormProps) {
-  const { data: baseUnits = [] } = useBaseUnits()
+  const [openCombobox, setOpenCombobox] = useState(false)
+  const { data: baseUnits = [], isLoading: isLoadingBaseUnits } = useBaseUnits()
+
+  const availableBaseUnits = useMemo(() => {
+    return baseUnits.filter((u) => !isEdit || u.value !== currentRow?.id)
+  }, [baseUnits, isEdit, currentRow])
+
+  const unitItems = useMemo(
+    () =>
+      availableBaseUnits.map((unit) => ({
+        id: unit.value,
+        label: unit.label,
+      })),
+    [availableBaseUnits]
+  )
+
+  const name = form.watch("name")
+  const baseUnitId = form.watch("base_unit")
+  const operator = form.watch("operator")
+  const operationValue = form.watch("operation_value")
+
+  const selectedBaseUnitForPreview = useMemo(
+    () => unitItems.find((u) => u.id === baseUnitId),
+    [unitItems, baseUnitId]
+  )
 
   return (
     <form id={id} onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -163,7 +197,7 @@ function UnitForm({ form, onSubmit, id, isEdit, currentRow }: UnitFormProps) {
               </FieldLabel>
               <Input
                 id="unit-name"
-                placeholder="Kilogram"
+                placeholder="Unit name (e.g. Kilogram)"
                 autoComplete="off"
                 {...field}
               />
@@ -182,7 +216,7 @@ function UnitForm({ form, onSubmit, id, isEdit, currentRow }: UnitFormProps) {
               </FieldLabel>
               <Input
                 id="unit-code"
-                placeholder="kg"
+                placeholder="Short code (e.g. kg)"
                 autoComplete="off"
                 {...field}
               />
@@ -194,87 +228,161 @@ function UnitForm({ form, onSubmit, id, isEdit, currentRow }: UnitFormProps) {
         <Controller
           control={form.control}
           name="base_unit"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor="unit-base">Base Unit</FieldLabel>
-              <Select
-                value={
-                  field.value !== null && field.value !== undefined
-                    ? String(field.value)
-                    : "none"
-                }
-                onValueChange={(v) =>
-                  field.onChange(v === "none" ? null : Number(v))
-                }
-              >
-                <SelectTrigger id="unit-base">
-                  <SelectValue placeholder="None (base unit)" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">None (base unit)</SelectItem>
-                  {baseUnits.map((opt) => (
-                    <SelectItem key={opt.value} value={String(opt.value)}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FieldDescription>
-                Select a base unit to make this a derived unit, or leave as base.
-              </FieldDescription>
-              {fieldState.error && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
+          render={({ field, fieldState }) => {
+            const selectedUnit = unitItems.find(
+              (unit) => unit.id === field.value
+            )
+
+            return (
+              <Field data-invalid={!!fieldState.error} className="flex flex-col">
+                <FieldLabel htmlFor="unit-base-unit">Base Unit</FieldLabel>
+                <Combobox
+                  items={unitItems}
+                  value={selectedUnit || null}
+                  onValueChange={(value) => {
+                    field.onChange(value ? value.id : null)
+                    if (!value) {
+                      form.setValue("operator", null)
+                      form.setValue("operation_value", null)
+                    }
+                    setOpenCombobox(false)
+                  }}
+                  open={openCombobox}
+                  onOpenChange={setOpenCombobox}
+                  itemToStringValue={(item) => String(item.id)}
+                >
+                  <ComboboxInput
+                    id="unit-base-unit"
+                    placeholder="Select base unit (optional)"
+                    autoComplete="off"
+                    showClear
+                    value={selectedUnit ? selectedUnit.label : ""}
+                    data-invalid={!!fieldState.error}
+                  />
+                  <ComboboxContent>
+                    <ComboboxEmpty>No base units found.</ComboboxEmpty>
+                    <ComboboxList>
+                      {isLoadingBaseUnits && (
+                        <div className="py-6 text-center text-sm text-muted-foreground">
+                          <Spinner className="mx-auto mb-2 size-4" />
+                          Loading units...
+                        </div>
+                      )}
+
+                      {!isLoadingBaseUnits &&
+                        unitItems.map((item) => (
+                          <ComboboxItem key={item.id} value={item}>
+                            {item.label}
+                          </ComboboxItem>
+                        ))}
+                    </ComboboxList>
+                  </ComboboxContent>
+                </Combobox>
+                <FieldDescription>
+                  Optional: define relation to another unit.
+                </FieldDescription>
+                {fieldState.error && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )
+          }}
         />
 
-        <Controller
-          control={form.control}
-          name="operator"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor="unit-operator">Operator</FieldLabel>
-              <Input
-                id="unit-operator"
-                placeholder="*"
-                autoComplete="off"
-                maxLength={1}
-                {...field}
+        {form.watch("base_unit") && (
+          <>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Controller
+                control={form.control}
+                name="operator"
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={!!fieldState.error}>
+                    <FieldLabel htmlFor="operator">Operator</FieldLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value || undefined}
+                      value={field.value || undefined}
+                    >
+                      <SelectTrigger id="operator">
+                        <SelectValue placeholder="Select operator" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="*">Multiply (*)</SelectItem>
+                        <SelectItem value="/">Divide (/)</SelectItem>
+                        <SelectItem value="+">Add (+)</SelectItem>
+                        <SelectItem value="-">Subtract (-)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FieldDescription>Conversion operator.</FieldDescription>
+                    {fieldState.error && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
               />
-              <FieldDescription>
-                Operator used to convert this unit to its base unit (e.g. * or /).
-              </FieldDescription>
-              {fieldState.error && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
 
-        <Controller
-          control={form.control}
-          name="operation_value"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={!!fieldState.error}>
-              <FieldLabel htmlFor="unit-operation-value">
-                Operation value
-              </FieldLabel>
-              <Input
-                id="unit-operation-value"
-                type="number"
-                step="0.0001"
-                {...field}
-                value={field.value ?? ""}
-                onChange={(e) =>
-                  field.onChange(
-                    e.target.value === "" ? null : Number(e.target.value)
-                  )
-                }
+              <Controller
+                control={form.control}
+                name="operation_value"
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={!!fieldState.error}>
+                    <FieldLabel htmlFor="operation-value">
+                      Operation Value
+                    </FieldLabel>
+                    <Input
+                      id="operation-value"
+                      type="number"
+                      step="0.001"
+                      placeholder="e.g. 1000"
+                      autoComplete="off"
+                      {...field}
+                      value={field.value ?? ""}
+                      onChange={(e) => {
+                        const val = e.target.value
+                        field.onChange(val === "" ? null : Number(val))
+                      }}
+                    />
+                    <FieldDescription>Conversion value.</FieldDescription>
+                    {fieldState.error && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
               />
-              <FieldDescription>
-                Numeric value used with the operator to convert to the base unit.
-              </FieldDescription>
-              {fieldState.error && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+            </div>
+            <div className="rounded-md border bg-muted/50 p-3 text-sm text-muted-foreground">
+              {name &&
+                operator &&
+                operationValue &&
+                selectedBaseUnitForPreview && (
+                  <div className="mb-3 border-b border-border/50 pb-3 text-foreground">
+                    <div className="mb-1 font-semibold">Preview:</div>
+                    <div className="inline-block rounded border bg-background px-2 py-1 font-mono">
+                      1 {name} = 1{" "}
+                      <span className="font-bold text-primary">{operator}</span>{" "}
+                      {operationValue} {selectedBaseUnitForPreview.label}
+                    </div>
+                  </div>
+                )}
+
+              <strong className="mb-2 block text-foreground">
+                Example conversions:
+              </strong>
+              <div className="grid gap-1">
+                <div>
+                  1 Dozen = 1 <strong>*</strong> 12 Piece
+                </div>
+                <div>
+                  1 Gram = 1 <strong>/</strong> 1000 Kilogram
+                </div>
+                <div>
+                  1 Meter = 1 <strong>*</strong> 100 Centimeter
+                </div>
+                <div>
+                  1 Box = 1 <strong>*</strong> 10 Pack
+                </div>
+              </div>
+            </div>
+          </>
+        )}
 
         <Controller
           control={form.control}
@@ -287,7 +395,7 @@ function UnitForm({ form, onSubmit, id, isEdit, currentRow }: UnitFormProps) {
               <div className="space-y-0.5">
                 <FieldLabel htmlFor="unit-active">Active Status</FieldLabel>
                 <FieldDescription>
-                  Disabling this will hide the unit from use in products.
+                  Disabling this will hide the unit from selection.
                 </FieldDescription>
               </div>
               <Switch
