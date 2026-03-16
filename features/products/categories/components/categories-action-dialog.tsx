@@ -337,7 +337,6 @@ function CategoryForm({
           )}
         />
 
-        {/* Main Image Uploader (Uses Cropper) */}
         <Controller
           control={form.control}
           name="image"
