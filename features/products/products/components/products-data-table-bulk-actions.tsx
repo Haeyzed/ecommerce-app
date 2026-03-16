@@ -42,7 +42,9 @@ export function ProductsDataTableBulkActions({
     const selectedIds = table
       .getFilteredSelectedRowModel()
       .rows.map((row) => row.original.id)
-    activateProducts(selectedIds, { onSuccess: () => table.resetRowSelection() })
+    activateProducts(selectedIds, {
+      onSuccess: () => table.resetRowSelection(),
+    })
   }
 
   const handleBulkDeactivate = () => {

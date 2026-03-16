@@ -17,6 +17,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   ResponsiveDialog,
   ResponsiveDialogBody,
@@ -125,15 +126,29 @@ export function UnitsExportDialog({
                     <FieldLabel>Date range (optional)</FieldLabel>
                     <DateRangePicker
                       value={{
-                        from: form.watch("start_date") ? new Date(form.watch("start_date")!) : undefined,
-                        to: form.watch("end_date") ? new Date(form.watch("end_date")!) : undefined,
+                        from: form.watch("start_date")
+                          ? new Date(form.watch("start_date")!)
+                          : undefined,
+                        to: form.watch("end_date")
+                          ? new Date(form.watch("end_date")!)
+                          : undefined,
                       }}
                       onChange={(range) => {
-                        form.setValue("start_date", range?.from ? format(range.from, "yyyy-MM-dd") : undefined)
-                        form.setValue("end_date", range?.to ? format(range.to, "yyyy-MM-dd") : undefined)
+                        form.setValue(
+                          "start_date",
+                          range?.from
+                            ? format(range.from, "yyyy-MM-dd")
+                            : undefined
+                        )
+                        form.setValue(
+                          "end_date",
+                          range?.to ? format(range.to, "yyyy-MM-dd") : undefined
+                        )
                       }}
                     />
-                    {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                    {fieldState.error && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
                   </Field>
                 )}
               />
@@ -144,10 +159,31 @@ export function UnitsExportDialog({
                 render={({ field }) => (
                   <Field>
                     <FieldLabel>Format</FieldLabel>
-                    <div className="flex gap-4">
-                      <Label className="flex items-center gap-2"><input type="radio" checked={field.value === "excel"} onChange={() => field.onChange("excel")} /> Excel</Label>
-                      <Label className="flex items-center gap-2"><input type="radio" checked={field.value === "pdf"} onChange={() => field.onChange("pdf")} /> PDF</Label>
-                    </div>
+                    <RadioGroup
+                      value={field.value}
+                      onValueChange={field.onChange}
+                    >
+                      <div className="flex gap-4">
+                        <div className="flex items-center gap-2">
+                          <RadioGroupItem value="excel" id="format-excel" />
+                          <Label
+                            htmlFor="format-excel"
+                            className="cursor-pointer font-medium"
+                          >
+                            Excel
+                          </Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <RadioGroupItem value="pdf" id="format-pdf" />
+                          <Label
+                            htmlFor="format-pdf"
+                            className="cursor-pointer font-medium"
+                          >
+                            PDF
+                          </Label>
+                        </div>
+                      </div>
+                    </RadioGroup>
                   </Field>
                 )}
               />
@@ -158,10 +194,34 @@ export function UnitsExportDialog({
                 render={({ field }) => (
                   <Field>
                     <FieldLabel>Method</FieldLabel>
-                    <div className="flex gap-4">
-                      <Label className="flex items-center gap-2"><input type="radio" checked={field.value === "download"} onChange={() => field.onChange("download")} /> Download</Label>
-                      <Label className="flex items-center gap-2"><input type="radio" checked={field.value === "email"} onChange={() => field.onChange("email")} /> Email</Label>
-                    </div>
+                    <RadioGroup
+                      value={field.value}
+                      onValueChange={field.onChange}
+                    >
+                      <div className="flex gap-4">
+                        <div className="flex items-center gap-2">
+                          <RadioGroupItem
+                            value="download"
+                            id="method-download"
+                          />
+                          <Label
+                            htmlFor="method-download"
+                            className="cursor-pointer font-medium"
+                          >
+                            Download
+                          </Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <RadioGroupItem value="email" id="method-email" />
+                          <Label
+                            htmlFor="method-email"
+                            className="cursor-pointer font-medium"
+                          >
+                            Email
+                          </Label>
+                        </div>
+                      </div>
+                    </RadioGroup>
                   </Field>
                 )}
               />
@@ -173,9 +233,20 @@ export function UnitsExportDialog({
                   render={({ field }) => (
                     <Field>
                       <FieldLabel>Select User</FieldLabel>
-                      <Select onValueChange={(v) => field.onChange(Number(v))} value={field.value ? String(field.value) : ""}>
-                        <SelectTrigger><SelectValue placeholder="Select user" /></SelectTrigger>
-                        <SelectContent>{users.map(u => <SelectItem key={u.id} value={String(u.id)}>{u.name}</SelectItem>)}</SelectContent>
+                      <Select
+                        onValueChange={(v) => field.onChange(Number(v))}
+                        value={field.value ? String(field.value) : ""}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select user" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {users.map((u) => (
+                            <SelectItem key={u.id} value={String(u.id)}>
+                              {u.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
                       </Select>
                     </Field>
                   )}
@@ -190,11 +261,19 @@ export function UnitsExportDialog({
                     <FieldLabel>Columns</FieldLabel>
                     <div className="grid grid-cols-2 gap-3 rounded-md border p-3">
                       {UNIT_EXPORT_COLUMNS.map((col) => (
-                        <div key={col.value} className="flex items-center gap-2">
-                          <Checkbox checked={field.value.includes(col.value)} onCheckedChange={(checked) => {
-                            const val = checked ? [...field.value, col.value] : field.value.filter(v => v !== col.value)
-                            field.onChange(val)
-                          }} />
+                        <div
+                          key={col.value}
+                          className="flex items-center gap-2"
+                        >
+                          <Checkbox
+                            checked={field.value.includes(col.value)}
+                            onCheckedChange={(checked) => {
+                              const val = checked
+                                ? [...field.value, col.value]
+                                : field.value.filter((v) => v !== col.value)
+                              field.onChange(val)
+                            }}
+                          />
                           <span className="text-sm">{col.label}</span>
                         </div>
                       ))}
@@ -207,9 +286,15 @@ export function UnitsExportDialog({
         </ResponsiveDialogBody>
 
         <ResponsiveDialogFooter>
-          <Button variant="outline" onClick={() => handleOpenChange(false)}>Cancel</Button>
+          <Button variant="outline" onClick={() => handleOpenChange(false)}>
+            Cancel
+          </Button>
           <Button type="submit" form="unit-export-form" disabled={isPending}>
-            {isPending ? <Spinner className="mr-2" /> : <Upload className="mr-2 size-4" />}
+            {isPending ? (
+              <Spinner className="mr-2" />
+            ) : (
+              <Upload className="mr-2 size-4" />
+            )}
             Export
           </Button>
         </ResponsiveDialogFooter>

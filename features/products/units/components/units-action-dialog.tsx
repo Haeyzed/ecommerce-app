@@ -42,11 +42,7 @@ import {
 import { Spinner } from "@/components/ui/spinner"
 import { Switch } from "@/components/ui/switch"
 
-import {
-  useBaseUnits,
-  useCreateUnit,
-  useUpdateUnit,
-} from "../api"
+import { useBaseUnits, useCreateUnit, useUpdateUnit } from "../api"
 import { unitSchema, type UnitFormData } from "../schemas"
 import type { Unit } from "../types"
 
@@ -234,7 +230,10 @@ function UnitForm({ form, onSubmit, id, isEdit, currentRow }: UnitFormProps) {
             )
 
             return (
-              <Field data-invalid={!!fieldState.error} className="flex flex-col">
+              <Field
+                data-invalid={!!fieldState.error}
+                className="flex flex-col"
+              >
                 <FieldLabel htmlFor="unit-base-unit">Base Unit</FieldLabel>
                 <Combobox
                   items={unitItems}

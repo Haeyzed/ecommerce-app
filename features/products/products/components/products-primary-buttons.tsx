@@ -45,7 +45,11 @@ export function ProductsPrimaryButtons() {
         </Button>
       )}
       {canCreate && (
-        <Button size="sm" onClick={() => setOpen("add")} aria-label="Add Product">
+        <Button
+          size="sm"
+          onClick={() => setOpen("add")}
+          aria-label="Add Product"
+        >
           <Plus className="size-4" />
           <span className="ml-2 hidden sm:inline">Add Product</span>
         </Button>

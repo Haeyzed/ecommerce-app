@@ -45,13 +45,7 @@ export function UnitsTable() {
     [page, perPage, name, isActive, startDate, endDate]
   )
 
-  const {
-    data: apiData,
-    meta,
-    isLoading,
-    isError,
-    error,
-  } = useUnits(apiParams)
+  const { data: apiData, meta, isLoading, isError, error } = useUnits(apiParams)
 
   const units: Unit[] = apiData ?? []
 
@@ -108,4 +102,3 @@ export function UnitsTable() {
     </div>
   )
 }
-

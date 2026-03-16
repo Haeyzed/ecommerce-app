@@ -17,6 +17,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   ResponsiveDialog,
   ResponsiveDialogBody,
@@ -162,26 +163,31 @@ export function BrandsExportDialog({
                 render={({ field, fieldState }) => (
                   <Field>
                     <FieldLabel>Format</FieldLabel>
-                    <div className="flex gap-4">
-                      <Label className="flex cursor-pointer items-center gap-2">
-                        <input
-                          type="radio"
-                          checked={field.value === "excel"}
-                          onChange={() => field.onChange("excel")}
-                          className="rounded-full"
-                        />
-                        Excel (XLSX)
-                      </Label>
-                      <Label className="flex cursor-pointer items-center gap-2">
-                        <input
-                          type="radio"
-                          checked={field.value === "pdf"}
-                          onChange={() => field.onChange("pdf")}
-                          className="rounded-full"
-                        />
-                        PDF
-                      </Label>
-                    </div>
+                    <RadioGroup
+                      value={field.value}
+                      onValueChange={field.onChange}
+                    >
+                      <div className="flex gap-4">
+                        <div className="flex items-center gap-2">
+                          <RadioGroupItem value="excel" id="format-excel" />
+                          <Label
+                            htmlFor="format-excel"
+                            className="cursor-pointer font-medium"
+                          >
+                            Excel (XLSX)
+                          </Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <RadioGroupItem value="pdf" id="format-pdf" />
+                          <Label
+                            htmlFor="format-pdf"
+                            className="cursor-pointer font-medium"
+                          >
+                            PDF
+                          </Label>
+                        </div>
+                      </div>
+                    </RadioGroup>
                     {fieldState.error && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -195,29 +201,39 @@ export function BrandsExportDialog({
                 render={({ field, fieldState }) => (
                   <Field>
                     <FieldLabel>Method</FieldLabel>
-                    <div className="flex gap-4">
-                      <Label className="flex cursor-pointer items-center gap-2">
-                        <input
-                          type="radio"
-                          checked={field.value === "download"}
-                          onChange={() => {
-                            field.onChange("download")
-                            form.setValue("user_id", undefined)
-                          }}
-                          className="rounded-full"
-                        />
-                        Download
-                      </Label>
-                      <Label className="flex cursor-pointer items-center gap-2">
-                        <input
-                          type="radio"
-                          checked={field.value === "email"}
-                          onChange={() => field.onChange("email")}
-                          className="rounded-full"
-                        />
-                        Send via Email
-                      </Label>
-                    </div>
+                    <RadioGroup
+                      value={field.value}
+                      onValueChange={(value) => {
+                        field.onChange(value)
+                        if (value === "download") {
+                          form.setValue("user_id", undefined)
+                        }
+                      }}
+                    >
+                      <div className="flex gap-4">
+                        <div className="flex items-center gap-2">
+                          <RadioGroupItem
+                            value="download"
+                            id="method-download"
+                          />
+                          <Label
+                            htmlFor="method-download"
+                            className="cursor-pointer font-medium"
+                          >
+                            Download
+                          </Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <RadioGroupItem value="email" id="method-email" />
+                          <Label
+                            htmlFor="method-email"
+                            className="cursor-pointer font-medium"
+                          >
+                            Send via Email
+                          </Label>
+                        </div>
+                      </div>
+                    </RadioGroup>
                     {fieldState.error && (
                       <FieldError errors={[fieldState.error]} />
                     )}

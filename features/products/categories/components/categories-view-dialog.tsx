@@ -142,7 +142,9 @@ function CategoryViewContent({ currentRow }: { currentRow: Category }) {
       </div>
 
       <div className="space-y-2">
-        <div className="text-sm font-medium text-muted-foreground">Featured</div>
+        <div className="text-sm font-medium text-muted-foreground">
+          Featured
+        </div>
         <Badge variant="outline" className="capitalize">
           {currentRow.featured ? "Yes" : "No"}
         </Badge>

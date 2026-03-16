@@ -3,14 +3,8 @@ import { z } from "zod"
 import { CSV_MIME_TYPES, MAX_FILE_SIZE } from "@/lib/utils/mimes"
 
 export const unitSchema = z.object({
-  name: z
-    .string()
-    .min(1, "Unit name is required")
-    .max(255, "Name is too long"),
-  code: z
-    .string()
-    .min(1, "Unit code is required")
-    .max(50, "Code is too long"),
+  name: z.string().min(1, "Unit name is required").max(255, "Name is too long"),
+  code: z.string().min(1, "Unit code is required").max(50, "Code is too long"),
   base_unit: z.number().nullable().optional(),
   operator: z.string().nullable().optional(),
   operation_value: z.number().nullable().optional(),
@@ -55,4 +49,3 @@ export const unitExportSchema = z
 export type UnitFormData = z.infer<typeof unitSchema>
 export type UnitImportFormData = z.infer<typeof unitImportSchema>
 export type UnitExportFormData = z.infer<typeof unitExportSchema>
-

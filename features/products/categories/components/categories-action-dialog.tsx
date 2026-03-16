@@ -511,9 +511,7 @@ function CategoryForm({
                 {...field}
                 value={field.value ?? ""}
                 onChange={(e) =>
-                  field.onChange(
-                    e.target.value ? Number(e.target.value) : null
-                  )
+                  field.onChange(e.target.value ? Number(e.target.value) : null)
                 }
               />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}

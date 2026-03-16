@@ -152,7 +152,13 @@ interface ProductFormProps {
   currentRow?: Product
 }
 
-function ProductForm({ form, onSubmit, id, isEdit, currentRow }: ProductFormProps) {
+function ProductForm({
+  form,
+  onSubmit,
+  id,
+  isEdit,
+  currentRow,
+}: ProductFormProps) {
   const [isSlugDisabled, setIsSlugDisabled] = React.useState(true)
 
   return (

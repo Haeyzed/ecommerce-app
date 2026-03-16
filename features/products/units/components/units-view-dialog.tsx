@@ -65,7 +65,9 @@ function UnitViewContent({ currentRow }: { currentRow: Unit }) {
       </div>
 
       <div className="space-y-2">
-        <div className="text-sm font-medium text-muted-foreground">Base Unit</div>
+        <div className="text-sm font-medium text-muted-foreground">
+          Base Unit
+        </div>
         <div className="text-sm">
           {currentRow.base_unit_relation?.name ?? "None (Base Unit)"}
         </div>
@@ -74,11 +76,15 @@ function UnitViewContent({ currentRow }: { currentRow: Unit }) {
       {(currentRow.operator || currentRow.operation_value) && (
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <div className="text-sm font-medium text-muted-foreground">Operator</div>
+            <div className="text-sm font-medium text-muted-foreground">
+              Operator
+            </div>
             <div className="text-sm">{currentRow.operator ?? "—"}</div>
           </div>
           <div className="space-y-2">
-            <div className="text-sm font-medium text-muted-foreground">Value</div>
+            <div className="text-sm font-medium text-muted-foreground">
+              Value
+            </div>
             <div className="text-sm">{currentRow.operation_value ?? "—"}</div>
           </div>
         </div>
@@ -95,15 +101,23 @@ function UnitViewContent({ currentRow }: { currentRow: Unit }) {
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Created At</div>
+          <div className="text-sm font-medium text-muted-foreground">
+            Created At
+          </div>
           <div className="text-sm text-muted-foreground">
-            {currentRow.created_at ? new Date(currentRow.created_at).toLocaleString() : "N/A"}
+            {currentRow.created_at
+              ? new Date(currentRow.created_at).toLocaleString()
+              : "N/A"}
           </div>
         </div>
         <div className="space-y-2">
-          <div className="text-sm font-medium text-muted-foreground">Updated At</div>
+          <div className="text-sm font-medium text-muted-foreground">
+            Updated At
+          </div>
           <div className="text-sm text-muted-foreground">
-            {currentRow.updated_at ? new Date(currentRow.updated_at).toLocaleString() : "N/A"}
+            {currentRow.updated_at
+              ? new Date(currentRow.updated_at).toLocaleString()
+              : "N/A"}
           </div>
         </div>
       </div>

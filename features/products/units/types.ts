@@ -47,4 +47,3 @@ export interface UnitOption {
   value: number
   label: string
 }
-

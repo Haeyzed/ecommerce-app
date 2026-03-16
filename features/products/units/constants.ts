@@ -32,4 +32,3 @@ export const DEFAULT_EXPORT_COLUMNS = [
   "code",
   "is_active",
 ] as const
-

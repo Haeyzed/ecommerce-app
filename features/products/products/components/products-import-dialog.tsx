@@ -77,7 +77,7 @@ export function ProductsImportDialog({
     defaultValues: { file: [] },
   })
 
-  const handlePreview = (data: BrandImportFormData) => {
+  const handlePreview = (data: ProductImportFormData) => {
     const file = data.file[0]
     if (file) {
       const reader = new FileReader()

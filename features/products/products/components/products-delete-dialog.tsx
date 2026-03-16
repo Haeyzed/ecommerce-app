@@ -51,8 +51,8 @@ export function ProductsDeleteDialog({
             Are you sure you want to delete{" "}
             <span className="font-bold">{currentRow.name}</span>?
             <br />
-            This action will permanently remove the product from the system. This
-            cannot be undone.
+            This action will permanently remove the product from the system.
+            This cannot be undone.
           </p>
 
           <Label className="my-2 block">
