@@ -29,27 +29,33 @@ const BASE_PATH = "/categories"
 
 function toApiParams(
   params?: CategoryListParams
-): Record<string, string | number | null | undefined> {
+): Record<string, string | number | boolean | null | undefined> {
   if (!params) return {}
-  const out: Record<string, string | number | null | undefined> = {}
+  const out: Record<string, string | number | boolean | null | undefined> = {}
   if (params.page != null) out.page = params.page
   if (params.per_page != null) out.per_page = params.per_page
   if (params.search != null && params.search !== "") out.search = params.search
+
   if (params.is_active != null && params.is_active.length > 0) {
-    out.is_active = params.is_active.join(",")
+    out.is_active = params.is_active.map((v) => (v ? 1 : 0)).join(",")
   }
   if (params.featured != null && params.featured.length > 0) {
-    out.featured = params.featured.join(",")
+    out.featured = params.featured.map((v) => (v ? 1 : 0)).join(",")
   }
   if (params.is_sync_disable != null && params.is_sync_disable.length > 0) {
-    out.is_sync_disable = params.is_sync_disable.join(",")
+    out.is_sync_disable = params.is_sync_disable.map((v) => (v ? 1 : 0)).join(",")
   }
-  if (params.parent_id !== undefined)
-    out.parent_id = params.parent_id === "" ? "" : params.parent_id
-  if (params.start_date != null && params.start_date !== "")
+
+  if (params.parent_id !== undefined && params.parent_id !== "") {
+    out.parent_id = params.parent_id
+  }
+  if (params.start_date != null && params.start_date !== "") {
     out.start_date = params.start_date
-  if (params.end_date != null && params.end_date !== "")
+  }
+  if (params.end_date != null && params.end_date !== "") {
     out.end_date = params.end_date
+  }
+
   return out
 }
 
@@ -58,10 +64,9 @@ export function useCategories(params?: CategoryListParams) {
   const query = useQuery({
     queryKey: categoryKeys.list(params),
     queryFn: async () => {
-      const response = await api.get<Category[]>(BASE_PATH, {
+      return await api.get<Category[]>(BASE_PATH, {
         params: toApiParams(params),
       })
-      return response
     },
     enabled: sessionStatus !== "loading",
   })
@@ -123,12 +128,15 @@ export function useCreateCategory() {
   return useMutation({
     mutationFn: async (data: CategoryFormData) => {
       const formData = new FormData()
+
+      // Basic Info
       formData.append("name", data.name)
       if (data.slug) formData.append("slug", data.slug)
       if (data.short_description)
         formData.append("short_description", data.short_description)
       if (data.page_title) formData.append("page_title", data.page_title)
 
+      // Images & Icons (Allowing Blobs from cropper)
       if (data.image_path && data.image_path.length > 0) {
         formData.append("image_path", data.image_path[0] as Blob)
       }
@@ -136,19 +144,20 @@ export function useCreateCategory() {
         formData.append("icon", data.icon[0] as Blob)
       }
 
+      // Relationships & Flags
       if (data.parent_id != null)
         formData.append("parent_id", String(data.parent_id))
-      if (data.is_active !== undefined)
-        formData.append("is_active", data.is_active ? "1" : "0")
-      if (data.featured !== undefined)
-        formData.append("featured", data.featured ? "1" : "0")
-      if (data.is_sync_disable !== undefined)
-        formData.append("is_sync_disable", data.is_sync_disable ? "1" : "0")
       if (data.woocommerce_category_id != null)
         formData.append(
           "woocommerce_category_id",
           String(data.woocommerce_category_id)
         )
+      if (data.is_active !== undefined && data.is_active !== null)
+        formData.append("is_active", data.is_active ? "1" : "0")
+      if (data.featured !== undefined && data.featured !== null)
+        formData.append("featured", data.featured ? "1" : "0")
+      if (data.is_sync_disable !== undefined && data.is_sync_disable !== null)
+        formData.append("is_sync_disable", data.is_sync_disable ? "1" : "0")
 
       const response = await api.post<{ data: Category }>(BASE_PATH, formData)
       if (!response.success) {
@@ -162,10 +171,10 @@ export function useCreateCategory() {
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() })
       queryClient.invalidateQueries({ queryKey: categoryKeys.options() })
-      toast.success(response.message)
+      toast.success(response.message || "Category created successfully")
     },
     onError: (error: Error) => {
-      toast.error(error.message)
+      toast.error(error.message || "Failed to create category")
     },
   })
 }
@@ -176,14 +185,16 @@ export function useUpdateCategory() {
 
   return useMutation({
     mutationFn: async ({
-      id,
-      data,
-    }: {
+                         id,
+                         data,
+                       }: {
       id: number
       data: Partial<CategoryFormData>
     }) => {
       const formData = new FormData()
       formData.append("_method", "PUT")
+
+      // Basic Info
       if (data.name) formData.append("name", data.name)
       if (data.slug !== undefined) formData.append("slug", data.slug ?? "")
       if (data.short_description !== undefined)
@@ -191,7 +202,7 @@ export function useUpdateCategory() {
       if (data.page_title !== undefined)
         formData.append("page_title", data.page_title ?? "")
 
-      // Fix: Removed strict instanceof File check so Blobs from cropper work
+      // Images & Icons
       if (data.image_path && data.image_path.length > 0) {
         formData.append("image_path", data.image_path[0] as Blob)
       }
@@ -199,17 +210,12 @@ export function useUpdateCategory() {
         formData.append("icon", data.icon[0] as Blob)
       }
 
+      // Relationships & Flags
       if (data.parent_id !== undefined)
         formData.append(
           "parent_id",
           data.parent_id != null ? String(data.parent_id) : ""
         )
-      if (data.is_active !== undefined)
-        formData.append("is_active", data.is_active ? "1" : "0")
-      if (data.featured !== undefined)
-        formData.append("featured", data.featured ? "1" : "0")
-      if (data.is_sync_disable !== undefined)
-        formData.append("is_sync_disable", data.is_sync_disable ? "1" : "0")
       if (data.woocommerce_category_id !== undefined)
         formData.append(
           "woocommerce_category_id",
@@ -217,6 +223,12 @@ export function useUpdateCategory() {
             ? String(data.woocommerce_category_id)
             : ""
         )
+      if (data.is_active !== undefined && data.is_active !== null)
+        formData.append("is_active", data.is_active ? "1" : "0")
+      if (data.featured !== undefined && data.featured !== null)
+        formData.append("featured", data.featured ? "1" : "0")
+      if (data.is_sync_disable !== undefined && data.is_sync_disable !== null)
+        formData.append("is_sync_disable", data.is_sync_disable ? "1" : "0")
 
       const response = await api.post<{ data: Category }>(
         `${BASE_PATH}/${id}`,
@@ -234,10 +246,10 @@ export function useUpdateCategory() {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() })
       queryClient.invalidateQueries({ queryKey: categoryKeys.detail(data.id) })
       queryClient.invalidateQueries({ queryKey: categoryKeys.options() })
-      toast.success(data.message)
+      toast.success(data.message || "Category updated successfully")
     },
     onError: (error: Error) => {
-      toast.error(error.message)
+      toast.error(error.message || "Failed to update category")
     },
   })
 }
@@ -248,9 +260,9 @@ export function useReparentCategory() {
 
   return useMutation({
     mutationFn: async ({
-      id,
-      parent_id,
-    }: {
+                         id,
+                         parent_id,
+                       }: {
       id: number
       parent_id: number | null
     }) => {
@@ -265,10 +277,10 @@ export function useReparentCategory() {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() })
       queryClient.invalidateQueries({ queryKey: categoryKeys.detail(data.id) })
       queryClient.invalidateQueries({ queryKey: categoryKeys.options() })
-      toast.success(data.message)
+      toast.success(data.message || "Category reparented successfully")
     },
     onError: (error: Error) => {
-      toast.error(error.message)
+      toast.error(error.message || "Failed to reparent category")
     },
   })
 }
@@ -286,10 +298,10 @@ export function useDeleteCategory() {
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() })
       queryClient.invalidateQueries({ queryKey: categoryKeys.options() })
-      toast.success(response.message)
+      toast.success(response.message || "Category deleted successfully")
     },
     onError: (error: Error) => {
-      toast.error(error.message)
+      toast.error(error.message || "Failed to delete category")
     },
   })
 }
@@ -463,10 +475,10 @@ export function useCategoriesImport() {
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: categoryKeys.lists() })
       queryClient.invalidateQueries({ queryKey: categoryKeys.options() })
-      toast.success(response.message)
+      toast.success(response.message || "Import successful")
     },
     onError: (error: Error) => {
-      toast.error(error.message)
+      toast.error(error.message || "Failed to import")
     },
   })
 }
@@ -481,8 +493,7 @@ export function useCategoriesExport() {
         const url = window.URL.createObjectURL(blob)
         const link = document.createElement("a")
         link.href = url
-        const fileName = `categories-export-${Date.now()}.${params.format === "pdf" ? "pdf" : "xlsx"}`
-        link.download = fileName
+        link.download = `categories-export-${Date.now()}.${params.format === "pdf" ? "pdf" : "xlsx"}`
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)

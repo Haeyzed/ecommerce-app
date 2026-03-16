@@ -35,13 +35,18 @@ function toApiParams(
   if (params.page != null) out.page = params.page
   if (params.per_page != null) out.per_page = params.per_page
   if (params.search != null && params.search !== "") out.search = params.search
+
   if (params.is_active != null && params.is_active.length > 0) {
-    out.is_active = params.is_active.join(",")
+    out.is_active = params.is_active.map((v) => (v ? 1 : 0)).join(",")
   }
-  if (params.start_date != null && params.start_date !== "")
+
+  if (params.start_date != null && params.start_date !== "") {
     out.start_date = params.start_date
-  if (params.end_date != null && params.end_date !== "")
+  }
+  if (params.end_date != null && params.end_date !== "") {
     out.end_date = params.end_date
+  }
+
   return out
 }
 
@@ -50,10 +55,9 @@ export function useUnits(params?: UnitListParams) {
   const query = useQuery({
     queryKey: unitKeys.list(params),
     queryFn: async () => {
-      const response = await api.get<Unit[]>(BASE_PATH, {
+      return await api.get<Unit[]>(BASE_PATH, {
         params: toApiParams(params),
       })
-      return response
     },
     enabled: sessionStatus !== "loading",
   })
@@ -112,15 +116,22 @@ export function useCreateUnit() {
 
   return useMutation({
     mutationFn: async (data: UnitFormData) => {
-      const payload: Record<string, unknown> = {
-        name: data.name,
-        code: data.code,
-        is_active: data.is_active ?? true,
-      }
-      if (data.base_unit !== undefined) payload.base_unit = data.base_unit
-      if (data.operator !== undefined) payload.operator = data.operator
-      if (data.operation_value !== undefined)
+      const payload: Record<string, unknown> = {}
+
+      // Basic Info
+      payload.name = data.name
+      payload.code = data.code
+
+      // Configuration
+      if (data.base_unit !== undefined && data.base_unit !== null)
+        payload.base_unit = data.base_unit
+      if (data.operator !== undefined && data.operator !== null)
+        payload.operator = data.operator
+      if (data.operation_value !== undefined && data.operation_value !== null)
         payload.operation_value = data.operation_value
+
+      // Flags
+      payload.is_active = data.is_active !== undefined ? data.is_active : true
 
       const response = await api.post<{ data: Unit }>(BASE_PATH, payload)
       if (!response.success) {
@@ -133,10 +144,10 @@ export function useCreateUnit() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: unitKeys.lists() })
-      toast.success(response.message)
+      toast.success(response.message || "Unit created successfully")
     },
     onError: (error: Error) => {
-      toast.error(error.message)
+      toast.error(error.message || "Failed to create unit")
     },
   })
 }
@@ -147,19 +158,25 @@ export function useUpdateUnit() {
 
   return useMutation({
     mutationFn: async ({
-      id,
-      data,
-    }: {
+                         id,
+                         data,
+                       }: {
       id: number
       data: Partial<UnitFormData>
     }) => {
       const payload: Record<string, unknown> = {}
+
+      // Basic Info
       if (data.name !== undefined) payload.name = data.name
       if (data.code !== undefined) payload.code = data.code
+
+      // Configuration
       if (data.base_unit !== undefined) payload.base_unit = data.base_unit
       if (data.operator !== undefined) payload.operator = data.operator
       if (data.operation_value !== undefined)
         payload.operation_value = data.operation_value
+
+      // Flags
       if (data.is_active !== undefined) payload.is_active = data.is_active
 
       const response = await api.put<{ data: Unit }>(
@@ -172,14 +189,15 @@ export function useUpdateUnit() {
         }
         throw new Error(response.message)
       }
-      return response
+      return { id, message: response.message }
     },
-    onSuccess: (response) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: unitKeys.lists() })
-      toast.success(response.message)
+      queryClient.invalidateQueries({ queryKey: unitKeys.detail(data.id) })
+      toast.success(data.message || "Unit updated successfully")
     },
     onError: (error: Error) => {
-      toast.error(error.message)
+      toast.error(error.message || "Failed to update unit")
     },
   })
 }
@@ -190,18 +208,16 @@ export function useDeleteUnit() {
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const response = await api.delete(`${BASE_PATH}/${id}`)
-      if (!response.success) {
-        throw new Error(response.message)
-      }
+      const response = await api.delete<unknown>(`${BASE_PATH}/${id}`)
+      if (!response.success) throw new Error(response.message)
       return response
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: unitKeys.lists() })
-      toast.success(response.message)
+      toast.success(response.message || "Unit deleted successfully")
     },
     onError: (error: Error) => {
-      toast.error(error.message)
+      toast.error(error.message || "Failed to delete unit")
     },
   })
 }
@@ -212,10 +228,11 @@ export function useBulkDeleteUnits() {
 
   return useMutation({
     mutationFn: async (ids: number[]) => {
-      const response = await api.post(`${BASE_PATH}/bulk-destroy`, { ids })
-      if (!response.success) {
-        throw new Error(response.message)
-      }
+      const response = await api.post<{ deleted_count: number }>(
+        `${BASE_PATH}/bulk-destroy`,
+        { ids }
+      )
+      if (!response.success) throw new Error(response.message)
       return response
     },
     onSuccess: (response) => {
@@ -282,16 +299,16 @@ export function useUnitsImport() {
     mutationFn: async (file: File) => {
       const form = new FormData()
       form.append("file", file)
-      const response = await api.post(`${BASE_PATH}/import`, form)
+      const response = await api.post<unknown>(`${BASE_PATH}/import`, form)
       if (!response.success) throw new Error(response.message)
       return response
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: unitKeys.lists() })
-      toast.success(response.message)
+      toast.success(response.message || "Import successful")
     },
     onError: (error: Error) => {
-      toast.error(error.message)
+      toast.error(error.message || "Failed to import")
     },
   })
 }
@@ -306,17 +323,14 @@ export function useUnitsExport() {
         const url = window.URL.createObjectURL(blob)
         const link = document.createElement("a")
         link.href = url
-        const fileName = `units-export-${Date.now()}.${
-          params.format === "pdf" ? "pdf" : "xlsx"
-        }`
-        link.download = fileName
+        link.download = `units-export-${Date.now()}.${params.format === "pdf" ? "pdf" : "xlsx"}`
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
         window.URL.revokeObjectURL(url)
         return { message: "Export downloaded successfully" }
       }
-      const response = await api.post(`${BASE_PATH}/export`, params)
+      const response = await api.post<unknown>(`${BASE_PATH}/export`, params)
       if (!response.success) throw new Error(response.message)
       return response
     },

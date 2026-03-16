@@ -34,13 +34,18 @@ function toApiParams(
   if (params.page != null) out.page = params.page
   if (params.per_page != null) out.per_page = params.per_page
   if (params.search != null && params.search !== "") out.search = params.search
+
   if (params.is_active != null && params.is_active.length > 0) {
-    out.is_active = params.is_active.join(",")
+    out.is_active = params.is_active.map((v) => (v ? 1 : 0)).join(",")
   }
-  if (params.start_date != null && params.start_date !== "")
+
+  if (params.start_date != null && params.start_date !== "") {
     out.start_date = params.start_date
-  if (params.end_date != null && params.end_date !== "")
+  }
+  if (params.end_date != null && params.end_date !== "") {
     out.end_date = params.end_date
+  }
+
   return out
 }
 
@@ -49,10 +54,9 @@ export function useBrands(params?: BrandListParams) {
   const query = useQuery({
     queryKey: brandKeys.list(params),
     queryFn: async () => {
-      const response = await api.get<Brand[]>(BASE_PATH, {
+      return await api.get<Brand[]>(BASE_PATH, {
         params: toApiParams(params),
       })
-      return response
     },
     enabled: sessionStatus !== "loading",
   })
@@ -100,16 +104,22 @@ export function useCreateBrand() {
   return useMutation({
     mutationFn: async (data: BrandFormData) => {
       const formData = new FormData()
+
+      // Basic Info
       formData.append("name", data.name)
       if (data.slug) formData.append("slug", data.slug)
       if (data.short_description)
         formData.append("short_description", data.short_description)
-      if (data.page_title) formData.append("page_title", data.page_title ?? "")
+      if (data.page_title) formData.append("page_title", data.page_title)
+
+      // Image
       const imageFile = data.image_path?.[0]
       if (imageFile instanceof File) {
         formData.append("image_path", imageFile)
       }
-      if (data.is_active !== undefined)
+
+      // Flags
+      if (data.is_active !== undefined && data.is_active !== null)
         formData.append("is_active", data.is_active ? "1" : "0")
 
       const response = await api.post<{ data: Brand }>(BASE_PATH, formData)
@@ -123,10 +133,10 @@ export function useCreateBrand() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: brandKeys.lists() })
-      toast.success(response.message)
+      toast.success(response.message || "Brand created successfully")
     },
     onError: (error: Error) => {
-      toast.error(error.message)
+      toast.error(error.message || "Failed to create brand")
     },
   })
 }
@@ -137,25 +147,31 @@ export function useUpdateBrand() {
 
   return useMutation({
     mutationFn: async ({
-      id,
-      data,
-    }: {
+                         id,
+                         data,
+                       }: {
       id: number
       data: Partial<BrandFormData>
     }) => {
       const formData = new FormData()
       formData.append("_method", "PUT")
+
+      // Basic Info
       if (data.name) formData.append("name", data.name)
       if (data.slug !== undefined) formData.append("slug", data.slug ?? "")
       if (data.short_description !== undefined)
         formData.append("short_description", data.short_description ?? "")
       if (data.page_title !== undefined)
         formData.append("page_title", data.page_title ?? "")
+
+      // Image
       const imageFile = data.image_path?.[0]
       if (imageFile instanceof File) {
         formData.append("image_path", imageFile)
       }
-      if (data.is_active !== undefined)
+
+      // Flags
+      if (data.is_active !== undefined && data.is_active !== null)
         formData.append("is_active", data.is_active ? "1" : "0")
 
       const response = await api.post<{ data: Brand }>(
@@ -173,10 +189,10 @@ export function useUpdateBrand() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: brandKeys.lists() })
       queryClient.invalidateQueries({ queryKey: brandKeys.detail(data.id) })
-      toast.success(data.message)
+      toast.success(data.message || "Brand updated successfully")
     },
     onError: (error: Error) => {
-      toast.error(error.message)
+      toast.error(error.message || "Failed to update brand")
     },
   })
 }
@@ -193,10 +209,10 @@ export function useDeleteBrand() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: brandKeys.lists() })
-      toast.success(response.message)
+      toast.success(response.message || "Brand deleted successfully")
     },
     onError: (error: Error) => {
-      toast.error(error.message)
+      toast.error(error.message || "Failed to delete brand")
     },
   })
 }
@@ -280,10 +296,10 @@ export function useBrandsImport() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: brandKeys.lists() })
-      toast.success(response.message)
+      toast.success(response.message || "Import successful")
     },
     onError: (error: Error) => {
-      toast.error(error.message)
+      toast.error(error.message || "Failed to import")
     },
   })
 }
@@ -298,8 +314,7 @@ export function useBrandsExport() {
         const url = window.URL.createObjectURL(blob)
         const link = document.createElement("a")
         link.href = url
-        const fileName = `brands-export-${Date.now()}.${params.format === "pdf" ? "pdf" : "xlsx"}`
-        link.download = fileName
+        link.download = `brands-export-${Date.now()}.${params.format === "pdf" ? "pdf" : "xlsx"}`
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
