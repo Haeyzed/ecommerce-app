@@ -27,9 +27,12 @@ export function ProductsTable() {
     "is_active",
     parseAsArrayOf(parseAsString).withDefault([])
   )
+  const [featured] = useQueryState(
+    "featured", 
+    parseAsArrayOf(parseAsString).withDefault([])
+  )
   const [startDate] = useQueryState("start_date", parseAsString.withDefault(""))
   const [endDate] = useQueryState("end_date", parseAsString.withDefault(""))
-
   const apiParams = React.useMemo(
     () => ({
       page,
@@ -39,10 +42,14 @@ export function ProductsTable() {
         isActive.length > 0
           ? (isActive.map((v) => (v === "1" ? 1 : 0)) as (0 | 1)[])
           : undefined,
+      featured:
+        featured.length > 0
+          ? (featured.map((v) => (v === "1" ? 1 : 0)) as (0 | 1)[])
+          : undefined,
       start_date: startDate === "" ? undefined : startDate,
       end_date: endDate === "" ? undefined : endDate,
     }),
-    [page, perPage, name, isActive, startDate, endDate]
+    [page, perPage, name, isActive, featured, startDate, endDate]
   )
 
   const {
