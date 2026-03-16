@@ -114,6 +114,13 @@ function ProductViewContent({ currentRow }: { currentRow: Product }) {
         </Badge>
       </div>
 
+      <div className="space-y-2">
+        <div className="text-sm font-medium text-muted-foreground">Featured</div>
+        <Badge variant="outline" className="capitalize">
+          {currentRow.featured ? "Yes" : "No"}
+        </Badge>
+      </div>
+
       <Separator />
 
       <div className="grid grid-cols-2 gap-4">

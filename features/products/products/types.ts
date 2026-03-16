@@ -4,6 +4,7 @@ export interface Product {
   slug: string | null
   short_description: string | null
   is_active: boolean
+  featured: boolean
   image_path?: string | null
   image_url?: string | null
   page_title?: string | null
@@ -18,6 +19,7 @@ export interface ProductFormData {
   page_title?: string | null
   image_path?: File[] | null
   is_active?: boolean | null
+  featured?: boolean | null
 }
 
 export type ProductListParams = {
@@ -25,6 +27,7 @@ export type ProductListParams = {
   per_page?: number
   search?: string
   is_active?: (0 | 1)[]
+  featured?: (0 | 1)[]
   start_date?: string
   end_date?: string
 }

@@ -14,6 +14,11 @@ export const isActiveOptions = [
   { label: "Inactive", value: "0", icon: XCircle },
 ] as const
 
+export const featuredOptions = [
+  { label: "Yes", value: "1", icon: CheckCircle },
+  { label: "No", value: "0", icon: XCircle },
+] as const
+
 export const PRODUCT_EXPORT_COLUMNS = [
   { value: "id", label: "ID" },
   { value: "name", label: "Name" },

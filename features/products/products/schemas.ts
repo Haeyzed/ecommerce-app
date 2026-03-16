@@ -22,6 +22,7 @@ export const productSchema = z.object({
     .max(1, "Please select only one image")
     .optional(),
   is_active: z.boolean().nullable().optional(),
+  featured: z.boolean().nullable().optional(),
 })
 
 export const productImportSchema = z.object({

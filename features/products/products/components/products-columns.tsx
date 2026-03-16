@@ -13,6 +13,7 @@ import type { Product } from "../types"
 import { ProductsDataTableRowActions } from "./products-data-table-row-actions"
 import { LongText } from "@/components/long-text"
 import { ImageZoomCell } from "@/components/image-zoom"
+import { featuredOptions } from "../constants"
 
 export const productsColumns: ColumnDef<Product>[] = [
   {
@@ -121,6 +122,33 @@ export const productsColumns: ColumnDef<Product>[] = [
       label: "Status",
       variant: "multiSelect",
       options: isActiveOptions.map((o) => ({
+        label: o.label,
+        value: o.value,
+        icon: o.icon,
+      })),
+    },
+    enableColumnFilter: true,
+  },
+  {
+    id: "featured",
+    accessorKey: "featured",
+    header: ({ column }: { column: Column<Product, unknown> }) => (
+      <DataTableColumnHeader column={column} label="Featured" />
+    ),
+    cell: ({ cell }) => {
+      const featured = cell.getValue<Product["featured"]>()
+      const Icon = featured ? CheckCircle2 : XCircle
+      return (
+        <Badge variant="outline" className="capitalize">
+          <Icon className="size-3.5" />
+          {featured ? "Yes" : "No"}
+        </Badge>
+      )
+    },
+    meta: {
+      label: "Featured",
+      variant: "multiSelect",
+      options: featuredOptions.map((o) => ({
         label: o.label,
         value: o.value,
         icon: o.icon,

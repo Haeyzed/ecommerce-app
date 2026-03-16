@@ -71,6 +71,7 @@ export function ProductsActionDialog({
             short_description: currentRow.short_description ?? "",
             page_title: currentRow.page_title ?? "",
             is_active: currentRow.is_active,
+            featured: currentRow.featured,
             image_path: [],
           }
         : {
@@ -79,6 +80,7 @@ export function ProductsActionDialog({
             short_description: "",
             page_title: "",
             is_active: true,
+            featured: false,
             image_path: [],
           },
   })
@@ -332,6 +334,22 @@ function ProductForm({
               </div>
               <Switch
                 id="product-active"
+                checked={!!field.value}
+                onCheckedChange={field.onChange}
+              />
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="featured"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={!!fieldState.error}>
+              <FieldLabel htmlFor="product-featured">Featured</FieldLabel>
+              <Switch
+                id="product-featured"
                 checked={!!field.value}
                 onCheckedChange={field.onChange}
               />
