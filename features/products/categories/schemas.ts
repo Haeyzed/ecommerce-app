@@ -17,7 +17,7 @@ export const categorySchema = z.object({
     .max(255, "Page title is too long")
     .nullable()
     .optional(),
-  image: z
+  image_path: z
     .array(z.instanceof(File))
     .max(1, "Please select only one image")
     .optional(),

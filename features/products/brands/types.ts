@@ -4,7 +4,7 @@ export interface Brand {
   slug: string | null
   short_description: string | null
   is_active: boolean
-  image?: string | null
+  image_path?: string | null
   image_url?: string | null
   page_title?: string | null
   created_at?: string | null
@@ -16,7 +16,7 @@ export interface BrandFormData {
   slug?: string | null
   short_description?: string | null
   page_title?: string | null
-  image?: File[] | null
+  image_path?: File[] | null
   is_active?: boolean | null
 }
 

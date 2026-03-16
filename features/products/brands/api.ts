@@ -105,9 +105,9 @@ export function useCreateBrand() {
       if (data.short_description)
         formData.append("short_description", data.short_description)
       if (data.page_title) formData.append("page_title", data.page_title ?? "")
-      const imageFile = data.image?.[0]
+      const imageFile = data.image_path?.[0]
       if (imageFile instanceof File) {
-        formData.append("image", imageFile)
+        formData.append("image_path", imageFile)
       }
       if (data.is_active !== undefined)
         formData.append("is_active", data.is_active ? "1" : "0")
@@ -151,9 +151,9 @@ export function useUpdateBrand() {
         formData.append("short_description", data.short_description ?? "")
       if (data.page_title !== undefined)
         formData.append("page_title", data.page_title ?? "")
-      const imageFile = data.image?.[0]
+      const imageFile = data.image_path?.[0]
       if (imageFile instanceof File) {
-        formData.append("image", imageFile)
+        formData.append("image_path", imageFile)
       }
       if (data.is_active !== undefined)
         formData.append("is_active", data.is_active ? "1" : "0")

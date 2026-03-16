@@ -71,7 +71,7 @@ export function BrandsActionDialog({
             short_description: currentRow.short_description ?? "",
             page_title: currentRow.page_title ?? "",
             is_active: currentRow.is_active,
-            image: [],
+            image_path: [],
           }
         : {
             name: "",
@@ -79,7 +79,7 @@ export function BrandsActionDialog({
             short_description: "",
             page_title: "",
             is_active: true,
-            image: [],
+            image_path: [],
           },
   })
 
@@ -258,7 +258,7 @@ function BrandForm({ form, onSubmit, id, isEdit, currentRow }: BrandFormProps) {
 
         <Controller
           control={form.control}
-          name="image"
+          name="image_path"
           render={({ field: { value, onChange }, fieldState }) => {
             const existingImageUrl =
               isEdit && currentRow?.image_url ? currentRow.image_url : null
@@ -298,7 +298,7 @@ function BrandForm({ form, onSubmit, id, isEdit, currentRow }: BrandFormProps) {
                   maxFiles={1}
                   maxSize={5 * 1024 * 1024}
                   onFileReject={(_file, message) => {
-                    form.setError("image", { message })
+                    form.setError("image_path", { message })
                   }}
                 />
                 <FieldDescription>

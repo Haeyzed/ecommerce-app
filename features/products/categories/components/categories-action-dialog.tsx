@@ -90,7 +90,7 @@ export function CategoriesActionDialog({
             featured: currentRow.featured,
             is_sync_disable: currentRow.is_sync_disable,
             woocommerce_category_id: currentRow.woocommerce_category_id,
-            image: [],
+            image_path: [],
             icon: [],
           }
         : {
@@ -103,7 +103,7 @@ export function CategoriesActionDialog({
             featured: false,
             is_sync_disable: false,
             woocommerce_category_id: null,
-            image: [],
+            image_path: [],
             icon: [],
           },
   })
@@ -339,7 +339,7 @@ function CategoryForm({
 
         <Controller
           control={form.control}
-          name="image"
+          name="image_path"
           render={({ field: { value, onChange }, fieldState }) => {
             const existingImageUrl =
               isEdit && currentRow?.image_url ? currentRow.image_url : null
@@ -383,7 +383,7 @@ function CategoryForm({
                   maxFiles={1}
                   maxSize={5 * 1024 * 1024}
                   onFileReject={(_file, message) => {
-                    form.setError("image", { message })
+                    form.setError("image_path", { message })
                   }}
                 />
                 <FieldDescription>

@@ -32,7 +32,7 @@ export interface CategoryFormData {
   slug?: string | null
   short_description?: string | null
   page_title?: string | null
-  image?: File[] | null
+  image_path?: File[] | null
   icon?: File[] | null
   parent_id?: number | null
   is_active?: boolean | null
