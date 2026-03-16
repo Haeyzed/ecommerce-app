@@ -11,6 +11,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { PERMISSIONS as BRAND_PERMISSIONS } from "@/features/products/brands/constants"
 import { PERMISSIONS as CATEGORY_PERMISSIONS } from "@/features/products/categories/constants"
 import type { SidebarData } from "../types"
+import { PERMISSIONS as UNIT_PERMISSIONS } from "@/features/products/units/constants"
 
 const DashboardIcon = () => (
   <HugeiconsIcon icon={Home01Icon} className="size-4" />
@@ -57,6 +58,11 @@ export const sidebarData: Omit<SidebarData, "user"> = {
               title: "Brands",
               url: "/products/brands",
               permissions: [BRAND_PERMISSIONS.view],
+            },
+            {
+              title: "Units",
+              url: "/products/units",
+              permissions: [UNIT_PERMISSIONS.view],
             },
             { title: "Add product", url: "/products/new" },
           ],
