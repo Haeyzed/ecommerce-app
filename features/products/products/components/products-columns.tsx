@@ -7,13 +7,22 @@ import { DataTableColumnHeader } from "@/components/data-table/data-table-column
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel"
 
-import { isActiveOptions } from "../constants"
+import {
+  isActiveOptions,
+  featuredOptions,
+  productTypeOptions,
+} from "../constants"
 import type { Product } from "../types"
+import { ProductTypeEnum } from "../types"
 import { ProductsDataTableRowActions } from "./products-data-table-row-actions"
 import { LongText } from "@/components/long-text"
 import { ImageZoomCell } from "@/components/image-zoom"
-import { featuredOptions } from "../constants"
 
 export const productsColumns: ColumnDef<Product>[] = [
   {
@@ -52,23 +61,40 @@ export const productsColumns: ColumnDef<Product>[] = [
     header: ({ column }: { column: Column<Product, unknown> }) => (
       <DataTableColumnHeader column={column} label="Name" />
     ),
-    cell: ({ row }) => (
-      <div className="flex items-center gap-3 ps-3">
-        {row.original.image_url ? (
-          <ImageZoomCell src={row.original.image_url} alt={row.original.name} />
-        ) : (
-          <div className="flex size-10 items-center justify-center rounded-md bg-muted">
-            <span className="text-xs font-medium">
-              {row.original.name.charAt(0).toUpperCase()}
-            </span>
+    cell: ({ row }) => {
+      const images = row.original.image_urls || []
+
+      return (
+        <div className="flex items-center gap-3 ps-3">
+          {images.length > 1 ? (
+            <Carousel className="w-10 h-10 cursor-grab active:cursor-grabbing">
+              <CarouselContent className="ml-0">
+                {images.map((url, i) => (
+                  <CarouselItem key={i} className="pl-0 basis-full">
+                    <ImageZoomCell src={url} alt={`${row.original.name} ${i + 1}`} />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
+          ) : images.length === 1 ? (
+            <ImageZoomCell src={images[0]} alt={row.original.name} />
+          ) : (
+            <div className="flex size-10 items-center justify-center rounded-md bg-muted shrink-0">
+              <span className="text-xs font-medium">
+                {row.original.name.charAt(0).toUpperCase()}
+              </span>
+            </div>
+          )}
+          <div className="flex flex-col">
+            <LongText className="max-w-36 font-medium">{row.original.name}</LongText>
+            <span className="text-[10px] text-muted-foreground">{row.original.code}</span>
           </div>
-        )}
-        <LongText className="max-w-36">{row.original.name}</LongText>
-      </div>
-    ),
+        </div>
+      )
+    },
     meta: {
       label: "Name",
-      placeholder: "Search names...",
+      placeholder: "Search names & codes...",
       variant: "text",
       icon: Text,
       className: cn(
@@ -79,26 +105,35 @@ export const productsColumns: ColumnDef<Product>[] = [
     enableColumnFilter: true,
   },
   {
-    id: "slug",
-    accessorKey: "slug",
+    id: "type",
+    accessorKey: "type",
     header: ({ column }: { column: Column<Product, unknown> }) => (
-      <DataTableColumnHeader column={column} label="Slug" />
+      <DataTableColumnHeader column={column} label="Type" />
     ),
     cell: ({ cell }) => (
-      <div className="text-muted-foreground">
-        {cell.getValue<Product["slug"]>() ?? "-"}
-      </div>
+      <Badge variant="secondary" className="capitalize">
+        {cell.getValue<Product["type"]>() ?? "-"}
+      </Badge>
     ),
+    meta: {
+      label: "Type",
+      variant: "multiSelect",
+      options: productTypeOptions.map((o) => ({
+        label: o.label,
+        value: o.value,
+      })),
+    },
+    enableColumnFilter: true,
   },
   {
-    id: "short_description",
-    accessorKey: "short_description",
+    id: "price",
+    accessorKey: "price",
     header: ({ column }: { column: Column<Product, unknown> }) => (
-      <DataTableColumnHeader column={column} label="Description" />
+      <DataTableColumnHeader column={column} label="Price" />
     ),
     cell: ({ cell }) => (
-      <div className="max-w-[200px] truncate text-muted-foreground">
-        {cell.getValue<Product["short_description"]>() ?? "-"}
+      <div className="font-medium">
+        ${Number(cell.getValue<Product["price"]>()).toFixed(2)}
       </div>
     ),
   },
@@ -113,7 +148,7 @@ export const productsColumns: ColumnDef<Product>[] = [
       const Icon = isActive ? CheckCircle2 : XCircle
       return (
         <Badge variant="outline" className="capitalize">
-          <Icon className="size-3.5" />
+          <Icon className="size-3.5 mr-1" />
           {isActive ? "Active" : "Inactive"}
         </Badge>
       )
@@ -140,7 +175,7 @@ export const productsColumns: ColumnDef<Product>[] = [
       const Icon = featured ? CheckCircle2 : XCircle
       return (
         <Badge variant="outline" className="capitalize">
-          <Icon className="size-3.5" />
+          <Icon className="size-3.5 mr-1" />
           {featured ? "Yes" : "No"}
         </Badge>
       )

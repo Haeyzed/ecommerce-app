@@ -1,4 +1,5 @@
 import { CheckCircle, XCircle } from "lucide-react"
+import { ProductTypeEnum } from "./types"
 
 export const PERMISSIONS = {
   create: "create products",
@@ -17,6 +18,13 @@ export const isActiveOptions = [
 export const featuredOptions = [
   { label: "Yes", value: "1", icon: CheckCircle },
   { label: "No", value: "0", icon: XCircle },
+] as const
+
+export const productTypeOptions = [
+  { label: "Standard", value: ProductTypeEnum.Standard },
+  { label: "Combo", value: ProductTypeEnum.Combo },
+  { label: "Digital", value: ProductTypeEnum.Digital },
+  { label: "Service", value: ProductTypeEnum.Service },
 ] as const
 
 export const PRODUCT_EXPORT_COLUMNS = [

@@ -28,28 +28,53 @@ export function ProductsTable() {
     parseAsArrayOf(parseAsString).withDefault([])
   )
   const [featured] = useQueryState(
-    "featured", 
+    "featured",
     parseAsArrayOf(parseAsString).withDefault([])
   )
+  const [type] = useQueryState(
+    "type",
+    parseAsArrayOf(parseAsString).withDefault([])
+  )
+  const [brandId] = useQueryState(
+    "brand_id",
+    parseAsArrayOf(parseAsString).withDefault([])
+  )
+  const [categoryId] = useQueryState(
+    "category_id",
+    parseAsArrayOf(parseAsString).withDefault([])
+  )
+  const [unitId] = useQueryState(
+    "unit_id",
+    parseAsArrayOf(parseAsString).withDefault([])
+  )
+  const [stockFilter] = useQueryState("stock_filter", parseAsString.withDefault(""))
+
   const [startDate] = useQueryState("start_date", parseAsString.withDefault(""))
   const [endDate] = useQueryState("end_date", parseAsString.withDefault(""))
+
   const apiParams = React.useMemo(
     () => ({
       page,
       per_page: perPage,
       search: name === "" ? undefined : name,
+      // Convert the string "1" to true, and "0" to false
       is_active:
         isActive.length > 0
-          ? (isActive.map((v) => (v === "1" ? 1 : 0)) as (0 | 1)[])
+          ? isActive.map((v) => v === "1")
           : undefined,
       featured:
         featured.length > 0
-          ? (featured.map((v) => (v === "1" ? 1 : 0)) as (0 | 1)[])
+          ? featured.map((v) => v === "1")
           : undefined,
+      type: type.length > 0 ? type : undefined,
+      brand_id: brandId.length > 0 ? brandId.map(Number) : undefined,
+      category_id: categoryId.length > 0 ? categoryId.map(Number) : undefined,
+      unit_id: unitId.length > 0 ? unitId.map(Number) : undefined,
+      stock_filter: stockFilter === "" ? undefined : (stockFilter as any),
       start_date: startDate === "" ? undefined : startDate,
       end_date: endDate === "" ? undefined : endDate,
     }),
-    [page, perPage, name, isActive, featured, startDate, endDate]
+    [page, perPage, name, isActive, featured, type, brandId, categoryId, unitId, stockFilter, startDate, endDate]
   )
 
   const {
@@ -85,7 +110,7 @@ export function ProductsTable() {
           columnCount={productsColumns.length}
           rowCount={10}
           filterCount={4}
-          cellWidths={["2rem", "auto", "8rem", "12rem", "6rem", "7rem", "2rem"]}
+          cellWidths={["2rem", "auto", "8rem", "8rem", "6rem", "7rem", "2rem"]}
         />
       </div>
     )
