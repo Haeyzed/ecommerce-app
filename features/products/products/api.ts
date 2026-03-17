@@ -24,7 +24,7 @@ export const productKeys = {
   options: () => [...productKeys.all, "options"] as const,
 }
 
-const BASE_PATH = "/api/products"
+const BASE_PATH = "/products"
 
 function toApiParams(
   params?: ProductListParams
