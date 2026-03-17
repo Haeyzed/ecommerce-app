@@ -1,7 +1,7 @@
 "use client"
 
 import type { Column, ColumnDef } from "@tanstack/react-table"
-import { CheckCircle2, MoreHorizontal, Text, XCircle } from "lucide-react"
+import { CheckCircle2, Text, XCircle } from "lucide-react"
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { Badge } from "@/components/ui/badge"
@@ -18,13 +18,22 @@ import {
   featuredOptions,
   productTypeOptions,
 } from "../constants"
-import type { Product } from "../types"
-import { ProductTypeEnum } from "../types"
+import type { Product, ProductOption } from "../types"
 import { ProductsDataTableRowActions } from "./products-data-table-row-actions"
 import { LongText } from "@/components/long-text"
 import { ImageZoomCell } from "@/components/image-zoom"
 
-export const productsColumns: ColumnDef<Product>[] = [
+interface GetProductsColumnsProps {
+  categories?: ProductOption[]
+  brands?: ProductOption[]
+  units?: ProductOption[]
+}
+
+export const getProductsColumns = ({
+                                     categories = [],
+                                     brands = [],
+                                     units = [],
+                                   }: GetProductsColumnsProps = {}): ColumnDef<Product>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -122,6 +131,54 @@ export const productsColumns: ColumnDef<Product>[] = [
         label: o.label,
         value: o.value,
       })),
+    },
+    enableColumnFilter: true,
+  },
+  {
+    id: "category_id",
+    accessorFn: (row) => row.category?.id,
+    header: ({ column }) => <DataTableColumnHeader column={column} label="Category" />,
+    cell: ({ row }) => (
+      <div className="text-muted-foreground truncate max-w-24">
+        {row.original.category?.name ?? "-"}
+      </div>
+    ),
+    meta: {
+      label: "Category",
+      variant: "multiSelect",
+      options: categories.map((c) => ({ label: c.label, value: String(c.value) })),
+    },
+    enableColumnFilter: true,
+  },
+  {
+    id: "brand_id",
+    accessorFn: (row) => row.brand?.id,
+    header: ({ column }) => <DataTableColumnHeader column={column} label="Brand" />,
+    cell: ({ row }) => (
+      <div className="text-muted-foreground truncate max-w-24">
+        {row.original.brand?.name ?? "-"}
+      </div>
+    ),
+    meta: {
+      label: "Brand",
+      variant: "multiSelect",
+      options: brands.map((b) => ({ label: b.label, value: String(b.value) })),
+    },
+    enableColumnFilter: true,
+  },
+  {
+    id: "unit_id",
+    accessorFn: (row) => row.unit?.id,
+    header: ({ column }) => <DataTableColumnHeader column={column} label="Unit" />,
+    cell: ({ row }) => (
+      <div className="text-muted-foreground truncate max-w-20">
+        {row.original.unit?.name ?? "-"}
+      </div>
+    ),
+    meta: {
+      label: "Unit",
+      variant: "multiSelect",
+      options: units.map((u) => ({ label: u.label, value: String(u.value) })),
     },
     enableColumnFilter: true,
   },

@@ -3,7 +3,7 @@
 import * as React from "react"
 import Image from "next/image"
 import { Controller, type UseFormReturn } from "react-hook-form"
-import { CloudUpload, X } from "lucide-react"
+import { CloudUpload, UploadIcon, X } from 'lucide-react'
 import { useTheme } from "next-themes"
 
 import { cn } from "@/lib/utils"
@@ -359,18 +359,15 @@ export function ProductForm({
                       form.setError("file_path", { message })
                     }}
                   >
-                    <FileUploadDropzone className="flex flex-col items-center justify-center gap-2 border-dashed p-8 text-center">
-                      <div className="flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-                        <CloudUpload className="size-5" />
-                      </div>
-                      <div className="text-sm">
-                        <span className="font-semibold text-primary">Click to upload</span> or drag and drop
-                        <br />
-                        <span className="text-muted-foreground">Document (max 10MB)</span>
-                      </div>
+                    <FileUploadDropzone className="flex flex-row flex-wrap border-dotted text-center">
+                      <UploadIcon className="size-4" />
+                      Drag and drop or{" "}
                       <FileUploadTrigger asChild>
-                        <Button variant="link" size="sm" className="sr-only">Select file</Button>
-                      </FileUploadTrigger>
+                        <Button variant="link" size="sm" className="p-0">
+                          choose file
+                        </Button>
+                      </FileUploadTrigger>{" "}
+                      to upload
                     </FileUploadDropzone>
                     <FileUploadList>
                       {(value ? [value] : []).map((file, index) => (

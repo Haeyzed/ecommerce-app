@@ -16,8 +16,11 @@ import { useDataTable } from "@/hooks/use-data-table"
 import { useProducts } from "../api"
 import type { Product } from "../types"
 
-import { productsColumns } from "./products-columns"
+import { getProductsColumns } from "./products-columns"
 import { ProductsDataTableBulkActions } from "./products-data-table-bulk-actions"
+import { useOptionCategories } from "../../categories"
+import { useOptionBrands } from "../../brands"
+import { useOptionUnits } from "../../units"
 
 export function ProductsTable() {
   const [page] = useQueryState("page", parseAsInteger.withDefault(1))
@@ -57,7 +60,6 @@ export function ProductsTable() {
       page,
       per_page: perPage,
       search: name === "" ? undefined : name,
-      // Convert the string "1" to true, and "0" to false
       is_active:
         isActive.length > 0
           ? isActive.map((v) => v === "1")
@@ -85,6 +87,11 @@ export function ProductsTable() {
     error,
   } = useProducts(apiParams)
 
+  // Fetch the options for the column filters
+  const { data: categories = [] } = useOptionCategories()
+  const { data: brands = [] } = useOptionBrands()
+  const { data: units = [] } = useOptionUnits()
+
   const products: Product[] = apiData ?? []
 
   const pageCount = React.useMemo(() => {
@@ -92,9 +99,14 @@ export function ProductsTable() {
     return meta.last_page
   }, [meta])
 
+  const columns = React.useMemo(
+    () => getProductsColumns({ categories, brands, units }),
+    [categories, brands, units]
+  )
+
   const { table } = useDataTable<Product>({
     data: products,
-    columns: productsColumns,
+    columns,
     pageCount,
     initialState: {
       sorting: [{ id: "name", desc: false }],
@@ -107,10 +119,10 @@ export function ProductsTable() {
     return (
       <div className="data-table-container">
         <DataTableSkeleton
-          columnCount={productsColumns.length}
+          columnCount={columns.length}
           rowCount={10}
-          filterCount={4}
-          cellWidths={["2rem", "auto", "8rem", "8rem", "6rem", "7rem", "2rem"]}
+          filterCount={6}
+          cellWidths={["2rem", "auto", "6rem", "6rem", "6rem", "6rem", "6rem", "6rem", "6rem", "7rem", "2rem"]}
         />
       </div>
     )
