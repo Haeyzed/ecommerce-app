@@ -181,7 +181,7 @@ function NumberFieldInput({
   onFocus,
   onChange,
   ...props
-}: Omit<React.ComponentProps<"input">, "value" | "defaultValue" | "onChange">) {
+}: Omit<React.ComponentProps<"input">, "value" | "defaultValue">) {
   const { id, value, min, max, step, disabled, formatOptions, setValue } =
     useNumberFieldContext("NumberFieldInput")
   const [focused, setFocused] = React.useState(false)

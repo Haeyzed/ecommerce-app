@@ -350,16 +350,18 @@ export function ProductForm({
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
                 <FieldLabel>Alert Quantity</FieldLabel>
-                <Input
-                  type="number"
-                  {...field}
-                  value={field.value ?? ""}
-                  onChange={(e) =>
-                    field.onChange(
-                      e.target.value === "" ? null : Number(e.target.value)
-                    )
-                  }
-                />
+                <NumberField
+                  min={0}
+                  step={1}
+                  value={Number(field.value ?? 0)}
+                  onValueChange={(value) => field.onChange(value)}
+                >
+                  <NumberFieldContent>
+                    <NumberFieldDecrement />
+                    <NumberFieldInput />
+                    <NumberFieldIncrement />
+                  </NumberFieldContent>
+                </NumberField>
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -695,13 +697,18 @@ export function ProductForm({
                         control={form.control}
                         name={`combo_products.${index}.price`}
                         render={({ field }) => (
-                          <Input
-                            className="h-8"
-                            type="number"
-                            step="0.01"
-                            {...field}
-                            onChange={(e) => field.onChange(Number(e.target.value || 0))}
-                          />
+                          <NumberField
+                            min={0}
+                            step={0.01}
+                            value={Number(field.value ?? 0)}
+                            onValueChange={(value) => field.onChange(value)}
+                          >
+                            <NumberFieldContent>
+                              <NumberFieldDecrement />
+                              <NumberFieldInput />
+                              <NumberFieldIncrement />
+                            </NumberFieldContent>
+                          </NumberField>
                         )}
                       />
                     </TableCell>
@@ -710,17 +717,18 @@ export function ProductForm({
                         control={form.control}
                         name={`combo_products.${index}.wastage_percent`}
                         render={({ field }) => (
-                          <Input
-                            className="h-8"
-                            type="number"
-                            step="0.01"
-                            value={field.value ?? ""}
-                            onChange={(e) =>
-                              field.onChange(
-                                e.target.value === "" ? null : Number(e.target.value)
-                              )
-                            }
-                          />
+                          <NumberField
+                            min={0}
+                            step={0.01}
+                            value={Number(field.value ?? 0)}
+                            onValueChange={(value) => field.onChange(value)}
+                          >
+                            <NumberFieldContent>
+                              <NumberFieldDecrement />
+                              <NumberFieldInput />
+                              <NumberFieldIncrement />
+                            </NumberFieldContent>
+                          </NumberField>
                         )}
                       />
                     </TableCell>
@@ -920,14 +928,18 @@ export function ProductForm({
                     render={({ field, fieldState }) => (
                       <Field data-invalid={!!fieldState.error}>
                         <FieldLabel>Quantity</FieldLabel>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(Number(e.target.value || 0))
-                          }
-                        />
+                        <NumberField
+                          min={0}
+                          step={0.01}
+                          value={Number(field.value ?? 0)}
+                          onValueChange={(value) => field.onChange(value)}
+                        >
+                          <NumberFieldContent>
+                            <NumberFieldDecrement />
+                            <NumberFieldInput />
+                            <NumberFieldIncrement />
+                          </NumberFieldContent>
+                        </NumberField>
                         {fieldState.error && <FieldError errors={[fieldState.error]} />}
                       </Field>
                     )}
