@@ -1,4 +1,132 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PropertiesComponent">{}</component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4f72ffac-da5e-4d38-a7e9-a51cd8e8951b" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/app/(dashboard)/settings/warehouses/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/api.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-action-dialog.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-client.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-columns.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-data-table-bulk-actions.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-data-table-row-actions.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-delete-dialog.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-dialogs.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-export-dialog.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-import-dialog.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-import-preview-dialog.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-multi-delete-dialog.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-primary-buttons.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-provider.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-table.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-view-dialog.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/constants.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/schemas.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(dashboard)/products/brands/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(dashboard)/products/brands/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(dashboard)/products/categories/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(dashboard)/products/categories/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(dashboard)/products/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(dashboard)/products/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(dashboard)/products/units/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(dashboard)/products/units/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/layout/data/sidebar-data.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/layout/data/sidebar-data.tsx" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="466" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript JSX File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="3B59neX0hOj1NsaKaWtYTp6lYKZ" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "main",
+    "javascript.preferred.runtime.type.id": "node",
+    "js.debugger.nextJs.config.created.client": "true",
+    "js.debugger.nextJs.config.created.server": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "C:/dev/ecommerce-application",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.github.blarc.ai.commits.intellij.plugin.settings.AppSettingsConfigurable",
+    "to.speed.mode.migration.done": "true",
+    "ts.external.directory.path": "C:\\dev\\ecommerce-application\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager" selected="npm.Next.js: server-side">
+    <configuration name="Next.js: debug client-side" type="JavascriptDebugType" uri="http://localhost:3000/">
+      <method v="2" />
+    </configuration>
+    <configuration name="Next.js: server-side" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-WS-253.31033.133" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4f72ffac-da5e-4d38-a7e9-a51cd8e8951b" name="Changes" comment="" />
+      <created>1773768233599</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1773768233599</updated>
+      <workItem from="1773768238844" duration="396000" />
+      <workItem from="1773769300287" duration="1429000" />
+      <workItem from="1773771808415" duration="2628000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
 </project>
