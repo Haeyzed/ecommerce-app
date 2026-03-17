@@ -315,6 +315,7 @@ export function ProductForm({
                     accept="image/*"
                     maxFiles={10}
                     maxSize={5 * 1024 * 1024}
+                    multiple={true}
                     onFileReject={(_file, message) => {
                       form.setError("image_paths", { message })
                     }}
