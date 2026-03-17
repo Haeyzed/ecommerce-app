@@ -334,7 +334,7 @@ export function ProductForm({
                     value={value ?? []}
                     onValueChange={onChange}
                     accept="image/*"
-                    maxFiles={1}
+                    maxFiles={10}
                     maxSize={5 * 1024 * 1024}
                     onFileReject={(_file, message) => {
                       form.setError("image_paths", { message })
