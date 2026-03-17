@@ -2,6 +2,7 @@
 
 import type { Row } from "@tanstack/react-table"
 import { MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -24,6 +25,7 @@ interface ProductsDataTableRowActionsProps {
 export function ProductsDataTableRowActions({
   row,
 }: ProductsDataTableRowActionsProps) {
+  const router = useRouter()
   const { setOpen, setCurrentRow } = useProductsContext()
   const { data: session } = useAuthSession()
   const userPermissions =
@@ -66,8 +68,7 @@ export function ProductsDataTableRowActions({
           <>
             <DropdownMenuItem
               onClick={() => {
-                setCurrentRow(row.original)
-                setOpen("edit")
+                router.push(`/products/${row.original.id}/edit`)
               }}
             >
               Edit

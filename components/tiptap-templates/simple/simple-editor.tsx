@@ -75,6 +75,11 @@ import "@/components/tiptap-templates/simple/simple-editor.scss"
 
 import content from "@/components/tiptap-templates/simple/data/content.json"
 
+interface SimpleEditorProps {
+  value?: string
+  onChange?: (value: string) => void
+}
+
 const MainToolbarContent = ({
   onHighlighterClick,
   onLinkClick,
@@ -183,15 +188,19 @@ const MobileToolbarContent = ({
   </>
 )
 
-export function SimpleEditor() {
+export function SimpleEditor({ value, onChange }: SimpleEditorProps) {
   const isMobile = useIsBreakpoint()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
     "main"
   )
+  const [overlayHeight, setOverlayHeight] = useState(0)
   const toolbarRef = useRef<HTMLDivElement>(null)
 
   const editor = useEditor({
+    onUpdate: ({ editor }) => {
+      onChange?.(editor.getHTML())
+    },
     immediatelyRender: false,
     editorProps: {
       attributes: {
@@ -228,19 +237,34 @@ export function SimpleEditor() {
         onError: (error) => console.error("Upload failed:", error),
       }),
     ],
-    content,
-  })
-
-  const rect = useCursorVisibility({
-    editor,
-    overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
+    content: value ?? content,
   })
 
   useEffect(() => {
-    if (!isMobile && mobileView !== "main") {
-      setMobileView("main")
+    if (!editor) return
+    if (value === undefined) return
+    const currentHtml = editor.getHTML()
+    if (value !== currentHtml) {
+      editor.commands.setContent(value || "", false)
     }
-  }, [isMobile, mobileView])
+  }, [editor, value])
+
+  useEffect(() => {
+    const readHeight = () => {
+      const h = toolbarRef.current?.getBoundingClientRect().height ?? 0
+      setOverlayHeight(h)
+    }
+    readHeight()
+    window.addEventListener("resize", readHeight)
+    return () => window.removeEventListener("resize", readHeight)
+  }, [])
+
+  const rect = useCursorVisibility({
+    editor,
+    overlayHeight,
+  })
+
+  const activeMobileView = isMobile ? mobileView : "main"
 
   return (
     <div className="simple-editor-wrapper">
@@ -255,7 +279,7 @@ export function SimpleEditor() {
               : {}),
           }}
         >
-          {mobileView === "main" ? (
+          {activeMobileView === "main" ? (
             <MainToolbarContent
               onHighlighterClick={() => setMobileView("highlighter")}
               onLinkClick={() => setMobileView("link")}
@@ -263,7 +287,7 @@ export function SimpleEditor() {
             />
           ) : (
             <MobileToolbarContent
-              type={mobileView === "highlighter" ? "highlighter" : "link"}
+              type={activeMobileView === "highlighter" ? "highlighter" : "link"}
               onBack={() => setMobileView("main")}
             />
           )}

@@ -50,6 +50,17 @@ export interface ProductVariant {
   position: number
 }
 
+export interface ProductWarehousePrice {
+  warehouse_id: number
+  price: number | null
+}
+
+export interface ProductWarehouseStock {
+  warehouse_id: number
+  warehouse_name?: string | null
+  qty: number
+}
+
 // Main Product Type
 export interface Product {
   id: number
@@ -120,6 +131,8 @@ export interface Product {
   production_cost: number | null
   is_recipe: boolean
   variants?: ProductVariant[] | null
+  warehouse_prices?: ProductWarehousePrice[] | null
+  product_warehouses?: ProductWarehouseStock[] | null
   created_at: string | null
   updated_at: string | null
 }
@@ -150,6 +163,7 @@ export interface ProductFormData {
   tax_method?: TaxMethodEnum | null
   image_paths?: File[] | null
   file_path?: File | null
+  deleted_image_paths?: string[] | null
   is_embeded?: boolean | null
   is_batch?: boolean | null
   is_variant?: boolean | null
@@ -203,7 +217,10 @@ export interface WarehousePriceInput {
 
 export interface ComboProductInput {
   product_id: number
+  product_name?: string
+  product_code?: string
   variant_id?: number | null
+  variant_name?: string | null
   qty: number
   price: number
   wastage_percent?: number | null
@@ -233,6 +250,27 @@ export type ProductListParams = {
 export interface ProductOption {
   value: number
   label: string
+}
+
+export interface UnitSaleOption {
+  id: number
+  name: string
+  code: string
+  operator?: string | null
+  operation_value?: number | null
+}
+
+export interface ComboSearchItem {
+  id: number
+  name: string
+  code: string
+  price?: number | null
+  unit?: Unit | null
+  productVariants?: Array<{
+    variant_id: number
+    item_code: string
+    qty?: number | null
+  }>
 }
 
 export type ProductExportParams = {

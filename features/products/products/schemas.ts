@@ -1,11 +1,9 @@
 import { z } from "zod"
 import { ProductTypeEnum, TaxMethodEnum } from "./types"
 
-const MAX_IMAGE_SIZE = 5120 * 1024 // 5MB
-const MAX_FILE_SIZE = 10240 * 1024 // 10MB
-const ALLOWED_IMAGE_MIMES = ["image/jpeg", "image/png", "image/webp"]
+const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/
 
-export const productSchema = z.object({
+export const productBaseSchema = z.object({
   // Basic Info
   name: z
     .string()
@@ -16,9 +14,7 @@ export const productSchema = z.object({
     .min(1, "Product code is required")
     .max(255, "Code must be less than 255 characters"),
   type: z.nativeEnum(ProductTypeEnum),
-  barcode_symbology: z
-    .string()
-    .min(1, "Barcode symbology is required"),
+  barcode_symbology: z.string().min(1, "Barcode symbology is required"),
 
   // Relationships
   brand_id: z.number().nullable().optional(),
@@ -33,19 +29,14 @@ export const productSchema = z.object({
     .min(0, "Cost must be greater than or equal to 0")
     .nullable()
     .optional(),
-  price: z
-    .number()
-    .min(0, "Price must be greater than or equal to 0"),
+  price: z.number().min(0, "Price must be greater than or equal to 0"),
   wholesale_price: z
     .number()
     .min(0, "Wholesale price must be greater than or equal to 0")
     .nullable()
     .optional(),
   profit_margin: z.number().nullable().optional(),
-  profit_margin_type: z
-    .enum(["percentage", "fixed"])
-    .nullable()
-    .optional(),
+  profit_margin_type: z.enum(["percentage", "fixed"]).nullable().optional(),
 
   // Inventory
   alert_quantity: z.number().nullable().optional(),
@@ -53,24 +44,26 @@ export const productSchema = z.object({
 
   // Promotion
   promotion: z.boolean().nullable().optional(),
-  promotion_price: z
-    .number()
-    .min(0)
+  promotion_price: z.number().min(0).nullable().optional(),
+  starting_date: z
+    .string()
+    .regex(ISO_DATE_REGEX, "Invalid date format")
     .nullable()
     .optional(),
-  starting_date: z.string().date().nullable().optional(),
-  last_date: z.string().date().nullable().optional(),
+  last_date: z
+    .string()
+    .regex(ISO_DATE_REGEX, "Invalid date format")
+    .nullable()
+    .optional(),
 
   // Tax
   tax_id: z.number().nullable().optional(),
   tax_method: z.nativeEnum(TaxMethodEnum).nullable().optional(),
 
   // Images & Files
-  image_paths: z
-    .array(z.instanceof(File))
-    .max(10, "Maximum 10 images allowed")
-    .optional(),
+  image_paths: z.array(z.instanceof(File)).max(10, "Maximum 10 images allowed").optional(),
   file_path: z.instanceof(File).nullable().optional(),
+  deleted_image_paths: z.array(z.string()).nullable().optional(),
 
   // Flags
   is_embeded: z.boolean().nullable().optional(),
@@ -145,7 +138,10 @@ export const productSchema = z.object({
     .array(
       z.object({
         product_id: z.number(),
+        product_name: z.string().optional(),
+        product_code: z.string().optional(),
         variant_id: z.number().nullable().optional(),
+        variant_name: z.string().nullable().optional(),
         qty: z.number(),
         price: z.number(),
         wastage_percent: z.number().nullable().optional(),
@@ -167,15 +163,94 @@ export const productSchema = z.object({
     .optional(),
 })
 
-export const productUpdateSchema = productSchema.partial().refine(
-  (data) => {
-    if (data.starting_date && data.last_date) {
-      return new Date(data.starting_date) <= new Date(data.last_date)
+const productRefinement = (
+  data: z.infer<typeof productBaseSchema>,
+  ctx: z.RefinementCtx
+) => {
+  if (data.promotion) {
+    if (data.promotion_price == null) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["promotion_price"],
+        message: "Promotion price is required when promotion is enabled",
+      })
     }
-    return true
-  },
-  { message: "Start date must be before or equal to end date" }
-)
+    if (!data.starting_date) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["starting_date"],
+        message: "Starting date is required when promotion is enabled",
+      })
+    }
+    if (!data.last_date) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["last_date"],
+        message: "Last date is required when promotion is enabled",
+      })
+    }
+  }
+
+  if (data.starting_date && data.last_date) {
+    const start = new Date(data.starting_date)
+    const end = new Date(data.last_date)
+    if (!Number.isNaN(start.getTime()) && !Number.isNaN(end.getTime()) && start > end) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["last_date"],
+        message: "End date must be after or equal to start date",
+      })
+    }
+  }
+
+  if (
+    data.type === ProductTypeEnum.Combo &&
+    (!data.combo_products || data.combo_products.length === 0)
+  ) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["combo_products"],
+      message: "At least one combo product is required for combo type",
+    })
+  }
+
+  if (
+    data.is_diff_price &&
+    (!data.warehouse_prices || data.warehouse_prices.length === 0)
+  ) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["warehouse_prices"],
+      message: "Add at least one warehouse price when different pricing is enabled",
+    })
+  }
+
+  if (data.is_variant && (!data.variants || data.variants.length === 0)) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["variants"],
+      message: "Add at least one variant when variant tracking is enabled",
+    })
+  }
+}
+
+export const productSchema = productBaseSchema.superRefine(productRefinement)
+
+export const productUpdateSchema = productBaseSchema
+  .partial()
+  .superRefine((data, ctx) => {
+    if (
+      data.starting_date &&
+      data.last_date &&
+      new Date(data.starting_date) > new Date(data.last_date)
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["last_date"],
+        message: "Start date must be before or equal to end date",
+      })
+    }
+  })
 
 export const productFilterSchema = z.object({
   search: z.string().optional(),

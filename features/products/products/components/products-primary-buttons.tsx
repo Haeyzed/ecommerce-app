@@ -1,6 +1,7 @@
 "use client"
 
 import { Download, Plus, Upload } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { useAuthSession } from "@/features/auth/api"
 
@@ -8,6 +9,7 @@ import { PERMISSIONS } from "../constants"
 import { useProductsContext } from "./products-provider"
 
 export function ProductsPrimaryButtons() {
+  const router = useRouter()
   const { setOpen } = useProductsContext()
   const { data: session } = useAuthSession()
   const userPermissions =
@@ -47,7 +49,7 @@ export function ProductsPrimaryButtons() {
       {canCreate && (
         <Button
           size="sm"
-          onClick={() => setOpen("add")}
+          onClick={() => router.push("/products/create")}
           aria-label="Add Product"
         >
           <Plus className="size-4" />

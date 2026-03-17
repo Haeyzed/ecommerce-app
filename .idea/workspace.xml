@@ -4,34 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4f72ffac-da5e-4d38-a7e9-a51cd8e8951b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/(dashboard)/settings/warehouses/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/api.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-action-dialog.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-client.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-columns.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-data-table-bulk-actions.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-data-table-row-actions.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-delete-dialog.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-dialogs.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-export-dialog.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-import-dialog.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-import-preview-dialog.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-multi-delete-dialog.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-primary-buttons.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-provider.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-table.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/components/warehouses-view-dialog.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/constants.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/schemas.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/features/settings/warehouses/types.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(dashboard)/products/brands/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(dashboard)/products/brands/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(dashboard)/products/categories/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(dashboard)/products/categories/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(dashboard)/products/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(dashboard)/products/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(dashboard)/products/units/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(dashboard)/products/units/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/layout/data/sidebar-data.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/layout/data/sidebar-data.tsx" afterDir="false" />
+    <list default="true" id="4f72ffac-da5e-4d38-a7e9-a51cd8e8951b" name="Changes" comment="Added Warehouse">
+      <change beforePath="$PROJECT_DIR$/features/products/brands/components/brands-columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/features/products/brands/components/brands-columns.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/products/brands/components/brands-data-table-row-actions.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/features/products/brands/components/brands-data-table-row-actions.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/products/brands/components/brands-delete-dialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/features/products/brands/components/brands-delete-dialog.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/products/brands/components/brands-multi-delete-dialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/features/products/brands/components/brands-multi-delete-dialog.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/products/brands/components/brands-table.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/features/products/brands/components/brands-table.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/products/brands/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/features/products/brands/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/products/categories/api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/features/products/categories/api.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/products/categories/components/categories-columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/features/products/categories/components/categories-columns.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/products/categories/components/categories-data-table-bulk-actions.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/features/products/categories/components/categories-data-table-bulk-actions.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/products/categories/components/categories-multi-delete-dialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/features/products/categories/components/categories-multi-delete-dialog.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/products/categories/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/features/products/categories/index.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,6 +55,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
@@ -122,11 +107,26 @@
       <updated>1773768233599</updated>
       <workItem from="1773768238844" duration="396000" />
       <workItem from="1773769300287" duration="1429000" />
-      <workItem from="1773771808415" duration="2628000" />
+      <workItem from="1773771808415" duration="4049000" />
     </task>
+    <task id="LOCAL-00001" summary="Added Warehouse">
+      <option name="closed" value="true" />
+      <created>1773775306393</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1773775306393</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="{&#13;&#10;  &quot;error&quot;: {&#13;&#10;    &quot;message&quot;: &quot;This model's maximum context length is 16385 tokens. However, your messages resulted in 24582 tokens. Please reduce the length of the messages.&quot;,&#13;&#10;    &quot;type&quot;: &quot;invalid_request_error&quot;,&#13;&#10;    &quot;param&quot;: &quot;messages&quot;,&#13;&#10;    &quot;code&quot;: &quot;context_length_exceeded&quot;&#13;&#10;  }&#13;&#10;}" />
+    <MESSAGE value="{&#13;&#10;  &quot;error&quot;: {&#13;&#10;    &quot;message&quot;: &quot;This model's maximum context length is 16385 tokens. However, your messages resulted in 24660 tokens. Please reduce the length of the messages.&quot;,&#13;&#10;    &quot;type&quot;: &quot;invalid_request_error&quot;,&#13;&#10;    &quot;param&quot;: &quot;messages&quot;,&#13;&#10;    &quot;code&quot;: &quot;context_length_exceeded&quot;&#13;&#10;  }&#13;&#10;}" />
+    <MESSAGE value="Added Warehouse" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added Warehouse" />
   </component>
 </project>

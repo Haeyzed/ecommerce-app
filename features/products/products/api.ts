@@ -7,11 +7,13 @@ import { useApiClient } from "@/lib/api/use-api-client"
 import { ValidationError } from "@/lib/api/errors"
 
 import type {
+  ComboSearchItem,
   Product,
   ProductExportParams,
   ProductFormData,
   ProductListParams,
   ProductOption,
+  UnitSaleOption,
 } from "./types"
 
 export const productKeys = {
@@ -22,6 +24,12 @@ export const productKeys = {
   details: () => [...productKeys.all, "detail"] as const,
   detail: (id: number) => [...productKeys.details(), id] as const,
   options: () => [...productKeys.all, "options"] as const,
+  search: (keyword: string, warehouseId?: number) =>
+    [...productKeys.all, "search", keyword, warehouseId] as const,
+  comboSearch: (keyword: string, warehouseId?: number) =>
+    [...productKeys.all, "combo-search", keyword, warehouseId] as const,
+  saleUnits: (unitId: number) => [...productKeys.all, "sale-units", unitId] as const,
+  generatedCode: () => [...productKeys.all, "generated-code"] as const,
 }
 
 const BASE_PATH = "/products"
@@ -87,6 +95,65 @@ export function useOptionProducts() {
       return response.data ?? []
     },
     enabled: sessionStatus !== "loading",
+  })
+}
+
+export function useGenerateProductCode() {
+  const { api, sessionStatus } = useApiClient()
+  return useQuery({
+    queryKey: productKeys.generatedCode(),
+    queryFn: async () => {
+      const response = await api.get<{ code: string }>(`${BASE_PATH}/generate-code`)
+      return response.data?.code ?? ""
+    },
+    enabled: sessionStatus !== "loading",
+  })
+}
+
+export function useProductSearch(keyword: string, warehouseId?: number) {
+  const { api, sessionStatus } = useApiClient()
+  return useQuery({
+    queryKey: productKeys.search(keyword, warehouseId),
+    queryFn: async () => {
+      const response = await api.get<ComboSearchItem[]>(`${BASE_PATH}/search`, {
+        params: {
+          keyword,
+          warehouse_id: warehouseId,
+        },
+      })
+      return response.data ?? []
+    },
+    enabled: sessionStatus !== "loading" && keyword.trim().length > 1,
+  })
+}
+
+export function useComboProductSearch(keyword: string, warehouseId?: number) {
+  const { api, sessionStatus } = useApiClient()
+  return useQuery({
+    queryKey: productKeys.comboSearch(keyword, warehouseId),
+    queryFn: async () => {
+      const response = await api.get<ComboSearchItem[]>(`${BASE_PATH}/combo-search`, {
+        params: {
+          keyword,
+          warehouse_id: warehouseId,
+        },
+      })
+      return response.data ?? []
+    },
+    enabled: sessionStatus !== "loading" && keyword.trim().length > 1,
+  })
+}
+
+export function useSaleUnits(unitId: number | null) {
+  const { api, sessionStatus } = useApiClient()
+  return useQuery({
+    queryKey: productKeys.saleUnits(unitId ?? 0),
+    queryFn: async () => {
+      if (!unitId) return []
+      const response = await api.get<UnitSaleOption[]>(`${BASE_PATH}/sale-unit/${unitId}`)
+      return response.data ?? []
+    },
+    enabled: !!unitId && sessionStatus !== "loading",
   })
 }
 
@@ -221,11 +288,20 @@ export function useCreateProduct() {
 
       // Related Data
       if (data.related_products?.length) {
-        formData.append("related_products", data.related_products.join(","))
+        data.related_products.forEach((id, index) => {
+          formData.append(`related_products[${index}]`, String(id))
+        })
       }
-      if (data.extras?.length) formData.append("extras", data.extras.join(","))
-      if (data.menu_type?.length)
-        formData.append("menu_type", data.menu_type.join(","))
+      if (data.extras?.length) {
+        data.extras.forEach((item, index) => {
+          formData.append(`extras[${index}]`, item)
+        })
+      }
+      if (data.menu_type?.length) {
+        data.menu_type.forEach((item, index) => {
+          formData.append(`menu_type[${index}]`, item)
+        })
+      }
       if (data.kitchen_id)
         formData.append("kitchen_id", String(data.kitchen_id))
 
@@ -256,11 +332,11 @@ export function useCreateProduct() {
         formData.append("guarantee_type", data.guarantee_type)
 
       // Combo & Production
-      if (data.wastage_percent)
+      if (data.wastage_percent !== undefined && data.wastage_percent !== null)
         formData.append("wastage_percent", String(data.wastage_percent))
       if (data.combo_unit_id)
         formData.append("combo_unit_id", String(data.combo_unit_id))
-      if (data.production_cost)
+      if (data.production_cost !== undefined && data.production_cost !== null)
         formData.append("production_cost", String(data.production_cost))
 
       // Structured Arrays
@@ -269,12 +345,18 @@ export function useCreateProduct() {
           formData.append(`variants[${index}][name]`, variant.name)
           if (variant.item_code)
             formData.append(`variants[${index}][item_code]`, variant.item_code)
-          if (variant.additional_cost)
+          if (
+            variant.additional_cost !== undefined &&
+            variant.additional_cost !== null
+          )
             formData.append(
               `variants[${index}][additional_cost]`,
               String(variant.additional_cost)
             )
-          if (variant.additional_price)
+          if (
+            variant.additional_price !== undefined &&
+            variant.additional_price !== null
+          )
             formData.append(
               `variants[${index}][additional_price]`,
               String(variant.additional_price)
@@ -301,7 +383,7 @@ export function useCreateProduct() {
             `combo_products[${index}][product_id]`,
             String(combo.product_id)
           )
-          if (combo.variant_id)
+          if (combo.variant_id !== undefined && combo.variant_id !== null)
             formData.append(
               `combo_products[${index}][variant_id]`,
               String(combo.variant_id)
@@ -311,12 +393,12 @@ export function useCreateProduct() {
             `combo_products[${index}][price]`,
             String(combo.price)
           )
-          if (combo.wastage_percent)
+          if (combo.wastage_percent !== undefined && combo.wastage_percent !== null)
             formData.append(
               `combo_products[${index}][wastage_percent]`,
               String(combo.wastage_percent)
             )
-          if (combo.combo_unit_id)
+          if (combo.combo_unit_id !== undefined && combo.combo_unit_id !== null)
             formData.append(
               `combo_products[${index}][combo_unit_id]`,
               String(combo.combo_unit_id)
@@ -388,17 +470,24 @@ export function useUpdateProduct() {
 
       // Pricing
       if (data.cost !== undefined)
-        formData.append("cost", data.cost ? String(data.cost) : "")
+        formData.append(
+          "cost",
+          data.cost !== null && data.cost !== undefined ? String(data.cost) : ""
+        )
       if (data.price !== undefined) formData.append("price", String(data.price))
       if (data.wholesale_price !== undefined)
         formData.append(
           "wholesale_price",
-          data.wholesale_price ? String(data.wholesale_price) : ""
+          data.wholesale_price !== null && data.wholesale_price !== undefined
+            ? String(data.wholesale_price)
+            : ""
         )
       if (data.profit_margin !== undefined)
         formData.append(
           "profit_margin",
-          data.profit_margin ? String(data.profit_margin) : ""
+          data.profit_margin !== null && data.profit_margin !== undefined
+            ? String(data.profit_margin)
+            : ""
         )
       if (data.profit_margin_type)
         formData.append("profit_margin_type", data.profit_margin_type)
@@ -407,12 +496,17 @@ export function useUpdateProduct() {
       if (data.alert_quantity !== undefined)
         formData.append(
           "alert_quantity",
-          data.alert_quantity ? String(data.alert_quantity) : ""
+          data.alert_quantity !== null && data.alert_quantity !== undefined
+            ? String(data.alert_quantity)
+            : ""
         )
       if (data.daily_sale_objective !== undefined)
         formData.append(
           "daily_sale_objective",
-          data.daily_sale_objective ? String(data.daily_sale_objective) : ""
+          data.daily_sale_objective !== null &&
+          data.daily_sale_objective !== undefined
+            ? String(data.daily_sale_objective)
+            : ""
         )
 
       // Promotion
@@ -421,7 +515,9 @@ export function useUpdateProduct() {
       if (data.promotion_price !== undefined)
         formData.append(
           "promotion_price",
-          data.promotion_price ? String(data.promotion_price) : ""
+          data.promotion_price !== null && data.promotion_price !== undefined
+            ? String(data.promotion_price)
+            : ""
         )
       if (data.starting_date)
         formData.append("starting_date", data.starting_date)
@@ -432,7 +528,9 @@ export function useUpdateProduct() {
       if (data.tax_method !== undefined)
         formData.append(
           "tax_method",
-          data.tax_method ? String(data.tax_method) : ""
+          data.tax_method !== null && data.tax_method !== undefined
+            ? String(data.tax_method)
+            : ""
         )
 
       // Images (new uploads)
@@ -488,11 +586,20 @@ export function useUpdateProduct() {
 
       // Related Data
       if (data.related_products?.length) {
-        formData.append("related_products", data.related_products.join(","))
+        data.related_products.forEach((id, index) => {
+          formData.append(`related_products[${index}]`, String(id))
+        })
       }
-      if (data.extras?.length) formData.append("extras", data.extras.join(","))
-      if (data.menu_type?.length)
-        formData.append("menu_type", data.menu_type.join(","))
+      if (data.extras?.length) {
+        data.extras.forEach((item, index) => {
+          formData.append(`extras[${index}]`, item)
+        })
+      }
+      if (data.menu_type?.length) {
+        data.menu_type.forEach((item, index) => {
+          formData.append(`menu_type[${index}]`, item)
+        })
+      }
       if (data.kitchen_id)
         formData.append("kitchen_id", String(data.kitchen_id))
 
@@ -523,11 +630,11 @@ export function useUpdateProduct() {
         formData.append("guarantee_type", data.guarantee_type)
 
       // Combo & Production
-      if (data.wastage_percent)
+      if (data.wastage_percent !== undefined && data.wastage_percent !== null)
         formData.append("wastage_percent", String(data.wastage_percent))
       if (data.combo_unit_id)
         formData.append("combo_unit_id", String(data.combo_unit_id))
-      if (data.production_cost)
+      if (data.production_cost !== undefined && data.production_cost !== null)
         formData.append("production_cost", String(data.production_cost))
 
       // Structured Arrays
@@ -536,12 +643,18 @@ export function useUpdateProduct() {
           formData.append(`variants[${index}][name]`, variant.name)
           if (variant.item_code)
             formData.append(`variants[${index}][item_code]`, variant.item_code)
-          if (variant.additional_cost)
+          if (
+            variant.additional_cost !== undefined &&
+            variant.additional_cost !== null
+          )
             formData.append(
               `variants[${index}][additional_cost]`,
               String(variant.additional_cost)
             )
-          if (variant.additional_price)
+          if (
+            variant.additional_price !== undefined &&
+            variant.additional_price !== null
+          )
             formData.append(
               `variants[${index}][additional_price]`,
               String(variant.additional_price)
@@ -568,7 +681,7 @@ export function useUpdateProduct() {
             `combo_products[${index}][product_id]`,
             String(combo.product_id)
           )
-          if (combo.variant_id)
+          if (combo.variant_id !== undefined && combo.variant_id !== null)
             formData.append(
               `combo_products[${index}][variant_id]`,
               String(combo.variant_id)
@@ -578,16 +691,22 @@ export function useUpdateProduct() {
             `combo_products[${index}][price]`,
             String(combo.price)
           )
-          if (combo.wastage_percent)
+          if (combo.wastage_percent !== undefined && combo.wastage_percent !== null)
             formData.append(
               `combo_products[${index}][wastage_percent]`,
               String(combo.wastage_percent)
             )
-          if (combo.combo_unit_id)
+          if (combo.combo_unit_id !== undefined && combo.combo_unit_id !== null)
             formData.append(
               `combo_products[${index}][combo_unit_id]`,
               String(combo.combo_unit_id)
             )
+        })
+      }
+
+      if (data.deleted_image_paths?.length) {
+        data.deleted_image_paths.forEach((path, index) => {
+          formData.append(`deleted_image_paths[${index}]`, path)
         })
       }
 

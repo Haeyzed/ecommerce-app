@@ -24,6 +24,7 @@ import { ProductForm } from "./products-form"
 import { useOptionCategories } from "../../categories"
 import { useOptionBrands } from "../../brands"
 import { useOptionUnits } from "../../units"
+import { useOptionWarehouses } from "@/features/settings/warehouses"
 
 interface ProductsActionDialogProps {
   currentRow?: Product
@@ -46,6 +47,7 @@ export function ProductsActionDialog({
   const { data: categories = [] } = useOptionCategories()
   const { data: brands = [] } = useOptionBrands()
   const { data: units = [] } = useOptionUnits()
+  const { data: warehouses = [] } = useOptionWarehouses()
 
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
@@ -161,6 +163,7 @@ export function ProductsActionDialog({
             categories={categories}
             brands={brands}
             units={units}
+            warehouses={warehouses}
           />
         </ResponsiveDialogBody>
 
