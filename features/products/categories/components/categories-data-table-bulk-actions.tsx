@@ -12,7 +12,6 @@ import { useAuthSession } from "@/features/auth/api"
 import {
   useBulkActivateCategories,
   useBulkDeactivateCategories,
-  useBulkDestroyCategories,
   useBulkDisableFeaturedCategories,
   useBulkEnableFeaturedCategories,
   useBulkEnableSyncCategories,

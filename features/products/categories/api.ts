@@ -438,7 +438,7 @@ export function useBulkDisableSyncCategories() {
   })
 }
 
-export function useBulkDestroyCategories() {
+export function useBulkDeleteCategories() {
   const { api } = useApiClient()
   const queryClient = useQueryClient()
   return useMutation({

@@ -52,7 +52,7 @@ export function BrandsMultiDeleteDialog({
       onOpenChange={onOpenChange}
       title={
         <span className="flex items-center gap-1 text-destructive">
-          <AlertTriangle className="size-[18px] stroke-destructive" />
+          <AlertTriangle className="size-4.5 stroke-destructive" />
           Delete {selectedRows.length}{" "}
           {selectedRows.length > 1 ? "brands" : "brand"}
         </span>

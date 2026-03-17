@@ -1,7 +1,7 @@
 "use client"
 
 import type { Column, ColumnDef } from "@tanstack/react-table"
-import { CheckCircle2, MoreHorizontal, Text, XCircle } from "lucide-react"
+import { CheckCircle2, Text, XCircle } from "lucide-react"
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { Badge } from "@/components/ui/badge"
@@ -25,7 +25,7 @@ export const brandsColumns: ColumnDef<Brand>[] = [
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
-        className="translate-y-[2px]"
+        className="translate-y-0.5"
       />
     ),
     meta: {
@@ -38,7 +38,7 @@ export const brandsColumns: ColumnDef<Brand>[] = [
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
-        className="translate-y-[2px]"
+        className="translate-y-0.5"
       />
     ),
     size: 40,
@@ -96,7 +96,7 @@ export const brandsColumns: ColumnDef<Brand>[] = [
       <DataTableColumnHeader column={column} label="Description" />
     ),
     cell: ({ cell }) => (
-      <div className="max-w-[200px] truncate text-muted-foreground">
+      <div className="max-w-50 truncate text-muted-foreground">
         {cell.getValue<Brand["short_description"]>() ?? "-"}
       </div>
     ),

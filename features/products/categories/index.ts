@@ -14,7 +14,7 @@ export {
   useBulkDisableFeaturedCategories,
   useBulkEnableSyncCategories,
   useBulkDisableSyncCategories,
-  useBulkDestroyCategories,
+  useBulkDeleteCategories,
   useCategoriesImport,
   useCategoriesExport,
   useCategoriesTemplateDownload,

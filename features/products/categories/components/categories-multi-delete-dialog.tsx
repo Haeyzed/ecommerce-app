@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ConfirmResponsiveDialog } from "@/components/confirm-responsive-dialog"
 
-import { useBulkDestroyCategories } from "../api"
+import { useBulkDeleteCategories } from "../api"
 import type { Category } from "../types"
 
 const CONFIRM_WORD = "DELETE"
@@ -30,7 +30,7 @@ export function CategoriesMultiDeleteDialog({
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const selectedIds = selectedRows.map((row) => row.original.id)
 
-  const { mutate: bulkDestroy, isPending } = useBulkDestroyCategories()
+  const { mutate: bulkDestroy, isPending } = useBulkDeleteCategories()
 
   const handleDelete = () => {
     if (value.trim() !== CONFIRM_WORD) {

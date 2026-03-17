@@ -5,7 +5,7 @@ export {
   useBrands,
   useBulkActivateBrands,
   useBulkDeactivateBrands,
-  useBulkDeleteBrands as useBulkDestroyBrands,
+  useBulkDeleteBrands,
   useBrandsExport,
   useBrandsImport,
   useBrandsTemplateDownload,
