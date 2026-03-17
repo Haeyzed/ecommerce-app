@@ -24,6 +24,13 @@ import { Textarea } from "@/components/ui/textarea"
 import { DatePicker } from "@/components/date-picker"
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor"
 import {
+  NumberField,
+  NumberFieldContent,
+  NumberFieldDecrement,
+  NumberFieldIncrement,
+  NumberFieldInput,
+} from "@/components/ui/number-field"
+import {
   Combobox,
   ComboboxContent,
   ComboboxEmpty,
@@ -668,13 +675,18 @@ export function ProductForm({
                         control={form.control}
                         name={`combo_products.${index}.qty`}
                         render={({ field }) => (
-                          <Input
-                            className="h-8"
-                            type="number"
-                            step="0.01"
-                            {...field}
-                            onChange={(e) => field.onChange(Number(e.target.value || 0))}
-                          />
+                          <NumberField
+                            min={0}
+                            step={0.01}
+                            value={Number(field.value ?? 0)}
+                            onValueChange={(value) => field.onChange(value)}
+                          >
+                            <NumberFieldContent>
+                              <NumberFieldDecrement />
+                              <NumberFieldInput />
+                              <NumberFieldIncrement />
+                            </NumberFieldContent>
+                          </NumberField>
                         )}
                       />
                     </TableCell>
