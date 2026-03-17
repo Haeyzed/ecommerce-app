@@ -1,5 +1,5 @@
 import { CheckCircle, XCircle } from "lucide-react"
-import { ProductTypeEnum } from "./types"
+import { ProductTypeEnum, TaxMethodEnum } from './types'
 
 export const PERMISSIONS = {
   create: "create products",
@@ -25,6 +25,20 @@ export const productTypeOptions = [
   { label: "Combo", value: ProductTypeEnum.Combo },
   { label: "Digital", value: ProductTypeEnum.Digital },
   { label: "Service", value: ProductTypeEnum.Service },
+] as const
+
+export const symbologieOptions = [
+  { label: "Code 128", value: "CODE128" },
+  { label: "Code 39", value: "CODE39" },
+  { label: "UPC-A", value: "UPCA" },
+  { label: "UPC-E", value: "UPCE" },
+  { label: "EAN-8", value: "EAN8" },
+  { label: "EAN-13", value: "EAN13" },
+] as const
+
+export const taxMethodOptions = [
+  { label: "Exclusive", value: TaxMethodEnum.Exclusive },
+  { label: "Inclusive", value: TaxMethodEnum.Inclusive },
 ] as const
 
 export const PRODUCT_EXPORT_COLUMNS = [

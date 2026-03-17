@@ -44,6 +44,7 @@ import { CropperFileUpload } from "@/components/cropper-file-upload"
 import type { ProductFormData } from "../schemas"
 import type { Product, ProductOption } from "../types"
 import { ProductTypeEnum, TaxMethodEnum } from "../types"
+import { productTypeOptions, symbologieOptions, taxMethodOptions } from '@/features/products/products/constants'
 
 interface ProductFormProps {
   form: UseFormReturn<ProductFormData>
@@ -55,27 +56,6 @@ interface ProductFormProps {
   brands: ProductOption[]
   units: ProductOption[]
 }
-
-const productTypes = [
-  { value: ProductTypeEnum.Standard, label: "Standard" },
-  { value: ProductTypeEnum.Combo, label: "Combo" },
-  { value: ProductTypeEnum.Digital, label: "Digital" },
-  { value: ProductTypeEnum.Service, label: "Service" },
-]
-
-const symbologies = [
-  { value: "CODE128", label: "Code 128" },
-  { value: "CODE39", label: "Code 39" },
-  { value: "UPCA", label: "UPC-A" },
-  { value: "UPCE", label: "UPC-E" },
-  { value: "EAN8", label: "EAN-8" },
-  { value: "EAN13", label: "EAN-13" },
-]
-
-const taxMethods = [
-  { value: TaxMethodEnum.Exclusive, label: "Exclusive" },
-  { value: TaxMethodEnum.Inclusive, label: "Inclusive" },
-]
 
 export function ProductForm({
                               form,
@@ -89,11 +69,10 @@ export function ProductForm({
                             }: ProductFormProps) {
   const { theme } = useTheme()
 
-  // Helper for rendering a Combobox field cleanly
   const renderCombobox = (
     name: keyof ProductFormData,
     label: string,
-    items: { value: string | number; label: string }[],
+    items: readonly { value: string | number; label: string }[],
     placeholder: string
   ) => (
     <Controller
@@ -107,7 +86,7 @@ export function ProductForm({
           <Field data-invalid={!!fieldState.error} className="flex flex-col">
             <FieldLabel>{label}</FieldLabel>
             <Combobox
-              items={items}
+              items={items as { value: string | number; label: string }[]}
               value={selectedItem}
               onValueChange={(item) => field.onChange(item?.value ?? null)}
             >
@@ -192,8 +171,8 @@ export function ProductForm({
             )}
           />
 
-          {renderCombobox("type", "Product Type *", productTypes, "Select type")}
-          {renderCombobox("barcode_symbology", "Barcode Symbology *", symbologies, "Select symbology")}
+          {renderCombobox("type", "Product Type *", productTypeOptions, "Select type")}
+          {renderCombobox("barcode_symbology", "Barcode Symbology *", symbologieOptions, "Select symbology")}
           {renderCombobox("category_id", "Category *", categories, "Select category")}
           {renderCombobox("brand_id", "Brand", brands, "Select brand")}
         </FieldGroup>
@@ -260,7 +239,7 @@ export function ProductForm({
               </Field>
             )}
           />
-          {renderCombobox("tax_method", "Tax Method", taxMethods, "Select tax method")}
+          {renderCombobox("tax_method", "Tax Method", taxMethodOptions, "Select tax method")}
         </FieldGroup>
       </div>
 
