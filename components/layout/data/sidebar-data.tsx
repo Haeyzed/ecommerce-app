@@ -74,8 +74,10 @@ export const sidebarData: Omit<SidebarData, "user"> = {
         },
         {
           title: "Settings",
-          url: "/dashboard/settings",
           icon: SettingsIcon,
+          items: [
+
+          ]
         },
       ],
     },
