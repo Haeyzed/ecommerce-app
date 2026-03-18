@@ -105,6 +105,12 @@ export function ProductForm({
   const unitId = useWatch({ control: form.control, name: "unit_id" })
 
   const [comboKeyword, setComboKeyword] = React.useState("")
+  const [variantDraft, setVariantDraft] = React.useState({
+    name: "",
+    item_code: "",
+    additional_cost: "",
+    additional_price: "",
+  })
   const comboSearch = useComboProductSearch(comboKeyword)
   const saleUnitsQuery = useSaleUnits(unitId ?? null)
 
@@ -220,6 +226,30 @@ export function ProductForm({
       price: Number(item.price ?? 0),
       wastage_percent: null,
       combo_unit_id: null,
+    })
+  }
+
+  const addVariantFromDraft = () => {
+    if (!variantDraft.name.trim()) return
+
+    variantsArray.append({
+      name: variantDraft.name.trim(),
+      item_code: variantDraft.item_code.trim() || null,
+      additional_cost:
+        variantDraft.additional_cost === ""
+          ? null
+          : Number(variantDraft.additional_cost),
+      additional_price:
+        variantDraft.additional_price === ""
+          ? null
+          : Number(variantDraft.additional_price),
+    })
+
+    setVariantDraft({
+      name: "",
+      item_code: "",
+      additional_cost: "",
+      additional_price: "",
     })
   }
 
@@ -459,20 +489,54 @@ export function ProductForm({
 
       {isVariant && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between border-b pb-2">
-            <h3 className="text-lg font-medium">Variants</h3>
+          <h3 className="text-lg font-medium border-b pb-2">Variants</h3>
+          <div className="grid grid-cols-1 gap-3 rounded-md border p-3 md:grid-cols-5">
+            <Input
+              placeholder="Variant name"
+              value={variantDraft.name}
+              onChange={(e) =>
+                setVariantDraft((prev) => ({ ...prev, name: e.target.value }))
+              }
+            />
+            <Input
+              placeholder="Item code"
+              value={variantDraft.item_code}
+              onChange={(e) =>
+                setVariantDraft((prev) => ({
+                  ...prev,
+                  item_code: e.target.value,
+                }))
+              }
+            />
+            <Input
+              type="number"
+              step="0.01"
+              placeholder="Additional cost"
+              value={variantDraft.additional_cost}
+              onChange={(e) =>
+                setVariantDraft((prev) => ({
+                  ...prev,
+                  additional_cost: e.target.value,
+                }))
+              }
+            />
+            <Input
+              type="number"
+              step="0.01"
+              placeholder="Additional price"
+              value={variantDraft.additional_price}
+              onChange={(e) =>
+                setVariantDraft((prev) => ({
+                  ...prev,
+                  additional_price: e.target.value,
+                }))
+              }
+            />
             <Button
               type="button"
-              size="sm"
               variant="outline"
-              onClick={() =>
-                variantsArray.append({
-                  name: "",
-                  item_code: "",
-                  additional_cost: null,
-                  additional_price: null,
-                })
-              }
+              onClick={addVariantFromDraft}
+              disabled={!variantDraft.name.trim()}
             >
               <Plus className="mr-1 size-4" />
               Add Variant
@@ -500,56 +564,16 @@ export function ProductForm({
                 {variantsArray.fields.map((field, index) => (
                   <TableRow key={field.id}>
                     <TableCell>
-                      <Controller
-                        control={form.control}
-                        name={`variants.${index}.name`}
-                        render={({ field }) => <Input {...field} />}
-                      />
+                      {field.name}
                     </TableCell>
                     <TableCell>
-                      <Controller
-                        control={form.control}
-                        name={`variants.${index}.item_code`}
-                        render={({ field }) => <Input {...field} value={field.value ?? ""} />}
-                      />
+                      {field.item_code ?? "-"}
                     </TableCell>
                     <TableCell>
-                      <Controller
-                        control={form.control}
-                        name={`variants.${index}.additional_cost`}
-                        render={({ field }) => (
-                          <Input
-                            type="number"
-                            step="0.01"
-                            {...field}
-                            value={field.value ?? ""}
-                            onChange={(e) =>
-                              field.onChange(
-                                e.target.value === "" ? null : Number(e.target.value)
-                              )
-                            }
-                          />
-                        )}
-                      />
+                      {field.additional_cost ?? "-"}
                     </TableCell>
                     <TableCell>
-                      <Controller
-                        control={form.control}
-                        name={`variants.${index}.additional_price`}
-                        render={({ field }) => (
-                          <Input
-                            type="number"
-                            step="0.01"
-                            {...field}
-                            value={field.value ?? ""}
-                            onChange={(e) =>
-                              field.onChange(
-                                e.target.value === "" ? null : Number(e.target.value)
-                              )
-                            }
-                          />
-                        )}
-                      />
+                      {field.additional_price ?? "-"}
                     </TableCell>
                     <TableCell>
                       <Button
