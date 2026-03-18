@@ -12,6 +12,7 @@ import { PERMISSIONS as BRAND_PERMISSIONS } from "@/features/products/brands/con
 import { PERMISSIONS as CATEGORY_PERMISSIONS } from "@/features/products/categories/constants"
 import { PERMISSIONS as PRODUCT_PERMISSIONS } from "@/features/products/products/constants"
 import { PERMISSIONS as WAREHOUSES_PERMISSIONS } from "@/features/settings/warehouses/constants"
+import { PERMISSIONS as TAXES_PERMISSIONS } from "@/features/settings/taxes/constants"
 import { PERMISSIONS as UNIT_PERMISSIONS } from "@/features/products/units/constants"
 import type { SidebarData } from "../types"
 
@@ -81,6 +82,11 @@ export const sidebarData: Omit<SidebarData, "user"> = {
               title: "Warehouses",
               url: "/settings/warehouses",
               permissions: [WAREHOUSES_PERMISSIONS.view],
+            },
+            {
+              title: "Taxes",
+              url: "/settings/taxes",
+              permissions: [TAXES_PERMISSIONS.view],
             },
           ]
         },

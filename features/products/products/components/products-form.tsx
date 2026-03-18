@@ -80,6 +80,7 @@ interface ProductFormProps {
   brands: ProductOption[]
   units: ProductOption[]
   warehouses: ProductOption[]
+  taxes: ProductOption[]
 }
 
 export function ProductForm({
@@ -92,6 +93,7 @@ export function ProductForm({
   brands,
   units,
   warehouses,
+  taxes,
 }: ProductFormProps) {
   type ProductFieldPath = FieldPath<ProductFormData>
   const type = useWatch({ control: form.control, name: "type" })
@@ -407,6 +409,7 @@ export function ProductForm({
               </Field>
             )}
           />
+          {renderCombobox("tax_id", "Tax", taxes, "Select tax")}
           {renderCombobox("tax_method", "Tax Method", taxMethodOptions, "Select tax method")}
 
           <Controller

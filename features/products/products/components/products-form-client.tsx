@@ -11,6 +11,7 @@ import { useOptionBrands } from "@/features/products/brands"
 import { useOptionCategories } from "@/features/products/categories"
 import { useOptionUnits } from "@/features/products/units"
 import { useOptionWarehouses } from "@/features/settings/warehouses"
+import { useOptionTaxes } from "@/features/settings/taxes"
 
 import {
   useCreateProduct,
@@ -120,6 +121,7 @@ export function ProductFormClient({ productId }: { productId?: number }) {
   const { data: brands = [] } = useOptionBrands()
   const { data: units = [] } = useOptionUnits()
   const { data: warehouses = [] } = useOptionWarehouses()
+  const { data: taxes = [] } = useOptionTaxes()
   const { data: generatedCode } = useGenerateProductCode()
   const { data: product, isLoading: isLoadingProduct } = useProduct(productId ?? null)
 
@@ -243,6 +245,7 @@ export function ProductFormClient({ productId }: { productId?: number }) {
         brands={brands}
         units={units}
         warehouses={warehouses}
+        taxes={taxes}
       />
     </div>
   )

@@ -25,6 +25,7 @@ import { useOptionCategories } from "../../categories"
 import { useOptionBrands } from "../../brands"
 import { useOptionUnits } from "../../units"
 import { useOptionWarehouses } from "@/features/settings/warehouses"
+import { useOptionTaxes } from "@/features/settings/taxes"
 
 interface ProductsActionDialogProps {
   currentRow?: Product
@@ -48,6 +49,7 @@ export function ProductsActionDialog({
   const { data: brands = [] } = useOptionBrands()
   const { data: units = [] } = useOptionUnits()
   const { data: warehouses = [] } = useOptionWarehouses()
+  const { data: taxes = [] } = useOptionTaxes()
 
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
@@ -66,6 +68,7 @@ export function ProductsActionDialog({
         price: currentRow.price || 0,
         wholesale_price: currentRow.wholesale_price || undefined,
         alert_quantity: currentRow.alert_quantity || undefined,
+        tax_id: currentRow.tax?.id ?? null,
         tax_method: currentRow.tax_method || undefined,
         short_description: currentRow.short_description || "",
         meta_title: currentRow.meta_title || "",
@@ -164,6 +167,7 @@ export function ProductsActionDialog({
             brands={brands}
             units={units}
             warehouses={warehouses}
+            taxes={taxes}
           />
         </ResponsiveDialogBody>
 
