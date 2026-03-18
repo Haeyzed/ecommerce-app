@@ -23,6 +23,7 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { DatePicker } from "@/components/date-picker"
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor"
+import { CropperFileUpload } from "@/components/cropper-file-upload"
 import {
   NumberField,
   NumberFieldContent,
@@ -30,6 +31,16 @@ import {
   NumberFieldIncrement,
   NumberFieldInput,
 } from "@/components/ui/number-field"
+import {
+  FileUpload,
+  FileUploadDropzone,
+  FileUploadItem,
+  FileUploadItemDelete,
+  FileUploadItemMetadata,
+  FileUploadItemPreview,
+  FileUploadList,
+  FileUploadTrigger,
+} from "@/components/ui/file-upload"
 import {
   Combobox,
   ComboboxContent,
@@ -467,85 +478,93 @@ export function ProductForm({
               Add Variant
             </Button>
           </div>
-          <div className="space-y-3">
-            {variantsArray.fields.map((field, index) => (
-              <div key={field.id} className="grid grid-cols-1 gap-3 rounded-md border p-3 md:grid-cols-5">
-                <Controller
-                  control={form.control}
-                  name={`variants.${index}.name`}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={!!fieldState.error}>
-                      <FieldLabel>Name</FieldLabel>
-                      <Input {...field} />
-                      {fieldState.error && <FieldError errors={[fieldState.error]} />}
-                    </Field>
-                  )}
-                />
-                <Controller
-                  control={form.control}
-                  name={`variants.${index}.item_code`}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={!!fieldState.error}>
-                      <FieldLabel>Item Code</FieldLabel>
-                      <Input {...field} value={field.value ?? ""} />
-                      {fieldState.error && <FieldError errors={[fieldState.error]} />}
-                    </Field>
-                  )}
-                />
-                <Controller
-                  control={form.control}
-                  name={`variants.${index}.additional_cost`}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={!!fieldState.error}>
-                      <FieldLabel>Additional Cost</FieldLabel>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        {...field}
-                        value={field.value ?? ""}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value === "" ? null : Number(e.target.value)
-                          )
-                        }
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Item Code</TableHead>
+                  <TableHead>Additional Cost</TableHead>
+                  <TableHead>Additional Price</TableHead>
+                  <TableHead className="w-[48px]" />
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {variantsArray.fields.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center text-muted-foreground">
+                      No variants added.
+                    </TableCell>
+                  </TableRow>
+                )}
+                {variantsArray.fields.map((field, index) => (
+                  <TableRow key={field.id}>
+                    <TableCell>
+                      <Controller
+                        control={form.control}
+                        name={`variants.${index}.name`}
+                        render={({ field }) => <Input {...field} />}
                       />
-                      {fieldState.error && <FieldError errors={[fieldState.error]} />}
-                    </Field>
-                  )}
-                />
-                <Controller
-                  control={form.control}
-                  name={`variants.${index}.additional_price`}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={!!fieldState.error}>
-                      <FieldLabel>Additional Price</FieldLabel>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        {...field}
-                        value={field.value ?? ""}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value === "" ? null : Number(e.target.value)
-                          )
-                        }
+                    </TableCell>
+                    <TableCell>
+                      <Controller
+                        control={form.control}
+                        name={`variants.${index}.item_code`}
+                        render={({ field }) => <Input {...field} value={field.value ?? ""} />}
                       />
-                      {fieldState.error && <FieldError errors={[fieldState.error]} />}
-                    </Field>
-                  )}
-                />
-                <div className="flex items-end">
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="icon"
-                    onClick={() => variantsArray.remove(index)}
-                  >
-                    <Trash2 className="size-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
+                    </TableCell>
+                    <TableCell>
+                      <Controller
+                        control={form.control}
+                        name={`variants.${index}.additional_cost`}
+                        render={({ field }) => (
+                          <Input
+                            type="number"
+                            step="0.01"
+                            {...field}
+                            value={field.value ?? ""}
+                            onChange={(e) =>
+                              field.onChange(
+                                e.target.value === "" ? null : Number(e.target.value)
+                              )
+                            }
+                          />
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Controller
+                        control={form.control}
+                        name={`variants.${index}.additional_price`}
+                        render={({ field }) => (
+                          <Input
+                            type="number"
+                            step="0.01"
+                            {...field}
+                            value={field.value ?? ""}
+                            onChange={(e) =>
+                              field.onChange(
+                                e.target.value === "" ? null : Number(e.target.value)
+                              )
+                            }
+                          />
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        onClick={() => variantsArray.remove(index)}
+                      >
+                        <Trash2 className="size-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         </div>
       )}
@@ -861,14 +880,19 @@ export function ProductForm({
           <Controller
             control={form.control}
             name="image_paths"
-            render={({ field, fieldState }) => (
+            render={({ field: { value, onChange }, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
                 <FieldLabel>Images</FieldLabel>
-                <Input
-                  type="file"
-                  multiple
+                <CropperFileUpload
+                  value={value ?? []}
+                  onValueChange={onChange}
                   accept="image/*"
-                  onChange={(e) => field.onChange(Array.from(e.target.files ?? []))}
+                  maxFiles={10}
+                  maxSize={5 * 1024 * 1024}
+                  multiple
+                  onFileReject={(_file, message) => {
+                    form.setError("image_paths", { message })
+                  }}
                 />
                 {isEdit && currentRow?.image_urls?.length ? (
                   <FieldDescription>
@@ -882,13 +906,38 @@ export function ProductForm({
           <Controller
             control={form.control}
             name="file_path"
-            render={({ field, fieldState }) => (
+            render={({ field: { value, onChange }, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
                 <FieldLabel>Attachment</FieldLabel>
-                <Input
-                  type="file"
-                  onChange={(e) => field.onChange(e.target.files?.[0] ?? null)}
-                />
+                <FileUpload
+                  value={value ? [value] : []}
+                  onValueChange={(files) => onChange(files[0] ?? null)}
+                  maxFiles={1}
+                  maxSize={20 * 1024 * 1024}
+                >
+                  <FileUploadDropzone className="flex flex-row flex-wrap border-dotted text-center">
+                    Drag and drop or{" "}
+                    <FileUploadTrigger asChild>
+                      <Button variant="link" size="sm" className="p-0">
+                        choose file
+                      </Button>
+                    </FileUploadTrigger>{" "}
+                    to upload
+                  </FileUploadDropzone>
+                  <FileUploadList>
+                    {(value ? [value] : []).map((file) => (
+                      <FileUploadItem key={file.name} value={file}>
+                        <FileUploadItemPreview />
+                        <FileUploadItemMetadata />
+                        <FileUploadItemDelete asChild>
+                          <Button type="button" variant="ghost" size="icon">
+                            <Trash2 className="size-4" />
+                          </Button>
+                        </FileUploadItemDelete>
+                      </FileUploadItem>
+                    ))}
+                  </FileUploadList>
+                </FileUpload>
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
